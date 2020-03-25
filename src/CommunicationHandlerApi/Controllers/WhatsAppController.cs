@@ -31,21 +31,27 @@ namespace CommunicationHandlerApi.Controllers
             _whatsappHandlerService = whatsappHandlerService;
         }
 
+        [HttpPost(Name = "Whatsapp_Ping")]
+        public async Task<IActionResult> Get()
+        {
+            return Ok();
+        }
+
         /// <summary>
         ///     Handle Request
         /// </summary>
         /// <remarks>Handles incoming Whatsapp requests.</remarks>
         [HttpPost(Name = "Whatsapp_Process")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<IActionResult> Post([FromForm]IFormCollection collection)
+        public async Task<IActionResult> Post([FromForm] IFormCollection collection)
         {
             var pars = collection.Keys
-                .Select(key => new { Key = key, Value = collection[key] })
+                .Select(key => new {Key = key, Value = collection[key]})
                 .ToDictionary(p => p.Key, p => p.Value.ToString());
             var response = await _whatsappHandlerService.ProcessRequest(pars);
 
             var twiml = GenerateTwilioResponse(response);
-            
+
             return new ContentResult
             {
                 Content = twiml.ToString(),
