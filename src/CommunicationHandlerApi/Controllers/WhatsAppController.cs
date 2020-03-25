@@ -31,7 +31,7 @@ namespace CommunicationHandlerApi.Controllers
             _whatsappHandlerService = whatsappHandlerService;
         }
 
-        [HttpPost(Name = "Whatsapp_Ping")]
+        [HttpGet(Name = "Whatsapp_Ping")]
         public async Task<IActionResult> Get()
         {
             return Ok();
