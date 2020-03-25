@@ -13,6 +13,7 @@ variables:
   buildConfiguration: 'Release'
   workingDirectory: '$(System.DefaultWorkingDirectory)/src'
   solutionFile: 'HackTheCrisis.SocialConnect.sln'
+  vmImageName: 'ubuntu-latest'
 
 stages:
 - stage: Build
