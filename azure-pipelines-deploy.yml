@@ -11,17 +11,61 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/src'
+  solutionFile: 'HackTheCrisis.SocialConnect.sln'
 
-steps:
-  
-- script: dotnet build src/HackTheCrisis.SocialConnect.sln --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+stages:
+- stage: Build
+  displayName: Build stage
 
-- task: AzureRmWebAppDeployment@4
-  inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'hack-the-crisis azure resource group'
-    appType: 'webApp'
-    WebAppName: 'codit-htc'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-    AppSettings: '-storage:AccountName traiders'
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: 'build'
+        projects: |
+          $(workingDirectory)/$(solutionFile)
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration $(buildConfiguration)
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+  condition: succeeded()
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    environment: 'development'
+    pool:
+      vmImage: $(vmImageName)
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'hack-the-crisis azure resource group'
+              appType: 'webApp'
+              WebAppName: 'codit-htc'
+              packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+              AppSettings: '-storage:AccountName traiders'
