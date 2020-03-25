@@ -68,5 +68,5 @@ stages:
               azureSubscription: 'hack-the-crisis azure resource group'
               appType: 'webApp'
               WebAppName: 'codit-htc'
-              packageForLinux: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+              packageForLinux: drop/$(Build.BuildId).zip
               AppSettings: '-storage:AccountName traiders'
