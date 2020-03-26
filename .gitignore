@@ -6,6 +6,8 @@
 
 local.settings.json
 appsettings.Development.json
+Hack_The_Crisis/appsettings.Development.json
+CommunicationApi/local.settings.json
 
 # User-specific files
 *.rsuser
