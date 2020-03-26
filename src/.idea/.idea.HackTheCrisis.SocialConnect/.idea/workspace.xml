@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da1b6bec-619a-48af-a42c-7897529ef64f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.HackTheCrisis.SocialConnect/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HackTheCrisis.SocialConnect/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.HackTheCrisis.SocialConnect/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HackTheCrisis.SocialConnect/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -30,7 +29,6 @@
         <option value="$PROJECT_DIR$/CommunicationHandlerApi/Startup.cs" />
         <option value="$PROJECT_DIR$/CommunicationHandlerApi/Services/BlobWhatsappHandlerService.cs" />
         <option value="$PROJECT_DIR$/CommunicationHandlerApi/Controllers/WhatsAppController.cs" />
-        <option value="$PROJECT_DIR$/CommunicationHandlerApi/local.settings.json" />
       </list>
     </option>
   </component>
@@ -45,71 +43,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
   </component>
-  <component name="RunManager" selected="Azure - Publish Web App.Publish CommunicationHandlerApi to Azure">
-    <configuration name="Publish CommunicationHandlerApi to Azure" type="AzureDotNetWebAppPublish" factoryName="Azure Web App" temporary="true">
-      <option name="AZURE_WEB_APP_PROJECT" value="$PROJECT_DIR$/CommunicationHandlerApi/CommunicationHandlerApi.csproj" />
-      <option name="AZURE_WEB_APP_SUBSCRIPTION_ID" value="c1537527-c126-428d-8f72-1ac9f2c63c1f" />
-      <option name="AZURE_WEB_APP_IS_CREATE_APP" value="1" />
-      <option name="AZURE_WEB_APP_ID" value="" />
-      <option name="AZURE_WEB_APP_NAME" value="codit-htc-tst" />
-      <option name="AZURE_WEB_APP_IS_CREATE_RESOURCE_GROUP" value="0" />
-      <option name="AZURE_WEB_APP_RESOURCE_GROUP_NAME" value="hack-the-crisis" />
-      <option name="AZURE_WEB_APP_OPERATING_SYSTEM" value="LINUX" />
-      <option name="AZURE_WEB_APP_IS_CREATE_APP_SERVICE_PLAN" value="1" />
-      <option name="AZURE_WEB_APP_SERVICE_PLAN_ID" value="" />
-      <option name="AZURE_WEB_APP_SERVICE_PLAN_NAME" value="codit-hackthecrisis-asp" />
-      <option name="AZURE_WEB_APP_LOCATION" value="westeurope" />
-      <option name="AZURE_WEB_APP_PRICING_TIER" value="" />
-      <option name="AZURE_WEB_APP_NET_FRAMEWORK" value="4.7" />
-      <option name="AZURE_WEB_APP_NET_CORE_RUNTIME" value="DOTNETCORE 3.1" />
-      <option name="AZURE_SQL_DATABASE_SUBSCRIPTION_ID" value="c1537527-c126-428d-8f72-1ac9f2c63c1f" />
-      <option name="AZURE_SQL_DATABASE_IS_ENABLED" value="0" />
-      <option name="AZURE_SQL_DATABASE_CONNECTION_STRING_NAME" value="" />
-      <option name="AZURE_SQL_DATABASE_IS_CREATE" value="0" />
-      <option name="AZURE_SQL_DATABASE_ID" value="/subscriptions/c1537527-c126-428d-8f72-1ac9f2c63c1f/resourceGroups/codito-tst-esb-invictus/providers/Microsoft.Sql/servers/invictus-tst-we-cdt-sqlsvr/databases/Codit.Transco.Root" />
-      <option name="AZURE_SQL_DATABASE_NAME" value="" />
-      <option name="AZURE_SQL_DATABASE_IS_CREATE_RESOURCE_GROUP" value="0" />
-      <option name="AZURE_SQL_DATABASE_RESOURCE_GROUP_NAME" value="" />
-      <option name="AZURE_SQL_DATABASE_IS_CREATE_SQL_SERVER" value="0" />
-      <option name="AZURE_SQL_DATABASE_SQL_SERVER_ID" value="" />
-      <option name="AZURE_SQL_DATABASE_SQL_SERVER_NAME" value="" />
-      <option name="AZURE_SQL_DATABASE_SQL_SERVER_ADMIN_LOGIN" value="InvictusFrameworkAdmin" />
-      <option name="AZURE_SQL_DATABASE_LOCATION" value="eastus" />
-      <option name="AZURE_SQL_DATABASE_COLLATION" value="SQL_Latin1_General_CP1_CI_AS" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Publish to Azure" type="AzureDotNetWebAppPublish" factoryName="Azure Web App" temporary="true">
-      <option name="AZURE_WEB_APP_PROJECT" value="$PROJECT_DIR$/CommunicationHandlerApi/CommunicationHandlerApi.csproj" />
-      <option name="AZURE_WEB_APP_SUBSCRIPTION_ID" value="c1537527-c126-428d-8f72-1ac9f2c63c1f" />
-      <option name="AZURE_WEB_APP_IS_CREATE_APP" value="0" />
-      <option name="AZURE_WEB_APP_ID" value="/subscriptions/c1537527-c126-428d-8f72-1ac9f2c63c1f/resourceGroups/hack-the-crisis/providers/Microsoft.Web/sites/codit-htc" />
-      <option name="AZURE_WEB_APP_NAME" value="" />
-      <option name="AZURE_WEB_APP_IS_CREATE_RESOURCE_GROUP" value="0" />
-      <option name="AZURE_WEB_APP_RESOURCE_GROUP_NAME" value="" />
-      <option name="AZURE_WEB_APP_OPERATING_SYSTEM" value="WINDOWS" />
-      <option name="AZURE_WEB_APP_IS_CREATE_APP_SERVICE_PLAN" value="0" />
-      <option name="AZURE_WEB_APP_SERVICE_PLAN_ID" value="/subscriptions/c1537527-c126-428d-8f72-1ac9f2c63c1f/resourceGroups/codit-freshgoods-dev/providers/Microsoft.Web/serverfarms/ASP-coditfreshgoodsdev-b30e" />
-      <option name="AZURE_WEB_APP_SERVICE_PLAN_NAME" value="" />
-      <option name="AZURE_WEB_APP_LOCATION" value="eastus" />
-      <option name="AZURE_WEB_APP_PRICING_TIER" value="" />
-      <option name="AZURE_WEB_APP_NET_FRAMEWORK" value="4.7" />
-      <option name="AZURE_WEB_APP_NET_CORE_RUNTIME" value="DOTNETCORE 2.1" />
-      <option name="AZURE_SQL_DATABASE_SUBSCRIPTION_ID" value="c1537527-c126-428d-8f72-1ac9f2c63c1f" />
-      <option name="AZURE_SQL_DATABASE_IS_ENABLED" value="0" />
-      <option name="AZURE_SQL_DATABASE_CONNECTION_STRING_NAME" value="" />
-      <option name="AZURE_SQL_DATABASE_IS_CREATE" value="0" />
-      <option name="AZURE_SQL_DATABASE_ID" value="/subscriptions/c1537527-c126-428d-8f72-1ac9f2c63c1f/resourceGroups/codito-tst-esb-invictus/providers/Microsoft.Sql/servers/invictus-tst-we-cdt-sqlsvr/databases/Codit.Transco.Root" />
-      <option name="AZURE_SQL_DATABASE_NAME" value="" />
-      <option name="AZURE_SQL_DATABASE_IS_CREATE_RESOURCE_GROUP" value="0" />
-      <option name="AZURE_SQL_DATABASE_RESOURCE_GROUP_NAME" value="" />
-      <option name="AZURE_SQL_DATABASE_IS_CREATE_SQL_SERVER" value="0" />
-      <option name="AZURE_SQL_DATABASE_SQL_SERVER_ID" value="" />
-      <option name="AZURE_SQL_DATABASE_SQL_SERVER_NAME" value="" />
-      <option name="AZURE_SQL_DATABASE_SQL_SERVER_ADMIN_LOGIN" value="InvictusFrameworkAdmin" />
-      <option name="AZURE_SQL_DATABASE_LOCATION" value="eastus" />
-      <option name="AZURE_SQL_DATABASE_COLLATION" value="SQL_Latin1_General_CP1_CI_AS" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager">
     <configuration name="CommunicationHandlerApi" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -128,17 +62,6 @@
         <option name="Build" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue=".NET Project.CommunicationHandlerApi" />
-      <item itemvalue="Azure - Publish Web App.Publish CommunicationHandlerApi to Azure" />
-      <item itemvalue="Azure - Publish Web App.Publish to Azure" />
-    </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Azure - Publish Web App.Publish CommunicationHandlerApi to Azure" />
-        <item itemvalue="Azure - Publish Web App.Publish to Azure" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -147,7 +70,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1585125412547</updated>
-      <workItem from="1585125414488" duration="6176000" />
+      <workItem from="1585125414488" duration="3528000" />
     </task>
     <task id="LOCAL-00001" summary="initial code">
       <created>1585125552873</created>
@@ -163,14 +86,7 @@
       <option name="project" value="LOCAL" />
       <updated>1585133534769</updated>
     </task>
-    <task id="LOCAL-00003" summary="add ping operation - fix duplicate">
-      <created>1585134081861</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1585134081861</updated>
-    </task>
-    <option name="localTasksCounter" value="4" />
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -190,127 +106,29 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial code" />
     <MESSAGE value="add ping operation" />
-    <MESSAGE value="add ping operation - fix duplicate" />
-    <option name="LAST_COMMIT_MESSAGE" value="add ping operation - fix duplicate" />
+    <option name="LAST_COMMIT_MESSAGE" value="add ping operation" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="573" y="122" key="#Publish_CommunicationHandlerApi_to_Azure" timestamp="1585166595005">
-      <screen x="0" y="23" width="1680" height="947" />
-    </state>
-    <state x="573" y="122" key="#Publish_CommunicationHandlerApi_to_Azure/0.23.1680.947@0.23.1680.947" timestamp="1585166595005" />
-    <state x="-293" y="-946" key="#Publish_CommunicationHandlerApi_to_Azure/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585134497130" />
-    <state x="304" y="158" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585166769153">
-      <screen x="0" y="23" width="1680" height="947" />
-    </state>
-    <state x="304" y="158" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1680.947@0.23.1680.947" timestamp="1585166769153" />
-    <state width="1878" height="263" key="GridCell.Tab.0.bottom" timestamp="1585206056513">
+    <state width="1878" height="263" key="GridCell.Tab.0.bottom" timestamp="1585134065122">
       <screen x="-948" y="-1057" width="1920" height="1057" />
     </state>
-    <state width="1638" height="263" key="GridCell.Tab.0.bottom/0.23.1680.947@0.23.1680.947" timestamp="1585166777623" />
-    <state width="1878" height="263" key="GridCell.Tab.0.bottom/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585137256588" />
-    <state width="1878" height="263" key="GridCell.Tab.0.bottom/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056513" />
-    <state width="1878" height="263" key="GridCell.Tab.0.center" timestamp="1585206056513">
+    <state width="1878" height="263" key="GridCell.Tab.0.bottom/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585134065122" />
+    <state width="1878" height="263" key="GridCell.Tab.0.center" timestamp="1585134065121">
       <screen x="-948" y="-1057" width="1920" height="1057" />
     </state>
-    <state width="1638" height="263" key="GridCell.Tab.0.center/0.23.1680.947@0.23.1680.947" timestamp="1585166777622" />
-    <state width="1878" height="263" key="GridCell.Tab.0.center/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585137256587" />
-    <state width="1878" height="263" key="GridCell.Tab.0.center/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056513" />
-    <state width="1878" height="263" key="GridCell.Tab.0.left" timestamp="1585206056513">
+    <state width="1878" height="263" key="GridCell.Tab.0.center/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585134065121" />
+    <state width="1878" height="263" key="GridCell.Tab.0.left" timestamp="1585134065120">
       <screen x="-948" y="-1057" width="1920" height="1057" />
     </state>
-    <state width="1638" height="263" key="GridCell.Tab.0.left/0.23.1680.947@0.23.1680.947" timestamp="1585166777621" />
-    <state width="1878" height="263" key="GridCell.Tab.0.left/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585137256587" />
-    <state width="1878" height="263" key="GridCell.Tab.0.left/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056513" />
-    <state width="1878" height="263" key="GridCell.Tab.0.right" timestamp="1585206056513">
+    <state width="1878" height="263" key="GridCell.Tab.0.left/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585134065120" />
+    <state width="1878" height="263" key="GridCell.Tab.0.right" timestamp="1585134065122">
       <screen x="-948" y="-1057" width="1920" height="1057" />
     </state>
-    <state width="1638" height="263" key="GridCell.Tab.0.right/0.23.1680.947@0.23.1680.947" timestamp="1585166777622" />
-    <state width="1878" height="263" key="GridCell.Tab.0.right/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585137256588" />
-    <state width="1878" height="263" key="GridCell.Tab.0.right/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056513" />
-    <state width="1638" height="313" key="GridCell.Tab.1.bottom" timestamp="1585206056486">
+    <state width="1878" height="263" key="GridCell.Tab.0.right/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585134065122" />
+    <state x="-388" y="-810" key="Vcs.Push.Dialog.v2" timestamp="1585133538676">
       <screen x="-948" y="-1057" width="1920" height="1057" />
     </state>
-    <state width="1638" height="313" key="GridCell.Tab.1.bottom/0.23.1680.947@0.23.1680.947" timestamp="1585166595029" />
-    <state width="1638" height="313" key="GridCell.Tab.1.bottom/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056486" />
-    <state width="1638" height="313" key="GridCell.Tab.1.center" timestamp="1585206056485">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.1.center/0.23.1680.947@0.23.1680.947" timestamp="1585166595029" />
-    <state width="1638" height="313" key="GridCell.Tab.1.center/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056485" />
-    <state width="1638" height="313" key="GridCell.Tab.1.left" timestamp="1585206056484">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.1.left/0.23.1680.947@0.23.1680.947" timestamp="1585166595028" />
-    <state width="1638" height="313" key="GridCell.Tab.1.left/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056484" />
-    <state width="1638" height="313" key="GridCell.Tab.1.right" timestamp="1585206056485">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.1.right/0.23.1680.947@0.23.1680.947" timestamp="1585166595029" />
-    <state width="1638" height="313" key="GridCell.Tab.1.right/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056485" />
-    <state width="1638" height="313" key="GridCell.Tab.2.bottom" timestamp="1585206056487">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.2.bottom/0.23.1680.947@0.23.1680.947" timestamp="1585166595030" />
-    <state width="1638" height="313" key="GridCell.Tab.2.bottom/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056487" />
-    <state width="1638" height="313" key="GridCell.Tab.2.center" timestamp="1585206056486">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.2.center/0.23.1680.947@0.23.1680.947" timestamp="1585166595029" />
-    <state width="1638" height="313" key="GridCell.Tab.2.center/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056486" />
-    <state width="1638" height="313" key="GridCell.Tab.2.left" timestamp="1585206056486">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.2.left/0.23.1680.947@0.23.1680.947" timestamp="1585166595029" />
-    <state width="1638" height="313" key="GridCell.Tab.2.left/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056486" />
-    <state width="1638" height="313" key="GridCell.Tab.2.right" timestamp="1585206056487">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.2.right/0.23.1680.947@0.23.1680.947" timestamp="1585166595030" />
-    <state width="1638" height="313" key="GridCell.Tab.2.right/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056487" />
-    <state width="1638" height="313" key="GridCell.Tab.3.bottom" timestamp="1585206056488">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.3.bottom/0.23.1680.947@0.23.1680.947" timestamp="1585166595031" />
-    <state width="1638" height="313" key="GridCell.Tab.3.bottom/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056488" />
-    <state width="1638" height="313" key="GridCell.Tab.3.center" timestamp="1585206056487">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.3.center/0.23.1680.947@0.23.1680.947" timestamp="1585166595031" />
-    <state width="1638" height="313" key="GridCell.Tab.3.center/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056487" />
-    <state width="1638" height="313" key="GridCell.Tab.3.left" timestamp="1585206056487">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.3.left/0.23.1680.947@0.23.1680.947" timestamp="1585166595030" />
-    <state width="1638" height="313" key="GridCell.Tab.3.left/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056487" />
-    <state width="1638" height="313" key="GridCell.Tab.3.right" timestamp="1585206056488">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.3.right/0.23.1680.947@0.23.1680.947" timestamp="1585166595031" />
-    <state width="1638" height="313" key="GridCell.Tab.3.right/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056488" />
-    <state width="1638" height="313" key="GridCell.Tab.4.bottom" timestamp="1585206056489">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.4.bottom/0.23.1680.947@0.23.1680.947" timestamp="1585166595032" />
-    <state width="1638" height="313" key="GridCell.Tab.4.bottom/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056489" />
-    <state width="1638" height="313" key="GridCell.Tab.4.center" timestamp="1585206056488">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.4.center/0.23.1680.947@0.23.1680.947" timestamp="1585166595032" />
-    <state width="1638" height="313" key="GridCell.Tab.4.center/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056488" />
-    <state width="1638" height="313" key="GridCell.Tab.4.left" timestamp="1585206056488">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.4.left/0.23.1680.947@0.23.1680.947" timestamp="1585166595031" />
-    <state width="1638" height="313" key="GridCell.Tab.4.left/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056488" />
-    <state width="1638" height="313" key="GridCell.Tab.4.right" timestamp="1585206056489">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1638" height="313" key="GridCell.Tab.4.right/0.23.1680.947@0.23.1680.947" timestamp="1585166595032" />
-    <state width="1638" height="313" key="GridCell.Tab.4.right/972.-1897.1080.1897/0.23.1680.947/-948.-1057.1920.1057@-948.-1057.1920.1057" timestamp="1585206056489" />
-    <state x="-388" y="-810" key="Vcs.Push.Dialog.v2" timestamp="1585134086203">
-      <screen x="-948" y="-1057" width="1920" height="1057" />
-    </state>
-    <state x="-388" y="-810" key="Vcs.Push.Dialog.v2/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585134086203" />
+    <state x="-388" y="-810" key="Vcs.Push.Dialog.v2/972.-1897.1080.1897/-948.-1057.1920.1057/0.23.1680.947@-948.-1057.1920.1057" timestamp="1585133538676" />
     <state x="-388" y="-829" key="Vcs.Push.Dialog.v2/972.-1897.1080.1897/-948.-1057.1920.977/0.23.1680.1027@-948.-1057.1920.977" timestamp="1585125576958" />
   </component>
 </project>
