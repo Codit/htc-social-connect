@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ContentModelStore">
     <e p="$PROJECT_DIR$" t="IncludeFlat">
-      <e p="CommunicationHandlerApi" t="IncludeRecursive">
+      <e p="CommunicationApi" t="IncludeRecursive">
         <e p="appsettings.json" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
-        <e p="CommunicationHandlerApi.csproj" t="IncludeRecursive" />
-        <e p="CommunicationHandlerApi.Open-Api.xml" t="Include" />
+        <e p="CommunicationApi.csproj" t="IncludeRecursive" />
+        <e p="CommunicationApi.Open-Api.xml" t="Include" />
         <e p="Controllers" t="Include">
           <e p="HealthController.cs" t="Include" />
           <e p="WhatsAppController.cs" t="Include" />
@@ -16,30 +16,155 @@
           <e p="DirectoryExtensions.cs" t="Include" />
         </e>
         <e p="Interfaces" t="Include">
+          <e p="IMediaPersister.cs" t="Include" />
+          <e p="IMessagePersister.cs" t="Include" />
           <e p="IUserMatcher.cs" t="Include" />
           <e p="IWhatsappHandlerService.cs" t="Include" />
         </e>
         <e p="Models" t="Include">
           <e p="StorageSettings.cs" t="Include" />
           <e p="TenantInfo.cs" t="Include" />
+          <e p="TextMessage.cs" t="Include" />
           <e p="UserInfo.cs" t="Include" />
           <e p="WhatsappResponse.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">
-              <e p="CommunicationHandlerApi.AssemblyInfo.cs" t="Include" />
-              <e p="CommunicationHandlerApi.RazorAssemblyInfo.cs" t="Include" />
+              <e p="CommunicationApi.AssemblyInfo.cs" t="Include" />
+              <e p="CommunicationApi.RazorAssemblyInfo.cs" t="Include" />
             </e>
           </e>
         </e>
         <e p="Program.cs" t="Include" />
-        <e p="Services" t="Include">
-          <e p="BlobWhatsappHandlerService.cs" t="Include" />
-          <e p="TwilioUserMatcher.cs" t="Include" />
+        <e p="Security" t="Include">
+          <e p="SharedSecretProvider.cs" t="Include" />
         </e>
-        <e p="SharedSecretProvider.cs" t="Include" />
+        <e p="Services" t="Include">
+          <e p="Blobstorage" t="Include">
+            <e p="BlobMediaPersister.cs" t="Include" />
+          </e>
+          <e p="Tablestorage" t="Include">
+            <e p="TableMessagePersister.cs" t="Include" />
+            <e p="TableTransmitter.cs" t="Include" />
+          </e>
+          <e p="TwilioUserMatcher.cs" t="Include" />
+          <e p="WhatsappHandlerService.cs" t="Include" />
+        </e>
         <e p="Startup.cs" t="Include" />
+      </e>
+      <e p="Hack_The_Crisis" t="IncludeRecursive">
+        <e p="appsettings.Development.json" t="Include" />
+        <e p="appsettings.json" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Hack_The_Crisis.csproj" t="IncludeRecursive" />
+        <e p="Helpers" t="Include">
+          <e p="StorageSettings.cs" t="Include" />
+        </e>
+        <e p="libman.json" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.0" t="Include">
+              <e p="Hack_The_Crisis.AssemblyInfo.cs" t="Include" />
+              <e p="Hack_The_Crisis.RazorAssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Pages" t="Include">
+          <e p="_ViewImports.cshtml" t="Include" />
+          <e p="_ViewStart.cshtml" t="Include" />
+          <e p="Error.cshtml" t="Include" />
+          <e p="Error.cshtml.cs" t="Include" />
+          <e p="Index.cshtml" t="Include" />
+          <e p="Index.cshtml.cs" t="Include" />
+          <e p="Privacy.cshtml" t="Include" />
+          <e p="Privacy.cshtml.cs" t="Include" />
+          <e p="Shared" t="Include">
+            <e p="_Layout.cshtml" t="Include" />
+            <e p="_ValidationScriptsPartial.cshtml" t="Include" />
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="Startup.cs" t="Include" />
+        <e p="wwwroot" t="Include">
+          <e p="css" t="Include">
+            <e p="site.css" t="Include" />
+          </e>
+          <e p="favicon.ico" t="Include" />
+          <e p="js" t="Include">
+            <e p="site.js" t="Include" />
+          </e>
+          <e p="lib" t="Include">
+            <e p="bootstrap" t="Include">
+              <e p="dist" t="Include">
+                <e p="css" t="Include">
+                  <e p="bootstrap-grid.css" t="Include" />
+                  <e p="bootstrap-grid.css.map" t="Include" />
+                  <e p="bootstrap-grid.min.css" t="Include" />
+                  <e p="bootstrap-grid.min.css.map" t="Include" />
+                  <e p="bootstrap-reboot.css" t="Include" />
+                  <e p="bootstrap-reboot.css.map" t="Include" />
+                  <e p="bootstrap-reboot.min.css" t="Include" />
+                  <e p="bootstrap-reboot.min.css.map" t="Include" />
+                  <e p="bootstrap.css" t="Include" />
+                  <e p="bootstrap.css.map" t="Include" />
+                  <e p="bootstrap.min.css" t="Include" />
+                  <e p="bootstrap.min.css.map" t="Include" />
+                </e>
+                <e p="js" t="Include">
+                  <e p="bootstrap.bundle.js" t="Include" />
+                  <e p="bootstrap.bundle.js.map" t="Include" />
+                  <e p="bootstrap.bundle.min.js" t="Include" />
+                  <e p="bootstrap.bundle.min.js.map" t="Include" />
+                  <e p="bootstrap.js" t="Include" />
+                  <e p="bootstrap.js.map" t="Include" />
+                  <e p="bootstrap.min.js" t="Include" />
+                  <e p="bootstrap.min.js.map" t="Include" />
+                </e>
+              </e>
+              <e p="LICENSE" t="Include" />
+            </e>
+            <e p="jquery" t="Include">
+              <e p="dist" t="Include">
+                <e p="jquery-vertical-loop.js" t="Include" />
+                <e p="jquery.js" t="Include" />
+                <e p="jquery.min.js" t="Include" />
+                <e p="jquery.min.map" t="Include" />
+              </e>
+              <e p="LICENSE.txt" t="Include" />
+            </e>
+            <e p="jquery-validation" t="Include">
+              <e p="dist" t="Include">
+                <e p="additional-methods.js" t="Include" />
+                <e p="additional-methods.min.js" t="Include" />
+                <e p="jquery.validate.js" t="Include" />
+                <e p="jquery.validate.min.js" t="Include" />
+              </e>
+              <e p="LICENSE.md" t="Include" />
+            </e>
+            <e p="jquery-validation-unobtrusive" t="Include">
+              <e p="jquery.validate.unobtrusive.js" t="Include" />
+              <e p="jquery.validate.unobtrusive.min.js" t="Include" />
+              <e p="LICENSE.txt" t="Include" />
+            </e>
+            <e p="slick-1.8.1" t="Include">
+              <e p=".gitignore" t="Include" />
+              <e p="bower.json" t="Include" />
+              <e p="component.json" t="Include" />
+              <e p="CONTRIBUTING.markdown" t="Include" />
+              <e p="index.html" t="Include" />
+              <e p="ISSUE_TEMPLATE.md" t="Include" />
+              <e p="LICENSE" t="Include" />
+              <e p="Makefile" t="Include" />
+              <e p="package.json" t="Include" />
+              <e p="README.markdown" t="Include" />
+              <e p="slick.jquery.json" t="Include" />
+            </e>
+          </e>
+        </e>
       </e>
       <e p="HackTheCrisis.SocialConnect.sln" t="IncludeFlat" />
       <e p="packages" t="ExcludeRecursive" />
