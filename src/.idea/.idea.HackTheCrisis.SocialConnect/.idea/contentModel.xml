@@ -19,7 +19,6 @@
           <e p="IUserMatcher.cs" t="Include" />
           <e p="IWhatsappHandlerService.cs" t="Include" />
         </e>
-        <e p="local.settings.json" t="Include" />
         <e p="Models" t="Include">
           <e p="StorageSettings.cs" t="Include" />
           <e p="TenantInfo.cs" t="Include" />
