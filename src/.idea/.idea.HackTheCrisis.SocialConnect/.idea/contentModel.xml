@@ -59,6 +59,9 @@
         <e p="appsettings.json" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="Hack_The_Crisis.csproj" t="IncludeRecursive" />
+        <e p="Helpers" t="Include">
+          <e p="StorageSettings.cs" t="Include" />
+        </e>
         <e p="libman.json" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">

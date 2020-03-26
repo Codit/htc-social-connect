@@ -7,6 +7,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Auth;
 using System;
 using System.IO;
+using Hack_The_Crisis.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Html;
@@ -16,8 +17,10 @@ namespace Hack_The_Crisis.Pages
 {
     public class IndexModel : PageModel
     {
-        private static StorageCredentials storageCredentials = new StorageCredentials("myAccountName", "myAccountKey");
-       
+        private static StorageCredentials storageCredentials = new StorageCredentials(
+            ConfigurationSettings.Settings.AccountName,
+            ConfigurationSettings.Settings.AccountKey);
+        
         private static CloudStorageAccount cloudStorageAccount;
         private static CloudBlobClient blobClient;
         private static CloudTableClient tableClient;
