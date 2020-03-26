@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+
+local.settings.json
+appsettings.Development.json
+src/Hack_The_Crisis/appsettings.Development.json
+src/CommunicationApi/local.settings.json
+
 # User-specific files
 *.rsuser
 *.suo

@@ -1,6 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationApi", "CommunicationApi\CommunicationApi.csproj", "{C927E880-EA32-4DC1-825F-509C4674C6F8}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29503.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationApi", "CommunicationApi\CommunicationApi.csproj", "{C927E880-EA32-4DC1-825F-509C4674C6F8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hack_The_Crisis", "Hack_The_Crisis\Hack_The_Crisis.csproj", "{39726644-4F2C-4B39-9D48-0F02E100DCB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +17,15 @@ Global
 		{C927E880-EA32-4DC1-825F-509C4674C6F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C927E880-EA32-4DC1-825F-509C4674C6F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C927E880-EA32-4DC1-825F-509C4674C6F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39726644-4F2C-4B39-9D48-0F02E100DCB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39726644-4F2C-4B39-9D48-0F02E100DCB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39726644-4F2C-4B39-9D48-0F02E100DCB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39726644-4F2C-4B39-9D48-0F02E100DCB5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FBE8D383-8A45-400A-80DF-0037E8924CE5}
 	EndGlobalSection
 EndGlobal
