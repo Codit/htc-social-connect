@@ -9,6 +9,7 @@ appsettings.Development.json
 src/Hack_The_Crisis/appsettings.Development.json
 src/CommunicationApi/local.settings.json
 src/.idea/
+.idea/
 
 # User-specific files
 *.rsuser
