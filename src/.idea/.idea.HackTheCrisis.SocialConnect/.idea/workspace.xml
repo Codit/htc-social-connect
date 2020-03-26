@@ -4,9 +4,7 @@
     <list default="true" id="da1b6bec-619a-48af-a42c-7897529ef64f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.HackTheCrisis.SocialConnect/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HackTheCrisis.SocialConnect/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.HackTheCrisis.SocialConnect/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HackTheCrisis.SocialConnect/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CommunicationApi/Controllers/WhatsappController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CommunicationApi/Controllers/WhatsappController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CommunicationApi/Services/TwilioUserMatcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CommunicationApi/Services/TwilioUserMatcher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CommunicationApi/Services/WhatsappHandlerService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CommunicationApi/Services/WhatsappHandlerService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Hack_The_Crisis/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/Hack_The_Crisis/appsettings.Development.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,24 +14,21 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="feat-text-messages" />
+        <entry key="$PROJECT_DIR$/.." value="feature/addWebApp" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/CommunicationHandlerApi/Controllers/WhatsAppController.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/CommunicationApi/Startup.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/CommunicationApi/Controllers/HealthController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Hack_The_Crisis/Startup.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationHandlerApi/Startup.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/CommunicationApi/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Hack_The_Crisis/Program.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/BCF87298-1E51-4DBF-B12A-63B45256D93B/91/3ce0fa63/EntityConvert.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/231CAC4C-D307-4AEA-83F1-76589F64BFB3/67/DateTimeOffset.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationHandlerApi/Program.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/CommunicationApi/Interfaces/IMessagePersister.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationApi/Models/TextMessage.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/CommunicationApi/Services/Tablestorage/TableMessagePersister.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationApi/Services/Tablestorage/TableTransmitter.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Hack_The_Crisis/Pages/Index.cshtml.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationApi/Security/SharedSecretProvider.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationApi/Models/TenantInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationApi/Services/Blobstorage/BlobMediaPersister.cs" root0="FORCE_HIGHLIGHTING" />
@@ -41,10 +36,16 @@
     <setting file="file://$PROJECT_DIR$/CommunicationApi/Services/TwilioUserMatcher.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationApi/Services/WhatsappHandlerService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationApi/Interfaces/IWhatsappHandlerService.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../Traiders/src/Traiders.Adapters.Tablestorage/DataAccess/TableTransmitter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationApi/Interfaces/IMediaPersister.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/CommunicationApi/Controllers/WhatsappController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CommunicationApi/Extensions/DirectoryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CommunicationHandlerApi/Controllers/WhatsAppController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CommunicationApi/Startup.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CommunicationApi/Controllers/HealthController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CommunicationApi/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CommunicationApi/Interfaces/IMessagePersister.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CommunicationApi/Services/Tablestorage/TableMessagePersister.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Traiders/src/Traiders.Adapters.Tablestorage/DataAccess/TableTransmitter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CommunicationApi/Controllers/WhatsappController.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -67,6 +68,7 @@
         <option value="$PROJECT_DIR$/CommunicationApi/Services/TwilioUserMatcher.cs" />
         <option value="$PROJECT_DIR$/CommunicationApi/Controllers/WhatsappController.cs" />
         <option value="$PROJECT_DIR$/CommunicationApi/Services/WhatsappHandlerService.cs" />
+        <option value="$PROJECT_DIR$/Hack_The_Crisis/appsettings.Development.json" />
       </list>
     </option>
   </component>
@@ -97,7 +99,7 @@
       <option name="AZURE_WEB_APP_SERVICE_PLAN_ID" value="/subscriptions/c1537527-c126-428d-8f72-1ac9f2c63c1f/resourceGroups/codit-freshgoods-dev/providers/Microsoft.Web/serverfarms/ASP-coditfreshgoodsdev-b30e" />
       <option name="AZURE_WEB_APP_SERVICE_PLAN_NAME" value="" />
       <option name="AZURE_WEB_APP_LOCATION" value="eastus" />
-      <option name="AZURE_WEB_APP_PRICING_TIER" value="S1" />
+      <option name="AZURE_WEB_APP_PRICING_TIER" value="" />
       <option name="AZURE_WEB_APP_NET_FRAMEWORK" value="4.7" />
       <option name="AZURE_WEB_APP_NET_CORE_RUNTIME" value="DOTNETCORE 2.1" />
       <option name="AZURE_SQL_DATABASE_SUBSCRIPTION_ID" value="c1537527-c126-428d-8f72-1ac9f2c63c1f" />
