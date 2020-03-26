@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace CommunicationHandlerApi.Extensions
+namespace CommunicationApi.Extensions
 {
     public static class DirectoryExtensions
     {

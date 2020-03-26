@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ContentModelStore">
     <e p="$PROJECT_DIR$" t="IncludeFlat">
-      <e p="CommunicationHandlerApi" t="IncludeRecursive">
+      <e p="CommunicationApi" t="IncludeRecursive">
         <e p="appsettings.json" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
-        <e p="CommunicationHandlerApi.csproj" t="IncludeRecursive" />
-        <e p="CommunicationHandlerApi.Open-Api.xml" t="Include" />
+        <e p="CommunicationApi.csproj" t="IncludeRecursive" />
+        <e p="CommunicationApi.Open-Api.xml" t="Include" />
         <e p="Controllers" t="Include">
           <e p="HealthController.cs" t="Include" />
           <e p="WhatsAppController.cs" t="Include" />
@@ -16,30 +16,41 @@
           <e p="DirectoryExtensions.cs" t="Include" />
         </e>
         <e p="Interfaces" t="Include">
+          <e p="IMediaPersister.cs" t="Include" />
+          <e p="IMessagePersister.cs" t="Include" />
           <e p="IUserMatcher.cs" t="Include" />
           <e p="IWhatsappHandlerService.cs" t="Include" />
         </e>
-        <e p="local.settings.json" t="Include" />
         <e p="Models" t="Include">
           <e p="StorageSettings.cs" t="Include" />
           <e p="TenantInfo.cs" t="Include" />
+          <e p="TextMessage.cs" t="Include" />
           <e p="UserInfo.cs" t="Include" />
           <e p="WhatsappResponse.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">
-              <e p="CommunicationHandlerApi.AssemblyInfo.cs" t="Include" />
-              <e p="CommunicationHandlerApi.RazorAssemblyInfo.cs" t="Include" />
+              <e p="CommunicationApi.AssemblyInfo.cs" t="Include" />
+              <e p="CommunicationApi.RazorAssemblyInfo.cs" t="Include" />
             </e>
           </e>
         </e>
         <e p="Program.cs" t="Include" />
-        <e p="Services" t="Include">
-          <e p="BlobWhatsappHandlerService.cs" t="Include" />
-          <e p="TwilioUserMatcher.cs" t="Include" />
+        <e p="Security" t="Include">
+          <e p="SharedSecretProvider.cs" t="Include" />
         </e>
-        <e p="SharedSecretProvider.cs" t="Include" />
+        <e p="Services" t="Include">
+          <e p="Blobstorage" t="Include">
+            <e p="BlobMediaPersister.cs" t="Include" />
+          </e>
+          <e p="Tablestorage" t="Include">
+            <e p="TableMessagePersister.cs" t="Include" />
+            <e p="TableTransmitter.cs" t="Include" />
+          </e>
+          <e p="TwilioUserMatcher.cs" t="Include" />
+          <e p="WhatsappHandlerService.cs" t="Include" />
+        </e>
         <e p="Startup.cs" t="Include" />
       </e>
       <e p="HackTheCrisis.SocialConnect.sln" t="IncludeFlat" />

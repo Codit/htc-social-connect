@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CommunicationHandlerApi.Models;
+using CommunicationApi.Models;
 
-namespace CommunicationHandlerApi.Interfaces
+namespace CommunicationApi.Interfaces
 {
     public interface IUserMatcher
     {

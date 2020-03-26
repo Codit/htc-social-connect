@@ -13,6 +13,8 @@ using Arcus.WebApi.Security.Authentication.SharedAccessKey;
 using CommunicationHandlerApi.Interfaces;
 using CommunicationHandlerApi.Models;
 using CommunicationHandlerApi.Services;
+using CommunicationHandlerApi.Services.Blobstorage;
+using CommunicationHandlerApi.Services.Tablestorage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 
@@ -31,10 +33,11 @@ namespace CommunicationHandlerApi
                 .AddJsonFile($"local.settings.json", true, true)
                 .AddEnvironmentVariables();
             var configuration = cfgBuilder.Build();
-            
+
             //#warning Please provide a valid secret provider, for example Azure Key Vault: https://security.arcus-azure.net/features/secrets/consume-from-key-vault
-            services.AddScoped<ICachedSecretProvider>(serviceProvider => new CachedSecretProvider(new SharedSecretProvider()));
-            services.AddMvc(options => 
+            services.AddScoped<ICachedSecretProvider>(serviceProvider =>
+                new CachedSecretProvider(new SharedSecretProvider()));
+            services.AddMvc(options =>
             {
                 options.ReturnHttpNotAcceptable = true;
                 options.RespectBrowserAcceptHeader = true;
@@ -44,15 +47,16 @@ namespace CommunicationHandlerApi
 
                 options.Filters.Add(new SharedAccessKeyAuthenticationFilter("x-api-key", "x-api-key", "whatsapp-key"));
             });
-            services.AddSingleton<IWhatsappHandlerService, BlobWhatsappHandlerService>();
+            services.AddSingleton<IWhatsappHandlerService, WhatsappHandlerService>();
             services.AddSingleton<IUserMatcher, TwilioUserMatcher>();
-
+            services.AddSingleton<IMessagePersister, TableMessagePersister>();
+            services.AddSingleton<IMediaPersister, BlobMediaPersister>();
             services.AddHealthChecks();
 
             services.AddOptions();
             services.Configure<StorageSettings>(options => configuration.GetSection("storage").Bind(options));
 
-            
+
 #if DEBUG
             var openApiInformation = new OpenApiInfo
             {
@@ -63,7 +67,8 @@ namespace CommunicationHandlerApi
             services.AddSwaggerGen(swaggerGenerationOptions =>
             {
                 swaggerGenerationOptions.SwaggerDoc("v1", openApiInformation);
-                swaggerGenerationOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "CommunicationHandlerApi.Open-Api.xml"));
+                swaggerGenerationOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
+                    "CommunicationHandlerApi.Open-Api.xml"));
             });
 #endif
         }
@@ -71,7 +76,8 @@ namespace CommunicationHandlerApi
         private static void RestrictToJsonContentType(MvcOptions options)
         {
             // TODO : changed jsoninput type class
-            var allButJsonInputFormatters = options.InputFormatters.Where(formatter => !(formatter is SystemTextJsonInputFormatter));
+            var allButJsonInputFormatters =
+                options.InputFormatters.Where(formatter => !(formatter is SystemTextJsonInputFormatter));
             foreach (IInputFormatter inputFormatter in allButJsonInputFormatters)
             {
                 options.InputFormatters.Remove(inputFormatter);
@@ -83,7 +89,7 @@ namespace CommunicationHandlerApi
         {
             app.UseMiddleware<Arcus.WebApi.Logging.ExceptionHandlingMiddleware>();
 
-            #warning Please configure application with HTTPS transport layer security
+#warning Please configure application with HTTPS transport layer security
 
             app.UseMvc();
 

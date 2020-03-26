@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CommunicationHandlerApi.Extensions;
-using CommunicationHandlerApi.Interfaces;
-using CommunicationHandlerApi.Models;
+using CommunicationApi.Extensions;
+using CommunicationApi.Interfaces;
+using CommunicationApi.Models;
 
-namespace CommunicationHandlerApi.Services
+namespace CommunicationApi.Services
 {
     public class TwilioUserMatcher : IUserMatcher
     {

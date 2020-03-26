@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Arcus.Security.Secrets.Core.Interfaces;
 
-namespace CommunicationHandlerApi
+namespace CommunicationApi.Security
 {
     public class SharedSecretProvider : ISecretProvider
     {
