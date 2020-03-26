@@ -302,8 +302,8 @@ paket-files/
 .fake/
 
 # JetBrains Rider
-.idea/
-*.sln.iml
+src/.idea/
+src/*.sln.iml
 
 # CodeRush personal settings
 .cr/personal
