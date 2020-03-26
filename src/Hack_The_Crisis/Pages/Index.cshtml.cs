@@ -11,20 +11,22 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Html;
 using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.Azure;
+using Microsoft.Extensions.Configuration;
 
 namespace Hack_The_Crisis.Pages
 {
     public class IndexModel : PageModel
     {
-        private static StorageCredentials storageCredentials = new StorageCredentials("myAccountName", "myAccountKey");
-       
+        
+
         private static CloudStorageAccount cloudStorageAccount;
         private static CloudBlobClient blobClient;
         private static CloudTableClient tableClient;
         private static CloudBlobContainer blobContainer;
         private static CloudTable tableContainer;
         private static string sasContainerToken;
-     
+
 
         private const string blobContainerName = "test";
         private const string tableContainerName = "textmessages";
@@ -37,10 +39,18 @@ namespace Hack_The_Crisis.Pages
 
         public void OnGet()
         {
-            cloudStorageAccount = new CloudStorageAccount(storageCredentials, true);
+            var cfgBuilder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile($"appsettings.json", true, true)
+                .AddJsonFile($"appsettings.dev.json", true, true)
+                .AddJsonFile($"local.settings.json", true, true)
+                .AddUserSecrets("066fe8b5-01f8-4f5e-a542-8167598fc8e3")
+                .AddEnvironmentVariables();
+            var configuration = cfgBuilder.Build();
+            cloudStorageAccount = CloudStorageAccount.Parse(configuration.GetValue<string>("ConnectionStrings:codithtc_connection"));
             blobClient = cloudStorageAccount.CreateCloudBlobClient();
             tableClient = cloudStorageAccount.CreateCloudTableClient();
-           
+
             blobContainer = blobClient.GetContainerReference(blobContainerName);
             tableContainer = tableClient.GetTableReference(tableContainerName);
 
@@ -97,20 +107,20 @@ namespace Hack_The_Crisis.Pages
             List<DynamicTableEntity> list = new List<DynamicTableEntity>();
             TableContinuationToken token = null;
             List<string> texts = new List<string>();
-          
+
             do
             {
-                TableQuerySegment queryResult = await tableContainer.ExecuteQuerySegmentedAsync(new TableQuery(),token);
+                TableQuerySegment queryResult = await tableContainer.ExecuteQuerySegmentedAsync(new TableQuery(), token);
                 list.AddRange(queryResult.Results);
                 token = queryResult.ContinuationToken;
             } while (token != null);
 
-        
+
             foreach (DynamicTableEntity item in list)
             {
                 texts.Add("[" + item.Timestamp.DateTime + "]: " + item.Properties["From"].StringValue + " - " + item.Properties["Message"].StringValue);
             }
-            
+
             return texts;
         }
 
