@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using CommunicationApi.Extensions;
 using CommunicationApi.Interfaces;
@@ -10,7 +11,7 @@ namespace CommunicationApi.Services
     {
         public async Task<UserInfo> Match(IDictionary<string, string> parameters)
         {
-            var phoneNumber = parameters.GetParameter("From", "").Replace("whatsapp:", "");
+            var phoneNumber = WebUtility.UrlDecode(parameters.GetParameter("From", "")).Replace("whatsapp:", "");
             
             return new UserInfo
             {
