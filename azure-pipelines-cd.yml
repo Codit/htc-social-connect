@@ -70,3 +70,5 @@ stages:
               WebAppName: 'codit-htc'
               packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
               AppSettings: '-storage:AccountName traiders'
+              enableCustomDeployment: true
+              DeploymentType: 'zipDeploy'
