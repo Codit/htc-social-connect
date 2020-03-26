@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Twilio.TwiML;
 using Twilio.TwiML.Messaging;
+using IWhatsappHandlerService = CommunicationApi.Interfaces.IWhatsappHandlerService;
+using WhatsappResponse = CommunicationApi.Models.WhatsappResponse;
 
-namespace CommunicationHandlerApi.Controllers
+namespace CommunicationApi.Controllers
 {
-    //MediaContentType0=image%2Fjpeg&SmsMessageSid=MM4357bb89d143b4e79a71e98705a58b30&NumMedia=1&SmsSid=MM4357bb89d143b4e79a71e98705a58b30&SmsStatus=received&Body=&To=whatsapp%3A%2B14155238886&NumSegments=1&MessageSid=MM4357bb89d143b4e79a71e98705a58b30&AccountSid=AC93857f5d3c9313d91a32c1359c684f6e&From=whatsapp%3A%2B32474849993&MediaUrl0=https%3A%2F%2Fapi.twilio.com%2F2010-04-01%2FAccounts%2FAC93857f5d3c9313d91a32c1359c684f6e%2FMessages%2FMM4357bb89d143b4e79a71e98705a58b30%2FMedia%2FMEf2de932b5583a65738a0a3d62e501790&ApiVersion=2010-04-01
     /// <summary>
     /// API endpoint to check the health of the application.
     /// </summary>
@@ -25,7 +26,6 @@ namespace CommunicationHandlerApi.Controllers
         public WhatsAppController(IWhatsappHandlerService whatsappHandlerService)
         {
             Guard.NotNull(whatsappHandlerService, nameof(whatsappHandlerService));
-
             _whatsappHandlerService = whatsappHandlerService;
         }
 
@@ -46,10 +46,10 @@ namespace CommunicationHandlerApi.Controllers
             var pars = collection.Keys
                 .Select(key => new {Key = key, Value = collection[key]})
                 .ToDictionary(p => p.Key, p => p.Value.ToString());
+
             var response = await _whatsappHandlerService.ProcessRequest(pars);
 
             var twiml = GenerateTwilioResponse(response);
-
             return new ContentResult
             {
                 Content = twiml.ToString(),

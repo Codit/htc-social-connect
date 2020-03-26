@@ -1,4 +1,4 @@
-namespace CommunicationHandlerApi.Models
+namespace CommunicationApi.Models
 {
     public class TenantInfo
     {
