@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -11,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters;
 using Microsoft.OpenApi.Models;
 using Arcus.Security.Secrets.Core.Caching;
 using Arcus.Security.Secrets.Core.Interfaces;
@@ -22,6 +20,7 @@ using CommunicationApi.Security;
 using CommunicationApi.Services;
 using CommunicationApi.Services.Blobstorage;
 using CommunicationApi.Services.Tablestorage;
+using Serilog.Configuration;
 using IUserMatcher = CommunicationApi.Interfaces.IUserMatcher;
 using IWhatsappHandlerService = CommunicationApi.Interfaces.IWhatsappHandlerService;
 using StorageSettings = CommunicationApi.Models.StorageSettings;
@@ -76,7 +75,7 @@ namespace CommunicationApi
             services.AddSingleton<IMessagePersister, TableMessagePersister>();
             services.AddSingleton<IMediaPersister, BlobMediaPersister>();
             services.AddHealthChecks();
-
+            
             services.AddOptions();
             services.Configure<StorageSettings>(options => configuration.GetSection("storage").Bind(options));
             
@@ -156,8 +155,10 @@ namespace CommunicationApi
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
+                .Enrich.WithVersion()
+                .Enrich.WithComponentName("API")
                 .WriteTo.Console()
-                .WriteTo.ApplicationInsights(instrumentationKey, new TraceTelemetryConverter());
+                .WriteTo.AzureApplicationInsights(instrumentationKey);
         }
     }
 }

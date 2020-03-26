@@ -66,6 +66,10 @@ namespace CommunicationApi.Services
                 Message = message,
                 ExpirationTime = DateTimeOffset.UtcNow.AddDays(1)
             }, userInfo);
+
+            _logger.LogEvent("New Message Received");
+            _logger.LogMetric("Image Received", 1);
+
             return new WhatsappResponse {ResponseMessage = $"We ontvingen je bericht, {userInfo.Name}"};
         }
 
@@ -81,6 +85,8 @@ namespace CommunicationApi.Services
                 if (mediaFound)
                 {
                     await _mediaPersister.PersistMediaFile(userInfo, WebUtility.UrlDecode(mediaUrl));
+                    _logger.LogEvent("New Image Received");
+                    _logger.LogMetric("Image Received", 1);
                 }
 
                 currentMediaId++;
@@ -91,7 +97,7 @@ namespace CommunicationApi.Services
             {
                 message = $"We stuurden je {mediaCount} foto's door, {userInfo.Name}";
             }
-
+            
             return new WhatsappResponse {ResponseMessage = message};
         }
     }
