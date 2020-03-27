@@ -85,7 +85,7 @@ namespace CommunicationApi
 #if DEBUG
             var openApiInformation = new OpenApiInfo
             {
-                Title = "CommunicationApi",
+                Title = "Hack The Crisis - Communication API",
                 Version = "v1"
             };
 
