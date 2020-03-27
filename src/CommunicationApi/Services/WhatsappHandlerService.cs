@@ -34,18 +34,17 @@ namespace CommunicationApi.Services
         {
             try
             {
-                var userInfo = await _userMatcher.Match(pars);
-                _logger.LogTrace(
-                    $"Processing message from user {userInfo.Name} and phone nr {userInfo.PhoneNumber} in tenant {userInfo.TenantInfo.Name}");
-                var mediaCount = int.Parse((string) pars.GetParameter("NumMedia", "0"));
-                if (mediaCount > 0)
+                var whatsappMessage = new WhatsappMessage(pars);
+                // Check in cache (or table) if phone Number is linked
+                var userInfo = await _userMatcher.Match(whatsappMessage.Sender);
+
+                if (!string.IsNullOrEmpty(userInfo?.TenantInfo?.Name))
                 {
-                    return await ProcessImage(userInfo, pars, mediaCount);
+                    return await HandleTenantMessage(userInfo, whatsappMessage);
                 }
-                else
-                {
-                    return await ProcessText(userInfo, pars);
-                }
+
+                // This is for users that are not yet linked to a tenant
+                return await HandleNewUserConversation(userInfo, whatsappMessage);
             }
             catch (Exception e)
             {
@@ -55,50 +54,69 @@ namespace CommunicationApi.Services
             }
         }
 
-        private async Task<WhatsappResponse> ProcessText(UserInfo userInfo, Dictionary<string, string> pars)
+        private async Task<WhatsappResponse> HandleTenantMessage(UserInfo userInfo,WhatsappMessage message)
         {
-            string message = pars.GetParameter("Body");
+            // This is handling a user that is already linked to a tenant
+            _logger.LogTrace(
+                $"Processing message from user {userInfo.Name} and phone nr {userInfo.PhoneNumber} in tenant {userInfo.TenantInfo.Name}");
+            if (message.MediaItems.Count > 0)
+            {
+                return await ProcessImages(userInfo, message);
+            }
+
+            return await ProcessText(userInfo, message);
+        }
+
+        private async Task<WhatsappResponse> HandleNewUserConversation( UserInfo userInfo, WhatsappMessage message)
+        {
+            string command = message.MessageContent;
+            switch (userInfo.ConversationState)
+            {
+                case ConversationState.New:
+                    break;
+                case ConversationState.AwaitingName:
+                    break;
+                case ConversationState.AwaitingActivation:
+                    break;
+                case ConversationState.Completed:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            throw new NotImplementedException();
+        }
+
+        private async Task<WhatsappResponse> ProcessText(UserInfo userInfo, WhatsappMessage message)
+        {
             string userMessage = $"Bericht van {userInfo.Name}({userInfo.PhoneNumber}): {message}";
             await _messagePersister.PersistMessage(new TextMessage
             {
                 From = userInfo.Name,
                 PhoneNumber = userInfo.PhoneNumber,
-                Message = message,
+                Message = message.MessageContent,
                 ExpirationTime = DateTimeOffset.UtcNow.AddDays(1)
             }, userInfo);
 
             _logger.LogEvent("New Message Received");
-            _logger.LogMetric("Image Received", 1);
+            _logger.LogMetric("Text Received", 1);
 
             return new WhatsappResponse {ResponseMessage = $"We ontvingen je bericht, {userInfo.Name}"};
         }
 
-        private async Task<WhatsappResponse> ProcessImage(UserInfo userInfo, Dictionary<string, string> pars,
-            int mediaCount)
+        private async Task<WhatsappResponse> ProcessImages(UserInfo userInfo, WhatsappMessage message)
         {
-            bool mediaFound = true;
-            int currentMediaId = 0;
-            while (mediaFound)
+            foreach (var mediaItem in message.MediaItems)
             {
-                var mediaUrl = pars.GetParameter($"MediaUrl{currentMediaId}");
-                mediaFound = !string.IsNullOrEmpty(mediaUrl);
-                if (mediaFound)
-                {
-                    await _mediaPersister.PersistMediaFile(userInfo, WebUtility.UrlDecode(mediaUrl));
-                    _logger.LogEvent("New Image Received");
-                    _logger.LogMetric("Image Received", 1);
-                }
-
-                currentMediaId++;
+                await _mediaPersister.PersistMediaFile(userInfo, WebUtility.UrlDecode(mediaItem.Url));
+                _logger.LogEvent("New Image Received");
+                _logger.LogMetric("Image Received", 1);
             }
 
-            string message = $"We stuurden je foto door, {userInfo.Name}";
-            if (mediaCount > 1)
-            {
-                message = $"We stuurden je {mediaCount} foto's door, {userInfo.Name}";
-            }
-            
-            return new WhatsappResponse {ResponseMessage = message};
+            string responseMessage = message.MediaItems.Count == 1
+                ? $"We stuurden je foto door, {userInfo.Name}"
+                : $"We stuurden je {message.MediaItems.Count} foto's door, {userInfo.Name}";
+            return new WhatsappResponse {ResponseMessage = responseMessage};
         }
     }
 }
