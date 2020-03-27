@@ -157,6 +157,7 @@ namespace CommunicationApi
                 .Enrich.FromLogContext()
                 .Enrich.WithVersion()
                 .Enrich.WithComponentName("API")
+                .Enrich.WithCorrelationInfo()
                 .WriteTo.Console()
                 .WriteTo.AzureApplicationInsights(instrumentationKey);
         }
