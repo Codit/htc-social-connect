@@ -40,7 +40,7 @@ namespace Hack_The_Crisis.Pages
 
             blobContainer = blobClient.GetContainerReference(blobContainerName);
             tableContainer = tableClient.GetTableReference(tableContainerName);
-            Message = "My key val = " + _configuration["HTC-Storage-Connectionstring"];
+         
         }
       
         public async Task<List<string>> getBlobUris()
