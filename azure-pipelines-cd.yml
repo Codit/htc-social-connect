@@ -63,6 +63,6 @@ stages:
               appType: 'webApp'
               WebAppName: 'codit-htc'
               packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
-              AppSettings: '-storage:AccountName $(storageName) -storage:accountkey $(storageKey)'
+              AppSettings: '-storage:accountname $(storageName) -storage:accountkey $(storageKey)'
               enableCustomDeployment: true
               DeploymentType: 'zipDeploy'
