@@ -22,7 +22,6 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
@@ -30,7 +29,6 @@ stages:
         projects: |
           $(workingDirectory)/$(solutionFile)
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration $(buildConfiguration)
-
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
@@ -39,27 +37,26 @@ stages:
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
         replaceExistingArchive: true
-
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      displayName: 'Publish Artifact'
       artifact: drop
+
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
   condition: succeeded()
-
   jobs:
   - deployment: Deploy
     displayName: Deploy
     environment: 'development'
     pool:
       vmImage: $(vmImageName)
-
     strategy:
       runOnce:
         deploy:
-
           steps:
           - task: AzureRmWebAppDeployment@4
+            displayName: 'Deploy Web App'
             inputs:
               ConnectionType: 'AzureRM'
               azureSubscription: 'hack-the-crisis azure resource group'
