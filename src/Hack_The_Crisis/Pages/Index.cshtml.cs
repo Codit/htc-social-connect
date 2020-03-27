@@ -4,21 +4,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Auth;
 using System;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Html;
 using Microsoft.WindowsAzure.Storage.Table;
-using Microsoft.Azure;
 using Microsoft.Extensions.Configuration;
 
 namespace Hack_The_Crisis.Pages
 {
     public class IndexModel : PageModel
     {
-        
+        private readonly IConfiguration _configuration = null;
 
         private static CloudStorageAccount cloudStorageAccount;
         private static CloudBlobClient blobClient;
@@ -30,32 +28,21 @@ namespace Hack_The_Crisis.Pages
 
         private const string blobContainerName = "test";
         private const string tableContainerName = "textmessages";
+        public string Message { get; set; }
 
-        private readonly ILogger<IndexModel> _logger;
-        public IndexModel(ILogger<IndexModel> logger)
-        {
-            _logger = logger;
-        }
 
         public void OnGet()
         {
-            var cfgBuilder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile($"appsettings.json", true, true)
-                .AddJsonFile($"appsettings.dev.json", true, true)
-                .AddJsonFile($"local.settings.json", true, true)
-                .AddUserSecrets("066fe8b5-01f8-4f5e-a542-8167598fc8e3")
-                .AddEnvironmentVariables();
-            var configuration = cfgBuilder.Build();
-            cloudStorageAccount = CloudStorageAccount.Parse(configuration.GetValue<string>("ConnectionStrings:codithtc_connection"));
+           
+            cloudStorageAccount = CloudStorageAccount.Parse(_configuration["HTC-Storage-Connectionstring"]);
             blobClient = cloudStorageAccount.CreateCloudBlobClient();
             tableClient = cloudStorageAccount.CreateCloudTableClient();
 
             blobContainer = blobClient.GetContainerReference(blobContainerName);
             tableContainer = tableClient.GetTableReference(tableContainerName);
-
+            Message = "My key val = " + _configuration["HTC-Storage-Connectionstring"];
         }
-
+      
         public async Task<List<string>> getBlobUris()
         {
             List<IListBlobItem> list = new List<IListBlobItem>();
@@ -162,6 +149,13 @@ namespace Hack_The_Crisis.Pages
                 }
             }
         }
+
+        public IndexModel(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+
 
     }
 }

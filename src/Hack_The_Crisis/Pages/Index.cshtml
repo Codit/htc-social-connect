@@ -7,18 +7,20 @@
 
 <div class="text-center">
    
-    <h1 >Welcome</h1>
+    <h1>Welcome</h1>
 
-    <p style="border: none; width: 100%;">
+   
 
+     
         <div id="slideshow">
             @foreach (var item in await Model.getBlobUris())
             {
-                <div><img src="@item" class="image-frame" style="max-height:100%;max-width=100%;"/></div>
+                <div><img src="@item" class="image-frame" style="max-height:100%;max-width:100%;"/></div>
             }
 
         </div>
         <div id="msgs"></div>
+      
         <script>
             /*Get the messages from blob and show random*/
             var txts = @IndexModel.JavaScriptConvert.SerializeObject(await Model.getTexts());
@@ -38,7 +40,7 @@
                         .fadeIn(1000)
                         .end()
                         .appendTo('#slideshow');
-                    },  3000);
+                    },  30000);
 
             }, false);
         </script>
