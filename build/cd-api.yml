@@ -4,7 +4,7 @@ trigger:
     - master
   paths:
     include:
-    - src/CommunicationApi
+    - src/CommunicationApi/*
 
 pr: none
 
