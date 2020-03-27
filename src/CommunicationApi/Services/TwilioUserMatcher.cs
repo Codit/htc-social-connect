@@ -11,6 +11,7 @@ namespace CommunicationApi.Services
     {
         public async Task<UserInfo> Match(IDictionary<string, string> parameters)
         {
+            // Check in cache (or table) if phone Number is linked
             var phoneNumber = WebUtility.UrlDecode(parameters.GetParameter("From", "")).Replace("whatsapp:", "");
             
             return new UserInfo
