@@ -44,6 +44,7 @@ namespace CommunicationApi.Controllers
 
             var activatedDevice = new ActivatedDevice
             {
+                Status = BoxStatus.Registered,
                 ActivationCode = activationCode,
                 BoxId = boxId
             };
