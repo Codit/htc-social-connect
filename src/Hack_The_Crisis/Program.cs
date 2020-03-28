@@ -26,11 +26,8 @@ namespace Hack_The_Crisis
                        if (!string.IsNullOrEmpty(keyVaultEndpoint))
                        {
                            var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                           var keyVaultClient = new KeyVaultClient(
-                               new KeyVaultClient.AuthenticationCallback(
-                                   azureServiceTokenProvider.KeyVaultTokenCallback));
-                           builder.AddAzureKeyVault(
-                               keyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
+                           var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
+                           builder.AddAzureKeyVault(keyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
                        }
                    }
             ).UseStartup<Startup>()
