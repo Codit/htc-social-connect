@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
@@ -16,10 +17,22 @@ namespace CommunicationApi.Services.Tablestorage
 
         public MediaType SupportedType => MediaType.Text;
 
-        public Task<IEnumerable<MediaItem>> GetItems(string tenantId)
+        public async Task<IEnumerable<MediaItem>> GetItems(string tenantId)
         {
-            // TODO : joachim
-            throw new NotImplementedException();
+            var messages = await base.GetItems(tenantId);
+            return messages.Select(ParseTextMessage);
+        }
+
+        private MediaItem ParseTextMessage(TextMessage message)
+        {
+            return new MediaItem
+            {
+                Text = message.Message,
+                MediaType = MediaType.Text,
+                UserName =  message.From,
+                Timestamp = message.ExpirationTime,
+                MediaUrl = null
+            };
         }
 
         public Task PersistMediaFile(UserInfo userInfo, string mediaUrl)

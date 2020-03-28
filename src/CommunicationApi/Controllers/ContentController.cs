@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
 using GuardNet;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -36,11 +38,13 @@ namespace CommunicationApi.Controllers
         /// </summary>
         /// <remarks>Get messages that were sent to the user.</remarks>
         [HttpGet("messages", Name = "Content_GetMessages")]
-        public IActionResult GetMessages()
+        [ProducesResponseType(typeof(IEnumerable<MediaItem>),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetMessages([FromQuery] string boxId)
         {
-            //TODO joachim : use the _mediaServiceProvider to get messages
-            
-            return Ok();
+            var messages = await _textMediaServiceProvider.GetItems(boxId);
+            return Ok(messages);
         }
 
         /// <summary>
@@ -48,10 +52,13 @@ namespace CommunicationApi.Controllers
         /// </summary>
         /// <remarks>Get images that were sent to the user.</remarks>
         [HttpGet("images", Name = "Content_GetImages")]
-        public IActionResult GetImages()
+        [ProducesResponseType(typeof(IEnumerable<MediaItem>),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetImages([FromQuery] string boxId)
         {
-            //TODO joachim : use the _mediaServiceProvider to get images
-            return Ok();
+            var messages = await _imageMediaServiceProvider.GetItems(boxId);
+            return Ok(messages);
         }
     }
 }
