@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
+using AutoMapper;
 using Bogus;
 using CommunicationApi.Contracts.v1;
 using CommunicationApi.Interfaces;
+using CommunicationApi.Models;
 using GuardNet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,15 +20,17 @@ namespace CommunicationApi.Controllers
     {
         private readonly Randomizer _boxCodeGenerator = new Randomizer();
         private readonly ILogger<BoxController> _logger;
+        private readonly IMapper _mapper;
         private readonly IBoxStore _boxStore;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BoxController"/> class.
         /// </summary>
-        public BoxController(IBoxStore boxStore, ILogger<BoxController> logger)
+        public BoxController(IBoxStore boxStore, IMapper mapper, ILogger<BoxController> logger)
         {
             Guard.NotNull(logger, nameof(logger));
 
+            _mapper = mapper;
             _logger = logger;
             _boxStore = boxStore;
         }
@@ -36,20 +40,21 @@ namespace CommunicationApi.Controllers
         /// </summary>
         /// <remarks>Register a new box.</remarks>
         [HttpPost("new", Name = "Box_New")]
-        [ProducesResponseType(typeof(ActivatedDevice), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Contracts.v1.ActivatedDevice), StatusCodes.Status201Created)]
         public async Task<IActionResult> New()
         {
             var activationCode = _boxCodeGenerator.Replace("????");
             var boxId = _boxCodeGenerator.Guid().ToString();
 
-            var activatedDevice = new ActivatedDevice
+            var activatedDevice = new Contracts.v1.ActivatedDevice
             {
-                Status = BoxStatus.Registered,
+                Status = Contracts.v1.BoxStatus.Registered,
                 ActivationCode = activationCode,
                 BoxId = boxId
             };
 
-            await _boxStore.Add(boxId, activatedDevice);
+            var boxToPersist = _mapper.Map<Models.ActivatedDevice>(activatedDevice);
+            await _boxStore.Add(boxId, boxToPersist);
 
             return Created(Url.Action(nameof(GetStatus), new { boxId }), activatedDevice);
         }
@@ -69,9 +74,14 @@ namespace CommunicationApi.Controllers
                 return BadRequest("No box is was specified");
             }
 
-            var foundDevice = await _boxStore.Get(boxId);
+            var persistedBox = await _boxStore.Get(boxId);
+            if (persistedBox == null)
+            {
+                return NotFound();
+            }
 
-            return foundDevice != null ? Ok(foundDevice) : (ActionResult)NotFound();
+            var boxInfo = _mapper.Map<Contracts.v1.ActivatedDevice>(persistedBox);
+            return Ok(boxInfo);
         }
     }
 }
