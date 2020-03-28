@@ -16,8 +16,8 @@
 
             <div id="ActivationCode" class="ActivationCode">
                 @foreach (char c in Model.ActivationCode){
-                    string uri = "https://codithtc.blob.core.windows.net/public/en/" + c + ".png";
-                    uri = uri.ToLower();
+                    string uri = "https://codithtc.blob.core.windows.net/public/nl/" + c + ".png";
+                 
                 <img style="height:120px;margin:25px;border:double;padding:10px" src="@uri"/>
                 }
             </div>

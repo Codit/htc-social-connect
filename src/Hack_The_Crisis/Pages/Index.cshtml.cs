@@ -62,7 +62,8 @@ namespace Hack_The_Crisis.Pages
 
         public async Task OnGet()
         {
-            httpClient.DefaultRequestHeaders.Add("x-api-key", "H@ckCr1s!s");
+            var apiKey = await _secretProvider.GetSecretAsync("HTC-API-Key");
+            httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey.Value);
             //read cookie from Request object  
 
             string cookieBoxId = Request.Cookies["boxId"];
