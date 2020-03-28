@@ -161,7 +161,7 @@ namespace CommunicationApi.Services.Tablestorage
             }
         }
 
-        protected async Task Update(T entity, string partitionKey, string rowKey)
+        protected async Task Upsert(T entity, string partitionKey, string rowKey)
         {
             if (string.IsNullOrEmpty(rowKey))
             {
@@ -179,6 +179,8 @@ namespace CommunicationApi.Services.Tablestorage
             //Execute  
             await table.ExecuteAsync(operation);
         }
+        
+        
 
         public string PrintEntity(T entity)
         {

@@ -69,7 +69,7 @@ namespace CommunicationApi
             services.AddAutoMapper(typeof(Startup));
             services.AddSingleton<IBoxStore, TableStorageBoxStore>();
             services.AddSingleton<IWhatsappHandlerService, WhatsappHandlerService>();
-            services.AddSingleton<IUserStore, HardcodedUserStore>();
+            services.AddSingleton<IUserStore, TableUserStorage>();
             services.AddSingleton<IUserMatcher, TwilioUserMatcher>();
             services.AddSingleton<IMediaServiceProvider, TableTextMessageServiceProvider>();
             services.AddSingleton<IMediaServiceProvider, BlobImageMediaServiceProvider>();
