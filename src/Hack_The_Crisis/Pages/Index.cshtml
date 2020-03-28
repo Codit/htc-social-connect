@@ -9,46 +9,65 @@
 
         <h1>Welcome</h1>
 
-        <div id="slideshow">
-            @foreach (var item in await Model.getBlobUris())
-            {
-                <div><img src="@item" class="image-frame" style="max-height:100%;max-width:100%;" /></div>
-            }
 
-        </div>
-        <div id="ticker-slide" class="ticker" style="height:30vh;">
-            <ul>
-                @foreach (var item in await Model.getTexts())
-                {
-                    <li>@item</li>
+        @if (Model.BoxStatus != "Activated")
+        {
+            <h2>Activation code:</h2>
+
+            <div id="ActivationCode" class="ActivationCode">
+                @foreach (char c in Model.ActivationCode){
+                    string uri = "https://codithtc.blob.core.windows.net/public/en/" + c + ".png";
+                    uri = uri.ToLower();
+                <img style="height:120px;margin:25px;border:double;padding:10px" src="@uri"/>
                 }
-            
-            </ul>
-        </div>
+            </div>
+
+        }
+        else
+        {
+            <div id="slideshow">
+                @foreach (var item in await Model.getBlobUris())
+                {
+                    <div><img src="@item" class="image-frame" style="max-height:100%;max-width:100%;" /></div>
+                }
+
+            </div>
+            <div id="ticker-slide" class="ticker" style="height:30vh;">
+                <ul>
+                    @foreach (var item in await Model.getTexts())
+                    {
+                        <li>@item</li>
+                    }
+
+                </ul>
+            </div>
+
+
+        }
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
         <script>
-           
+
 
             $(document).ready(function () {
-                     $(function () {
+                $(function () {
 
-                         $.simpleTicker($("#ticker-slide"), { 'effectType': 'slide' });
+                    $.simpleTicker($("#ticker-slide"), { 'effectType': 'slide' });
 
-                         $("#slideshow > div:gt(0)").hide();
-                         setInterval(function () {
-                             $('#slideshow > div:first')
-                                 .fadeOut(1000)
-                                 .next()
-                                 .fadeIn(1000)
-                                 .end()
-                                 .appendTo('#slideshow');
-                         }, 30000);
-                     });
+                    $("#slideshow > div:gt(0)").hide();
+                    setInterval(function () {
+                        $('#slideshow > div:first')
+                            .fadeOut(1000)
+                            .next()
+                            .fadeIn(1000)
+                            .end()
+                            .appendTo('#slideshow');
+                    }, 30000);
+                });
             });
-            
 
 
-          
+
+
         </script>
 
     </div>

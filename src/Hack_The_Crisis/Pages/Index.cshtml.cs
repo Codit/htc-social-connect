@@ -10,6 +10,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Html;
 using Microsoft.WindowsAzure.Storage.Table;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace Hack_The_Crisis.Pages
 {
@@ -23,19 +26,74 @@ namespace Hack_The_Crisis.Pages
         private static CloudBlobContainer blobContainer;
         private static CloudTable tableContainer;
         private static string sasContainerToken;
-
+        private static readonly HttpClient httpClient = new HttpClient();
 
         private const string blobContainerName = "test";
         private const string tableContainerName = "textmessages";
-        public string Message { get; set; }
+
+        private string boxId;
+        private string activationCode;
+        private string boxStatus;
+
+        public string BoxId { get => boxId; set => boxId = value; }
+        public string ActivationCode { get => activationCode; set => activationCode = value; }
+        public string BoxStatus { get => boxStatus; set => boxStatus = value; }
 
         public IndexModel(ISecretProvider secretProvider)
         {
             _secretProvider = secretProvider;
+
+        }
+
+        private async Task<JObject> RegisterNewBox()
+        {
+            var response = await httpClient.PostAsync("https://codit-htc.azurewebsites.net/api/v1/box/new", null);
+            var responseString = JObject.Parse(await response.Content.ReadAsStringAsync());
+            return responseString;
+        }
+
+        private async Task<JObject> GetBoxStatus()
+        {
+            
+            var response = await httpClient.GetAsync("https://codit-htc.azurewebsites.net/api/v1/box/status?boxid="+BoxId);
+            var responseString = JObject.Parse(await response.Content.ReadAsStringAsync());
+            return responseString;
         }
 
         public async Task OnGet()
         {
+            httpClient.DefaultRequestHeaders.Add("x-api-key", "H@ckCr1s!s");
+            //read cookie from Request object  
+
+            string cookieBoxId = Request.Cookies["boxId"];
+            string cookieActivationCode = Request.Cookies["activationCode"];
+       
+
+            if (cookieBoxId == null)
+            {
+                JObject responseString = await RegisterNewBox();
+
+                var respBoxId = responseString.GetValue("boxId").ToString();
+                var respActivationCode = responseString.GetValue("activationCode").ToString();
+                var respBoxStatus = responseString.GetValue("status").ToString();
+
+                Response.Cookies.Append("boxId", respBoxId);
+                Response.Cookies.Append("activationCode", respActivationCode);
+
+                BoxId = respBoxId;
+                ActivationCode = respActivationCode;
+                BoxStatus = respBoxStatus;
+            }
+            else
+            {
+                BoxId = cookieBoxId;
+                ActivationCode = cookieActivationCode;
+                BoxStatus = (await GetBoxStatus()).GetValue("status").ToString();
+            }
+
+            
+            
+
             var connectionStringSecret = await _secretProvider.GetSecretAsync("HTC-Storage-Connectionstring");
             cloudStorageAccount = CloudStorageAccount.Parse(connectionStringSecret.Value);
             blobClient = cloudStorageAccount.CreateCloudBlobClient();
