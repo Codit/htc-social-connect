@@ -1,9 +1,9 @@
+using Arcus.Security.Providers.AzureKeyVault;
+using Arcus.Security.Providers.AzureKeyVault.Authentication;
+using Arcus.Security.Providers.AzureKeyVault.Configuration;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
 
 namespace Hack_The_Crisis
 {
@@ -25,12 +25,26 @@ namespace Hack_The_Crisis
 
                        if (!string.IsNullOrEmpty(keyVaultEndpoint))
                        {
-                           var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                           var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
-                           builder.AddAzureKeyVault(keyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
+                           var keyVaultSecretProvider = CreateSecretProvider(configuration, keyVaultEndpoint);
+                           builder.AddAzureKeyVault(keyVaultSecretProvider);
                        }
                    }
             ).UseStartup<Startup>()
              .Build();
+
+        private static KeyVaultSecretProvider CreateSecretProvider(IConfigurationRoot configuration,
+            string keyVaultEndpoint)
+        {
+#if RELEASE
+            var vaultAuthentication = new ManagedServiceIdentityAuthentication();
+#elif DEBUG
+            var clientId = configuration["KEYVAULT_AUTH_ID"];
+            var clientSecret = configuration["KEYVAULT_AUTH_SECRET"];
+            var vaultAuthentication = new ServicePrincipalAuthentication(clientId, clientSecret);
+#endif
+            var vaultConfiguration = new KeyVaultConfiguration(keyVaultEndpoint);
+            var keyVaultSecretProvider = new KeyVaultSecretProvider(vaultAuthentication, vaultConfiguration);
+            return keyVaultSecretProvider;
+        }
     }
 }
