@@ -33,11 +33,6 @@ namespace CommunicationApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "Whatsapp_Ping")]
-        public async Task<IActionResult> Get()
-        {
-            return Ok();
-        }
 
         /// <summary>
         ///     Handle Request
