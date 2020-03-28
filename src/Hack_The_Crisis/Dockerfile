@@ -5,7 +5,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Hack_The_Crisis/Hack_The_Crisis.csproj", "Hack_The_Crisis/"]
 RUN dotnet restore "Hack_The_Crisis/Hack_The_Crisis.csproj"
