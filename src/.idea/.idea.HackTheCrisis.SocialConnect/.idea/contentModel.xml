@@ -123,6 +123,7 @@
           </e>
           <e p="favicon.ico" t="Include" />
           <e p="js" t="Include">
+            <e p="jquery.simpleTicker.js" t="Include" />
             <e p="site.js" t="Include" />
           </e>
           <e p="lib" t="Include">
