@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Azure;
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
@@ -52,14 +55,16 @@ namespace CommunicationApi.Services.Blobstorage
 
         public async Task<IEnumerable<MediaItem>> GetItems(string tenantId)
         {
-            var blobContainer = StorageClient.GetBlobContainerClient(tenantId);
-
-            var blobs = blobContainer.GetBlobs();
-
             var response = new List<MediaItem>();
-            foreach (var blobItem in blobs)
+            var blobContainer = StorageClient.GetBlobContainerClient(tenantId);
+            if (await blobContainer.ExistsAsync())
             {
-                response.Add(await GetMediaItem(tenantId, blobItem));
+                var blobs = blobContainer.GetBlobs(BlobTraits.Metadata);
+
+                foreach (var blobItem in blobs)
+                {
+                    response.Add(await GetMediaItem(tenantId, blobItem));
+                }
             }
 
             return response;
@@ -72,11 +77,16 @@ namespace CommunicationApi.Services.Blobstorage
 
             // Create the container and return a container client object
             var container = StorageClient.GetBlobContainerClient(userInfo.BoxInfo.BoxId.ToLower());
-            await container.CreateIfNotExistsAsync(PublicAccessType.None);
+            await container.CreateIfNotExistsAsync();
 
             // TODO : check extension based on media type
             string extension = "jpg";
-            await container.UploadBlobAsync(Guid.NewGuid().ToString("N") + "." + extension, mediaStream);
+            var blobClient = container.GetBlockBlobClient(Guid.NewGuid().ToString("N") + "." + extension);
+            await blobClient.UploadAsync(mediaStream, null,
+                new Dictionary<string, string>
+                {
+                    {"user", userInfo.Name}
+                });
         }
 
         public Task PersistTextMessage(UserInfo userInfo, TextMessage message)
@@ -137,7 +147,7 @@ namespace CommunicationApi.Services.Blobstorage
             };
             if (blobItem.Properties.LastModified != null)
                 mediaItem.Timestamp = blobItem.Properties.LastModified.Value;
-            if(blobItem.Metadata!=null)
+            if (blobItem.Metadata != null)
                 mediaItem.UserName = blobItem.Metadata.ContainsKey("user") ? blobItem.Metadata["user"] : "Onbekend";
             return mediaItem;
         }

@@ -97,7 +97,9 @@ namespace CommunicationApi.Services.Tablestorage
             //Table  
             var table = await GetTable();
 
-            var query = new TableQuery();
+            var query =
+                new TableQuery().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal,
+                    partitionKey));
             var entities = new List<T>();
 
 
