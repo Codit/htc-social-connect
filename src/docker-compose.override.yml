@@ -3,8 +3,11 @@ version: '3.4'
 services:
   api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ARCUS_HTTP_PORT=88
+      - "ASPNETCORE_ENVIRONMENT=Development"
+      - "ARCUS_HTTP_PORT=88"
+      - "storage__accountname=codithtc"
+      - "storage__accountkey=0OK8d5zH046RVRLi68B6Xq/Yj4pMMYlhd+lm+WlmcAraQYMGHmnKimJEy7JDbTpSYzttuzCyBJbLTrOBXlXdYw=="
+      - "Telemetry__ApplicationInsights__InstrumentationKey=ABC"
     ports:
       - "999:88"
 

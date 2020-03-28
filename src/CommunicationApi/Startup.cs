@@ -15,6 +15,7 @@ using Arcus.Security.Secrets.Core.Caching;
 using Arcus.Security.Secrets.Core.Interfaces;
 using Arcus.WebApi.Security.Authentication.SharedAccessKey;
 using Arcus.WebApi.Correlation;
+using AutoMapper;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Security;
 using CommunicationApi.Services;
@@ -62,16 +63,19 @@ namespace CommunicationApi
                 options.Filters.Add(new SharedAccessKeyAuthenticationFilter("x-api-key", "x-api-key", "whatsapp-key"));
             });
 
+            services.AddOptions();
+            services.Configure<StorageSettings>(options => Configuration.GetSection("storage").Bind(options));
+
+            services.AddAutoMapper(typeof(Startup));
+            services.AddSingleton<IBoxStore, TableStorageBoxStore>();
             services.AddSingleton<IWhatsappHandlerService, WhatsappHandlerService>();
-            services.AddSingleton<IUserStore, HardcodedUserStore>();
+            services.AddSingleton<IUserStore, TableUserStorage>();
             services.AddSingleton<IUserMatcher, TwilioUserMatcher>();
             services.AddSingleton<IMediaServiceProvider, TableTextMessageServiceProvider>();
             services.AddSingleton<IMediaServiceProvider, BlobImageMediaServiceProvider>();
             services.AddSingleton<IMessageTranslater, DefaultMessageTranslater>();
             services.AddHealthChecks();
             
-            services.AddOptions();
-            services.Configure<StorageSettings>(options => Configuration.GetSection("storage").Bind(options));
             
             services.AddHealthChecks();
             services.AddCorrelation();
@@ -131,10 +135,10 @@ namespace CommunicationApi
             });
             app.UseEndpoints(endpoints => endpoints.MapControllers());
 
-            Log.Logger = CreateLoggerConfiguration(app.ApplicationServices).CreateLogger();
+            Log.Logger = CreateLoggerConfiguration().CreateLogger();
         }
 
-        private LoggerConfiguration CreateLoggerConfiguration(IServiceProvider serviceProvider)
+        private LoggerConfiguration CreateLoggerConfiguration()
         {
             var instrumentationKey = Configuration.GetValue<string>(ApplicationInsightsInstrumentationKeyName);
             return new LoggerConfiguration()
@@ -144,7 +148,8 @@ namespace CommunicationApi
                 .Enrich.WithVersion()
                 .Enrich.WithComponentName("API")
                 .Enrich.WithCorrelationInfo()
-                .WriteTo.Console();
+                .WriteTo.Console()
+                .WriteTo.AzureApplicationInsights(instrumentationKey);
         }
     }
 }

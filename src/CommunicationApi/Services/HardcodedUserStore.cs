@@ -53,7 +53,7 @@ namespace CommunicationApi.Services
 
         public Task<IEnumerable<UserInfo>> GetUsersFromTenant(string tenant)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task UpdateUser(UserInfo userInfo)

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
 using GuardNet;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -22,13 +24,13 @@ namespace CommunicationApi.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentController"/> class.
         /// </summary>
-        public ContentController(ILogger<ContentController> logger, IEnumerable< IMediaServiceProvider> serviceProvider)
+        public ContentController(ILogger<ContentController> logger, IEnumerable<IMediaServiceProvider> serviceProviders)
         {
             Guard.NotNull(logger, nameof(logger));
-            Guard.NotNull(serviceProvider, nameof(serviceProvider));
+            Guard.NotNull(serviceProviders, nameof(serviceProviders));
             _logger = logger;
-            _imageMediaServiceProvider = serviceProvider.FirstOrDefault(msp => msp.SupportedType == MediaType.Image);
-            _textMediaServiceProvider = serviceProvider.FirstOrDefault(msp => msp.SupportedType == MediaType.Text);
+            _imageMediaServiceProvider = serviceProviders.FirstOrDefault(msp => msp.SupportedType == MediaType.Image);
+            _textMediaServiceProvider = serviceProviders.FirstOrDefault(msp => msp.SupportedType == MediaType.Text);
         }
 
         /// <summary>
@@ -36,11 +38,18 @@ namespace CommunicationApi.Controllers
         /// </summary>
         /// <remarks>Get messages that were sent to the user.</remarks>
         [HttpGet("messages", Name = "Content_GetMessages")]
-        public IActionResult GetMessages()
+        [ProducesResponseType(typeof(IEnumerable<MediaItem>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetMessages([FromQuery] string boxId)
         {
-            //TODO joachim : use the _mediaServiceProvider to get messages
-            
-            return Ok();
+            _logger.LogInformation("Getting message for box {BoxId}", boxId);
+
+            var messages = await _textMediaServiceProvider.GetItems(boxId);
+
+            LogMetric("Messages returned", messages.Count(), boxId);
+
+            return Ok(messages);
         }
 
         /// <summary>
@@ -48,10 +57,28 @@ namespace CommunicationApi.Controllers
         /// </summary>
         /// <remarks>Get images that were sent to the user.</remarks>
         [HttpGet("images", Name = "Content_GetImages")]
-        public IActionResult GetImages()
+        [ProducesResponseType(typeof(IEnumerable<MediaItem>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetImages([FromQuery] string boxId)
         {
-            //TODO joachim : use the _mediaServiceProvider to get images
-            return Ok();
+            _logger.LogInformation("Getting images for box {BoxId}", boxId);
+
+            var images = await _imageMediaServiceProvider.GetItems(boxId);
+
+            LogMetric("Images returned", images.Count(), boxId);
+
+            return Ok(images);
+        }
+
+        private void LogMetric(string metricName, int value, string boxId)
+        {
+            var metricContext = new Dictionary<string, object>
+            {
+                {"BoxId", boxId}
+            };
+
+            _logger.LogMetric(metricName, value, metricContext);
         }
     }
 }

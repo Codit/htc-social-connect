@@ -1,4 +1,4 @@
-﻿namespace CommunicationApi.Contracts.v1
+﻿namespace CommunicationApi.Models
 {
     public class ActivatedDevice
     {
