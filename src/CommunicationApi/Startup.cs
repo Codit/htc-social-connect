@@ -119,9 +119,6 @@ namespace CommunicationApi
 
             app.UseSerilogRequestLogging();
             
-
-
-#if DEBUG
             app.UseSwagger(swaggerOptions =>
             {
                 swaggerOptions.RouteTemplate = "api/{documentName}/docs.json";
@@ -132,7 +129,6 @@ namespace CommunicationApi
                 swaggerUiOptions.RoutePrefix = "api/docs";
                 swaggerUiOptions.DocumentTitle = "CommunicationApi";
             });
-#endif
             app.UseEndpoints(endpoints => endpoints.MapControllers());
 
             Log.Logger = CreateLoggerConfiguration(app.ApplicationServices).CreateLogger();
@@ -141,7 +137,6 @@ namespace CommunicationApi
         private LoggerConfiguration CreateLoggerConfiguration(IServiceProvider serviceProvider)
         {
             var instrumentationKey = Configuration.GetValue<string>(ApplicationInsightsInstrumentationKeyName);
-            
             return new LoggerConfiguration()
                 .MinimumLevel.Debug()    
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -149,8 +144,7 @@ namespace CommunicationApi
                 .Enrich.WithVersion()
                 .Enrich.WithComponentName("API")
                 .Enrich.WithCorrelationInfo()
-                .WriteTo.Console()
-                .WriteTo.AzureApplicationInsights(instrumentationKey);
+                .WriteTo.Console();
         }
     }
 }
