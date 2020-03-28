@@ -61,7 +61,7 @@ namespace CommunicationApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetImages([FromQuery] string boxId)
         {
-            _logger.LogEvent($"Getting images for box {boxId}");
+            _logger.LogInformation("Getting images for box {BoxId}", boxId);
             var images = await _imageMediaServiceProvider.GetItems(boxId);
             _logger.LogMetric("Images returned", images.Count());
             return Ok(images);
