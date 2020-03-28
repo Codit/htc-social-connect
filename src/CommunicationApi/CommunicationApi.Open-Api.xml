@@ -36,13 +36,13 @@
             Initializes a new instance of the <see cref="T:CommunicationApi.Controllers.ContentController"/> class.
             </summary>
         </member>
-        <member name="M:CommunicationApi.Controllers.ContentController.GetMessages">
+        <member name="M:CommunicationApi.Controllers.ContentController.GetMessages(System.String)">
             <summary>
                 Get Messages
             </summary>
             <remarks>Get messages that were sent to the user.</remarks>
         </member>
-        <member name="M:CommunicationApi.Controllers.ContentController.GetImages">
+        <member name="M:CommunicationApi.Controllers.ContentController.GetImages(System.String)">
             <summary>
                 Get Images
             </summary>

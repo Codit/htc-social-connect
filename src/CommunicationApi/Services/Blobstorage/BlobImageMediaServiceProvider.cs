@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Azure;
+using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
@@ -11,6 +12,7 @@ using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
 using Flurl.Http;
 using GuardNet;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage.Blob;
 
@@ -21,11 +23,14 @@ namespace CommunicationApi.Services.Blobstorage
         private BlobServiceClient _blobServiceClient;
         private StorageSettings _storageSettings;
         private UserDelegationKey _delegationKey;
+        private ILogger<BlobImageMediaServiceProvider> _logger;
 
-        public BlobImageMediaServiceProvider(IOptions<StorageSettings> storageSettings)
+        public BlobImageMediaServiceProvider(IOptions<StorageSettings> storageSettings,
+            ILogger<BlobImageMediaServiceProvider> logger)
         {
             Guard.NotNull(storageSettings.Value, nameof(storageSettings));
             _storageSettings = storageSettings.Value;
+            _logger = logger;
         }
 
         public MediaType SupportedType => MediaType.Image;
@@ -59,6 +64,7 @@ namespace CommunicationApi.Services.Blobstorage
 
             return response;
         }
+
         public async Task PersistMediaFile(UserInfo userInfo, string mediaUrl)
         {
             // download image to stream
@@ -77,56 +83,63 @@ namespace CommunicationApi.Services.Blobstorage
         {
             throw new NotImplementedException();
         }
-        
+
         private async Task<string> GenerateSasUri(BlobItem blob, string tenant)
         {
-            // Create a SAS token that's valid for one hour.
-            var sasBuilder = new BlobSasBuilder()
+            try
             {
-                BlobContainerName = tenant,
-                BlobName = blob.Name,
-                Resource = "b",
-                StartsOn = DateTimeOffset.UtcNow,
-                ExpiresOn = DateTimeOffset.UtcNow.AddHours(1)
-            };
+                //  Defines the resource being accessed and for how long the access is allowed.
+                var blobSasBuilder = new BlobSasBuilder
+                {
+                    StartsOn = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(15d)),
+                    ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
+                    BlobContainerName = tenant,
+                    Resource = "b",
+                    BlobName = blob.Name,
+                };
 
-            // Specify read permissions for the SAS.
-            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+                //  Defines the type of permission.
+                blobSasBuilder.SetPermissions(BlobSasPermissions.Read);
 
-            // Use the key to get the SAS token.
-            if (_delegationKey == null)
-            {
-                _delegationKey = await _blobServiceClient.GetUserDelegationKeyAsync(DateTimeOffset.UtcNow,
-                    DateTimeOffset.UtcNow.AddDays(7));
+                //  Builds an instance of StorageSharedKeyCredential      
+                var storageSharedKeyCredential =
+                    new StorageSharedKeyCredential(_storageSettings.AccountName, _storageSettings.AccountKey);
+
+                //  Builds the Sas URI.
+                var sasQueryParameters =
+                    blobSasBuilder.ToSasQueryParameters(storageSharedKeyCredential);
+
+
+                // Construct the full URI, including the SAS token.
+                var fullUri = new UriBuilder()
+                {
+                    Scheme = "https",
+                    Host = $"{_storageSettings.AccountName}.blob.core.windows.net",
+                    Path = $"{tenant}/{blob.Name}",
+                    Query = sasQueryParameters.ToString()
+                };
+                return fullUri.ToString();
             }
-            var sasToken = sasBuilder.ToSasQueryParameters(_delegationKey, _storageSettings.AccountName).ToString();
-
-            // Construct the full URI, including the SAS token.
-            var fullUri = new UriBuilder()
+            catch (Exception e)
             {
-                Scheme = "https",
-                Host = $"{_storageSettings.AccountName}.blob.core.windows.net",
-                Path = $"{tenant}/{blob.Name}",
-                Query = sasToken
-            };
-            return fullUri.ToString();
+                _logger.LogError(e, $"An error occurred while generating the Sas Uri for blob {blob.Name}");
+                throw;
+            }
         }
 
-        
 
         private async Task<MediaItem> GetMediaItem(string tenantId, BlobItem blobItem)
         {
             var mediaItem = new MediaItem
             {
-                MediaUrl = await GenerateSasUri(blobItem, tenantId), 
+                MediaUrl = await GenerateSasUri(blobItem, tenantId),
                 MediaType = MediaType.Image
             };
             if (blobItem.Properties.LastModified != null)
                 mediaItem.Timestamp = blobItem.Properties.LastModified.Value;
-            mediaItem.UserName = blobItem.Metadata.ContainsKey("user") ? blobItem.Metadata["user"] : "Onbekend";
+            if(blobItem.Metadata!=null)
+                mediaItem.UserName = blobItem.Metadata.ContainsKey("user") ? blobItem.Metadata["user"] : "Onbekend";
             return mediaItem;
         }
-
-
     }
 }
