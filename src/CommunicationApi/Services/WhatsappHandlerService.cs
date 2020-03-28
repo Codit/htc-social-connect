@@ -7,6 +7,7 @@ using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
 using GuardNet;
 using Microsoft.Extensions.Logging;
+using Twilio.Types;
 
 namespace CommunicationApi.Services
 {
@@ -19,7 +20,7 @@ namespace CommunicationApi.Services
         private IUserStore _userStore;
         private IBoxStore _boxStore;
 
-        public WhatsappHandlerService(IEnumerable< IMediaServiceProvider> mediaServiceProviders,
+        public WhatsappHandlerService(IEnumerable<IMediaServiceProvider> mediaServiceProviders,
             ILogger<WhatsappHandlerService> logger, IMessageTranslater messageTranslater, IBoxStore boxStore,
             IUserStore userStore)
         {
@@ -28,8 +29,8 @@ namespace CommunicationApi.Services
             Guard.NotNull(logger, nameof(logger));
             Guard.NotNull(userStore, nameof(userStore));
             Guard.NotNull(boxStore, nameof(boxStore));
-            _imageServiceProvider = mediaServiceProviders.FirstOrDefault(msp => msp.SupportedType==MediaType.Image);
-            _messageServiceProvider = mediaServiceProviders.FirstOrDefault(msp => msp.SupportedType==MediaType.Text);
+            _imageServiceProvider = mediaServiceProviders.FirstOrDefault(msp => msp.SupportedType == MediaType.Image);
+            _messageServiceProvider = mediaServiceProviders.FirstOrDefault(msp => msp.SupportedType == MediaType.Text);
             _logger = logger;
             _boxStore = boxStore;
             _userStore = userStore;
@@ -44,7 +45,7 @@ namespace CommunicationApi.Services
                 // Check in cache (or table) if phone Number is linked
                 var userInfo = await _userStore.GetUserInfo(whatsappMessage.Sender);
 
-                if (!string.IsNullOrEmpty(userInfo?.TenantInfo?.Name))
+                if (!string.IsNullOrEmpty(userInfo?.BoxInfo?.BoxId))
                 {
                     return await ProcessAuthenticatedMessage(userInfo, whatsappMessage);
                 }
@@ -64,7 +65,7 @@ namespace CommunicationApi.Services
         {
             // This is handling a user that is already linked to a tenant
             _logger.LogTrace(
-                $"Processing message from user {userInfo.Name} and phone nr {userInfo.PhoneNumber} in tenant {userInfo.TenantInfo.Name}");
+                $"Processing message from user {userInfo.Name} and phone nr {userInfo.PhoneNumber} in tenant {userInfo.BoxInfo.BoxId}");
             if (message.MediaItems.Count > 0)
             {
                 return await ProcessImages(userInfo, message);
@@ -78,8 +79,8 @@ namespace CommunicationApi.Services
             string responseMessage;
             object[] pars = {userInfo.Name};
 
-            string command = message.MessageContent;
-            
+            string messageBody = message.MessageContent;
+
             switch (userInfo.ConversationState)
             {
                 case ConversationState.New:
@@ -87,19 +88,33 @@ namespace CommunicationApi.Services
                     responseMessage = "Welkom bij deze app, wat is uw naam, aub?";
                     break;
                 case ConversationState.AwaitingName:
-                    userInfo.Name = command;
+                    userInfo.Name = messageBody;
                     userInfo.ConversationState = ConversationState.AwaitingActivation;
                     await _userStore.UpdateUser(userInfo);
                     responseMessage =
                         "Welkom, {0}, als je een client wil connecteren, gelieve dan de activatiecode te sturen";
                     break;
                 case ConversationState.AwaitingActivation:
-                    //TODO : link user with existing tenant, if box is found
-                    userInfo.Name = command;
-                    userInfo.ConversationState = ConversationState.Completed;
-                    await _userStore.UpdateUser(userInfo);
-                    responseMessage = "Het spijt ons, maar de activatie code is niet correct.  Kan u opnieuw proberen?";
-                    responseMessage = "Dank je wel, de TV wordt opgezet om foto's en berichten te ontvangen";
+                    var boxId = await _boxStore.Activate(messageBody);
+                    if (boxId == null)
+                    {
+                        _logger.LogWarning("User {phoneNumber} incorrectly wanted to activate a box with activation code {activationCode}", userInfo.PhoneNumber, messageBody);
+                        responseMessage = "Het spijt ons, maar de activatie code is niet correct.  Kan u opnieuw proberen?";
+                    }
+                    else
+                    {
+                        _logger.LogInformation("User {phoneNumber} successfully activate a box with activation code {activationCode} and box id {boxId}", userInfo.PhoneNumber, messageBody, boxId);
+
+                        userInfo.Name = messageBody;
+                        userInfo.ConversationState = ConversationState.Completed;
+                        if(userInfo.BoxInfo==null)
+                        {
+                            userInfo.BoxInfo = new BoxInfo();
+                        }
+                        userInfo.BoxInfo.BoxId = boxId;
+                        await _userStore.UpdateUser(userInfo);
+                        responseMessage = "Dank je wel, de TV wordt opgezet om foto's en berichten te ontvangen";
+                    }
                     break;
                 case ConversationState.Completed:
                     //TODO : We should not be here : so add logging/warning
@@ -108,7 +123,7 @@ namespace CommunicationApi.Services
                     break;
                 default:
                     //TODO : We should not be here : so add logging/warning
-                    responseMessage= "We konden uw bericht niet correct interpreteren.  Gelieve opnieuw te proberen";
+                    responseMessage = "We konden uw bericht niet correct interpreteren.  Gelieve opnieuw te proberen";
                     break;
             }
 

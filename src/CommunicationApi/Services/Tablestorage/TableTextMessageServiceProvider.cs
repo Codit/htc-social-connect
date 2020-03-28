@@ -43,7 +43,7 @@ namespace CommunicationApi.Services.Tablestorage
 
         public async Task PersistTextMessage(UserInfo userInfo, TextMessage message)
         {
-            await Insert(message, userInfo.TenantInfo.Name, Guid.NewGuid().ToString("N"));
+            await Insert(message, userInfo.BoxInfo.BoxId, Guid.NewGuid().ToString("N"));
         }
     }
 }

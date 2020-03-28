@@ -39,11 +39,11 @@
         <e p="MappingProfile.cs" t="Include" />
         <e p="Models" t="Include">
           <e p="ActivatedDevice.cs" t="Include" />
+          <e p="BoxInfo.cs" t="Include" />
           <e p="BoxStatus.cs" t="Include" />
           <e p="MediaItem.cs" t="Include" />
           <e p="MediaType.cs" t="Include" />
           <e p="StorageSettings.cs" t="Include" />
-          <e p="TenantInfo.cs" t="Include" />
           <e p="TextMessage.cs" t="Include" />
           <e p="UserInfo.cs" t="Include" />
           <e p="WhatsappMessage.cs" t="Include" />
