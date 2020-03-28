@@ -5,7 +5,7 @@ namespace CommunicationApi.Interfaces
 {
     public interface IBoxStore
     {
-        Task<ActivatedDevice> Get(string boxId);
-        Task Add(string boxId, ActivatedDevice activatedDevice);
+        Task<Models.ActivatedDevice> Get(string boxId);
+        Task Add(string boxId, Models.ActivatedDevice activatedDevice);
     }
 }
