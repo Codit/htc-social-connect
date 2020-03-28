@@ -1,0 +1,18 @@
+trigger: none
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - src/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- script: dotnet build src/HackTheCrisis.SocialConnect.sln --configuration $(buildConfiguration)
+  displayName: 'Build Codebase'

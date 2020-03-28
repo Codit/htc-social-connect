@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Auth;
 using System;
 using System.IO;
 using Hack_The_Crisis.Helpers;
@@ -12,41 +11,39 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Html;
 using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.Extensions.Configuration;
 
 namespace Hack_The_Crisis.Pages
 {
     public class IndexModel : PageModel
     {
-        private static StorageCredentials storageCredentials = new StorageCredentials(
-            ConfigurationSettings.Settings.AccountName,
-            ConfigurationSettings.Settings.AccountKey);
-        
+        private readonly IConfiguration _configuration = null;
+
         private static CloudStorageAccount cloudStorageAccount;
         private static CloudBlobClient blobClient;
         private static CloudTableClient tableClient;
         private static CloudBlobContainer blobContainer;
         private static CloudTable tableContainer;
         private static string sasContainerToken;
-     
+
 
         private const string blobContainerName = "test";
         private const string tableContainerName = "textmessages";
+        public string Message { get; set; }
 
-        private readonly ILogger<IndexModel> _logger;
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(IConfiguration configuration)
         {
-            _logger = logger;
+            _configuration = configuration;
         }
 
         public void OnGet()
         {
-            cloudStorageAccount = new CloudStorageAccount(storageCredentials, true);
+            cloudStorageAccount = CloudStorageAccount.Parse(_configuration["HTC-Storage-Connectionstring"]);
             blobClient = cloudStorageAccount.CreateCloudBlobClient();
             tableClient = cloudStorageAccount.CreateCloudTableClient();
-           
+
             blobContainer = blobClient.GetContainerReference(blobContainerName);
             tableContainer = tableClient.GetTableReference(tableContainerName);
-
         }
 
         public async Task<List<string>> getBlobUris()
@@ -100,20 +97,20 @@ namespace Hack_The_Crisis.Pages
             List<DynamicTableEntity> list = new List<DynamicTableEntity>();
             TableContinuationToken token = null;
             List<string> texts = new List<string>();
-          
+
             do
             {
-                TableQuerySegment queryResult = await tableContainer.ExecuteQuerySegmentedAsync(new TableQuery(),token);
+                TableQuerySegment queryResult = await tableContainer.ExecuteQuerySegmentedAsync(new TableQuery(), token);
                 list.AddRange(queryResult.Results);
                 token = queryResult.ContinuationToken;
             } while (token != null);
 
-        
+
             foreach (DynamicTableEntity item in list)
             {
                 texts.Add("[" + item.Timestamp.DateTime + "]: " + item.Properties["From"].StringValue + " - " + item.Properties["Message"].StringValue);
             }
-            
+
             return texts;
         }
 
@@ -155,6 +152,5 @@ namespace Hack_The_Crisis.Pages
                 }
             }
         }
-
     }
 }

@@ -87,7 +87,7 @@ namespace CommunicationApi
 #if DEBUG
             var openApiInformation = new OpenApiInfo
             {
-                Title = "CommunicationApi",
+                Title = "Hack The Crisis - Communication API",
                 Version = "v1"
             };
 
@@ -159,6 +159,7 @@ namespace CommunicationApi
                 .Enrich.FromLogContext()
                 .Enrich.WithVersion()
                 .Enrich.WithComponentName("API")
+                .Enrich.WithCorrelationInfo()
                 .WriteTo.Console()
                 .WriteTo.AzureApplicationInsights(instrumentationKey);
         }

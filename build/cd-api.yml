@@ -1,10 +1,12 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - src/CommunicationApi/*
+
+pr: none
 
 pool:
   vmImageName: 'ubuntu-latest'
@@ -13,6 +15,8 @@ variables:
   buildConfiguration: 'Release'
   workingDirectory: '$(System.DefaultWorkingDirectory)/src'
   solutionFile: 'HackTheCrisis.SocialConnect.sln'
+  storageName: 'codithtc'
+  #storageKey is added on build configuration as secret
   vmImageName: 'ubuntu-latest'
 
 stages:
@@ -25,7 +29,6 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
@@ -33,7 +36,6 @@ stages:
         projects: |
           $(workingDirectory)/$(solutionFile)
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration $(buildConfiguration)
-
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
@@ -42,31 +44,32 @@ stages:
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
         replaceExistingArchive: true
-
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      displayName: 'Publish Artifact'
       artifact: drop
+
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
   condition: succeeded()
-
   jobs:
   - deployment: Deploy
     displayName: Deploy
     environment: 'development'
     pool:
       vmImage: $(vmImageName)
-
     strategy:
       runOnce:
         deploy:
-
           steps:
           - task: AzureRmWebAppDeployment@4
+            displayName: 'Deploy Web App'
             inputs:
               ConnectionType: 'AzureRM'
               azureSubscription: 'hack-the-crisis azure resource group'
               appType: 'webApp'
               WebAppName: 'codit-htc'
-              packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-              AppSettings: '-storage:AccountName traiders'
+              packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
+              AppSettings: '-storage:accountname $(storageName) -storage:accountkey $(storageKey)'
+              enableCustomDeployment: true
+              DeploymentType: 'zipDeploy'
