@@ -63,7 +63,7 @@ namespace CommunicationApi
             });
 
             services.AddSingleton<IWhatsappHandlerService, WhatsappHandlerService>();
-            services.AddSingleton<IUserStore, HardcodedUserStore>();
+            services.AddSingleton<IUserStore, TableUserStorage>();
             services.AddSingleton<IBoxStore, HardcodedBoxStore>();
             services.AddSingleton<IUserMatcher, TwilioUserMatcher>();
             services.AddSingleton<IMediaServiceProvider, TableTextMessageServiceProvider>();

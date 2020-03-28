@@ -13,6 +13,7 @@
         <e p="Contracts" t="Include">
           <e p="v1" t="Include">
             <e p="ActivatedDevice.cs" t="Include" />
+            <e p="BoxStatus.cs" t="Include" />
           </e>
         </e>
         <e p="Controllers" t="Include">
@@ -69,6 +70,8 @@
           <e p="Tablestorage" t="Include">
             <e p="TableTextMessageServiceProvider.cs" t="Include" />
             <e p="TableTransmitter.cs" t="Include" />
+            <e p="TableUserStorage.cs" t="Include" />
+            <e p="UserInfoEntity.cs" t="Include" />
           </e>
           <e p="TwilioUserMatcher.cs" t="Include" />
           <e p="WhatsappHandlerService.cs" t="Include" />

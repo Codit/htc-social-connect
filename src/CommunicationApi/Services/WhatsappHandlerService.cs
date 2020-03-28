@@ -12,26 +12,26 @@ namespace CommunicationApi.Services
 {
     public class WhatsappHandlerService : IWhatsappHandlerService
     {
-        private IUserMatcher _userMatcher;
         private IMediaServiceProvider _imageServiceProvider;
         private IMediaServiceProvider _messageServiceProvider;
         private ILogger<WhatsappHandlerService> _logger;
         private IMessageTranslater _messageTranslater;
         private IUserStore _userStore;
+        private IBoxStore _boxStore;
 
         public WhatsappHandlerService(IEnumerable< IMediaServiceProvider> mediaServiceProviders,
-            IUserMatcher userMatcher, ILogger<WhatsappHandlerService> logger, IMessageTranslater messageTranslater,
+            ILogger<WhatsappHandlerService> logger, IMessageTranslater messageTranslater, IBoxStore boxStore,
             IUserStore userStore)
         {
-            Guard.NotNull(userMatcher, nameof(userMatcher));
             Guard.NotNull(messageTranslater, nameof(messageTranslater));
             Guard.NotNull(mediaServiceProviders, nameof(mediaServiceProviders));
             Guard.NotNull(logger, nameof(logger));
             Guard.NotNull(userStore, nameof(userStore));
-            _userMatcher = userMatcher;
+            Guard.NotNull(boxStore, nameof(boxStore));
             _imageServiceProvider = mediaServiceProviders.FirstOrDefault(msp => msp.SupportedType==MediaType.Image);
             _messageServiceProvider = mediaServiceProviders.FirstOrDefault(msp => msp.SupportedType==MediaType.Text);
             _logger = logger;
+            _boxStore = boxStore;
             _userStore = userStore;
             _messageTranslater = messageTranslater;
         }
@@ -42,7 +42,7 @@ namespace CommunicationApi.Services
             {
                 var whatsappMessage = new WhatsappMessage(pars);
                 // Check in cache (or table) if phone Number is linked
-                var userInfo = await _userMatcher.Match(whatsappMessage.Sender);
+                var userInfo = await _userStore.GetUserInfo(whatsappMessage.Sender);
 
                 if (!string.IsNullOrEmpty(userInfo?.TenantInfo?.Name))
                 {
@@ -83,12 +83,10 @@ namespace CommunicationApi.Services
             switch (userInfo.ConversationState)
             {
                 case ConversationState.New:
-                    //TODO : add user to store (phone number)
                     await _userStore.CreateUser(userInfo.PhoneNumber, null, ConversationState.AwaitingName);
                     responseMessage = "Welkom bij deze app, wat is uw naam, aub?";
                     break;
                 case ConversationState.AwaitingName:
-                    //TODO : update user to store (phone number + name)
                     userInfo.Name = command;
                     userInfo.ConversationState = ConversationState.AwaitingActivation;
                     await _userStore.UpdateUser(userInfo);
@@ -97,7 +95,6 @@ namespace CommunicationApi.Services
                     break;
                 case ConversationState.AwaitingActivation:
                     //TODO : link user with existing tenant, if box is found
-                    
                     userInfo.Name = command;
                     userInfo.ConversationState = ConversationState.Completed;
                     await _userStore.UpdateUser(userInfo);
