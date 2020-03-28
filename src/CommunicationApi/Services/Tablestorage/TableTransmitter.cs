@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunicationApi.Extensions;
 using CommunicationApi.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -11,32 +14,21 @@ using TableStorage.Abstractions.TableEntityConverters;
 
 namespace CommunicationApi.Services.Tablestorage
 {
-    public static class DictionaryExtensions
-    {
-        public static void Upsert<K, V>(this IDictionary<K, V> dictionary, K key, V value)
-        {
-            if (dictionary.ContainsKey(key))
-            {
-                dictionary[key] = value;
-            }
-            else
-            {
-                dictionary.Add(key, value);
-            }
-        }
-    }
-    
     public abstract class TableTransmitter<T> where T : new()
     {
-        private StorageSettings _settings;
+        private readonly IOptionsMonitor<StorageSettings> _settings;
         private CloudStorageAccount _storageAccount;
-        private IDictionary<string, CloudTable> _loadedTables = new Dictionary<string, CloudTable>();
+        private readonly IDictionary<string, CloudTable> _loadedTables = new Dictionary<string, CloudTable>();
+        private readonly ILogger _logger;
+
         protected string TableName { get; set; }
 
-        protected TableTransmitter(StorageSettings settings, string tableName)
+        protected TableTransmitter(string tableName, IOptionsMonitor<StorageSettings> settings, ILogger logger)
         {
-            _settings = settings;
             TableName = tableName;
+
+            _settings = settings;
+            _logger = logger;
         }
 
         private CloudStorageAccount Account
@@ -45,8 +37,8 @@ namespace CommunicationApi.Services.Tablestorage
             {
                 if (_storageAccount == null)
                 {
-                    _storageAccount = new CloudStorageAccount(
-                        new StorageCredentials(_settings.AccountName, _settings.AccountKey), true);
+                    var storageSettings = _settings.CurrentValue;
+                    _storageAccount = new CloudStorageAccount(new StorageCredentials(storageSettings.AccountName, storageSettings.AccountKey), true);
                 }
 
                 return _storageAccount;
@@ -57,15 +49,17 @@ namespace CommunicationApi.Services.Tablestorage
         {
             if (!_loadedTables.ContainsKey(TableName))
             {
-                var table = Account.CreateCloudTableClient().GetTableReference(TableName);
-                await table.CreateIfNotExistsAsync();
                 try
                 {
+                    var table = Account.CreateCloudTableClient().GetTableReference(TableName);
+                    await table.CreateIfNotExistsAsync();
+
                     _loadedTables.Upsert(TableName, table);
                 }
-                catch (Exception)
+                catch (Exception exception)
                 {
                     // ignored
+                    _logger.LogCritical(exception, "Unable to upsert in table {TableName}", TableName);
                 }
             }
 
@@ -94,7 +88,7 @@ namespace CommunicationApi.Services.Tablestorage
                 return resultEntity.FromTableEntity<T>();
             }
 
-            return default(T);
+            return default;
         }
 
 
@@ -104,7 +98,7 @@ namespace CommunicationApi.Services.Tablestorage
             var table = await GetTable();
 
             var query = new TableQuery();
-            var entities = new List<T> { };
+            var entities = new List<T>();
 
 
             var continuationToken = new TableContinuationToken();
