@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CommunicationApi.Services.Tablestorage
@@ -12,8 +13,8 @@ namespace CommunicationApi.Services.Tablestorage
     {
         private string PartitionKey = "User";
 
-        public TableUserStorage(IOptions<StorageSettings> settings) :
-            base(settings.Value, "users")
+        public TableUserStorage(IOptionsMonitor<StorageSettings> settings, ILogger<TableStorageBoxStore> logger) :
+            base( "users", settings, logger)
         {
         }
 

@@ -24,6 +24,7 @@
         </e>
         <e p="Dockerfile" t="Include" />
         <e p="Extensions" t="Include">
+          <e p="DictionaryExtensions.cs" t="Include" />
           <e p="DirectoryExtensions.cs" t="Include" />
         </e>
         <e p="Interfaces" t="Include">
@@ -35,7 +36,10 @@
           <e p="IWhatsappHandlerService.cs" t="Include" />
         </e>
         <e p="local.settings.json" t="Include" />
+        <e p="MappingProfile.cs" t="Include" />
         <e p="Models" t="Include">
+          <e p="ActivatedDevice.cs" t="Include" />
+          <e p="BoxStatus.cs" t="Include" />
           <e p="MediaItem.cs" t="Include" />
           <e p="MediaType.cs" t="Include" />
           <e p="StorageSettings.cs" t="Include" />
@@ -65,9 +69,9 @@
             <e p="BlobImageMediaServiceProvider.cs" t="Include" />
           </e>
           <e p="DefaultMessageTranslater.cs" t="Include" />
-          <e p="HardcodedBoxStore.cs" t="Include" />
           <e p="HardcodedUserStore.cs" t="Include" />
           <e p="Tablestorage" t="Include">
+            <e p="TableStorageBoxStore.cs" t="Include" />
             <e p="TableTextMessageServiceProvider.cs" t="Include" />
             <e p="TableTransmitter.cs" t="Include" />
             <e p="TableUserStorage.cs" t="Include" />
