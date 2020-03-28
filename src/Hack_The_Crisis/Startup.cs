@@ -1,3 +1,9 @@
+using System;
+using Arcus.Security.Core;
+using Arcus.Security.Core.Caching;
+using Arcus.Security.Providers.AzureKeyVault;
+using Arcus.Security.Providers.AzureKeyVault.Authentication;
+using Arcus.Security.Providers.AzureKeyVault.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +24,10 @@ namespace Hack_The_Crisis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var secretProvider = CreateSecretProvider().WithCaching(TimeSpan.FromMinutes(1));
+            services.AddSingleton<ISecretProvider>(secretProvider);
+            services.AddSingleton<ICachedSecretProvider>(secretProvider);
+
             services.AddRazorPages();
         }
 
@@ -43,6 +53,22 @@ namespace Hack_The_Crisis
             {
                 endpoints.MapRazorPages();
             });
+        }
+
+        private ISecretProvider CreateSecretProvider()
+        {
+            var keyVaultEndpoint = Configuration["KEYVAULT_ENDPOINT"];
+
+#if RELEASE
+            var vaultAuthentication = new ManagedServiceIdentityAuthentication();
+#elif DEBUG
+            var clientId = Configuration["KEYVAULT_AUTH_ID"];
+            var clientSecret = Configuration["KEYVAULT_AUTH_SECRET"];
+            var vaultAuthentication = new ServicePrincipalAuthentication(clientId, clientSecret);
+#endif
+            var vaultConfiguration = new KeyVaultConfiguration(keyVaultEndpoint);
+            var keyVaultSecretProvider = new KeyVaultSecretProvider(vaultAuthentication, vaultConfiguration);
+            return keyVaultSecretProvider;
         }
     }
 }
