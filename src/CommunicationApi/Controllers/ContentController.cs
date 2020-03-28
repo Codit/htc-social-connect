@@ -43,7 +43,7 @@ namespace CommunicationApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMessages([FromQuery] string boxId)
         {
-            _logger.LogEvent($"Getting message for box {boxId}");
+            _logger.LogInformation("Getting message for box {BoxId}", boxId);
 
             var messages = await _textMediaServiceProvider.GetItems(boxId);
             _logger.LogMetric("Messages returned", messages.Count());
