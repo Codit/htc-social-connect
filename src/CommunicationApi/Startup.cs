@@ -15,6 +15,7 @@ using Arcus.Security.Secrets.Core.Caching;
 using Arcus.Security.Secrets.Core.Interfaces;
 using Arcus.WebApi.Security.Authentication.SharedAccessKey;
 using Arcus.WebApi.Correlation;
+using AutoMapper;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Security;
 using CommunicationApi.Services;
@@ -62,17 +63,19 @@ namespace CommunicationApi
                 options.Filters.Add(new SharedAccessKeyAuthenticationFilter("x-api-key", "x-api-key", "whatsapp-key"));
             });
 
+            services.AddOptions();
+            services.Configure<StorageSettings>(options => Configuration.GetSection("storage").Bind(options));
+
+            services.AddAutoMapper(typeof(Startup));
+            services.AddSingleton<IBoxStore, TableStorageBoxStore>();
             services.AddSingleton<IWhatsappHandlerService, WhatsappHandlerService>();
-            services.AddSingleton<IUserStore, TableUserStorage>();
-            services.AddSingleton<IBoxStore, HardcodedBoxStore>();
+            services.AddSingleton<IUserStore, HardcodedUserStore>();
             services.AddSingleton<IUserMatcher, TwilioUserMatcher>();
             services.AddSingleton<IMediaServiceProvider, TableTextMessageServiceProvider>();
             services.AddSingleton<IMediaServiceProvider, BlobImageMediaServiceProvider>();
             services.AddSingleton<IMessageTranslater, DefaultMessageTranslater>();
             services.AddHealthChecks();
             
-            services.AddOptions();
-            services.Configure<StorageSettings>(options => Configuration.GetSection("storage").Bind(options));
             
             services.AddHealthChecks();
             services.AddCorrelation();

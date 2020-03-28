@@ -4,14 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CommunicationApi.Services.Tablestorage
 {
     public class TableTextMessageServiceProvider : TableTransmitter<TextMessage>, IMediaServiceProvider
     {
-        public TableTextMessageServiceProvider(IOptions<StorageSettings> settings) :
-            base(settings.Value, "textmessages")
+        public TableTextMessageServiceProvider(IOptionsMonitor<StorageSettings> settings, ILogger<TableTextMessageServiceProvider> logger) :
+            base("textmessages", settings, logger)
         {
         }
 
@@ -29,7 +30,7 @@ namespace CommunicationApi.Services.Tablestorage
             {
                 Text = message.Message,
                 MediaType = MediaType.Text,
-                UserName =  message.From,
+                UserName = message.From,
                 Timestamp = message.ExpirationTime,
                 MediaUrl = null
             };
