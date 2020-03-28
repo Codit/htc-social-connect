@@ -30,19 +30,21 @@ namespace Hack_The_Crisis.Pages
         private const string tableContainerName = "textmessages";
         public string Message { get; set; }
 
+        public IndexModel(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         public void OnGet()
         {
-           
             cloudStorageAccount = CloudStorageAccount.Parse(_configuration["HTC-Storage-Connectionstring"]);
             blobClient = cloudStorageAccount.CreateCloudBlobClient();
             tableClient = cloudStorageAccount.CreateCloudTableClient();
 
             blobContainer = blobClient.GetContainerReference(blobContainerName);
             tableContainer = tableClient.GetTableReference(tableContainerName);
-         
         }
-      
+
         public async Task<List<string>> getBlobUris()
         {
             List<IListBlobItem> list = new List<IListBlobItem>();
@@ -149,13 +151,5 @@ namespace Hack_The_Crisis.Pages
                 }
             }
         }
-
-        public IndexModel(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-
-
     }
 }
