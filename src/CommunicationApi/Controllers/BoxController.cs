@@ -1,5 +1,7 @@
-﻿using System;
+﻿using System.Threading.Tasks;
+using Bogus;
 using CommunicationApi.Contracts.v1;
+using CommunicationApi.Interfaces;
 using GuardNet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,16 +16,19 @@ namespace CommunicationApi.Controllers
     [Route("api/v1/box")]
     public class BoxController : ControllerBase
     {
-        private ILogger<BoxController> _logger;
+        private readonly Randomizer _boxCodeGenerator = new Randomizer();
+        private readonly ILogger<BoxController> _logger;
+        private readonly IBoxStore _boxStore;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BoxController"/> class.
         /// </summary>
-        public BoxController(ILogger<BoxController> logger)
+        public BoxController(IBoxStore boxStore, ILogger<BoxController> logger)
         {
             Guard.NotNull(logger, nameof(logger));
 
             _logger = logger;
+            _boxStore = boxStore;
         }
 
         /// <summary>
@@ -32,15 +37,20 @@ namespace CommunicationApi.Controllers
         /// <remarks>Register a new box.</remarks>
         [HttpPost("new", Name = "Box_New")]
         [ProducesResponseType(typeof(ActivatedDevice), StatusCodes.Status201Created)]
-        public IActionResult New()
+        public async Task<IActionResult> New()
         {
+            var activationCode = _boxCodeGenerator.Replace("????");
+            var boxId = _boxCodeGenerator.Guid().ToString();
+
             var activatedDevice = new ActivatedDevice
             {
-                ActivationCode = Guid.NewGuid().ToString(),
-                BoxId = Guid.NewGuid().ToString()
+                ActivationCode = activationCode,
+                BoxId = boxId
             };
 
-            return Created(Url.Action(nameof(GetStatus), new { boxId = activatedDevice.BoxId }), activatedDevice);
+            await _boxStore.Add(boxId, activatedDevice);
+
+            return Created(Url.Action(nameof(GetStatus), new { boxId }), activatedDevice);
         }
 
         /// <summary>
@@ -51,14 +61,16 @@ namespace CommunicationApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetStatus([FromQuery] string boxId)
+        public async Task<ActionResult> GetStatus([FromQuery] string boxId)
         {
             if (string.IsNullOrWhiteSpace(boxId))
             {
                 return BadRequest("No box is was specified");
             }
 
-            return NotFound();
+            var foundDevice = await _boxStore.Get(boxId);
+
+            return foundDevice != null ? Ok(foundDevice) : (ActionResult)NotFound();
         }
     }
 }
