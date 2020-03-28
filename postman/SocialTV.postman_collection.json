@@ -1,0 +1,582 @@
+{
+	"info": {
+		"_postman_id": "b339df88-fdda-4faf-911b-89a2bb3d1202",
+		"name": "SocialTV",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication flow",
+			"item": [
+				{
+					"name": "01 Register new box",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"type": "text",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/box/new",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"box",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02 Check box registration state",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"type": "text",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "x-box-id",
+								"value": "{{boxId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/box/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"box",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Admin flow",
+			"item": [
+				{
+					"name": "01 First message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "H@ckCr1s!s",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "MediaContentType0",
+									"value": "image/jpeg",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "SmsMessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsStatus",
+									"value": "received",
+									"type": "text"
+								},
+								{
+									"key": "To",
+									"value": "whatsapp%3A%2B14155238886",
+									"type": "text"
+								},
+								{
+									"key": "MessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "AccountSid",
+									"value": "AC93857f5d3c9313d91a32c1359c684f6e",
+									"type": "text"
+								},
+								{
+									"key": "From",
+									"value": "whatsapp%3A%2B32474849993",
+									"type": "text"
+								},
+								{
+									"key": "ApiVersion",
+									"value": "2010-04-01",
+									"type": "text"
+								},
+								{
+									"key": "NumMedia",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "Body",
+									"value": "Hello from Arcus API",
+									"type": "text"
+								},
+								{
+									"key": "MediaUrl0",
+									"value": "https%3A%2F%2Fapi.twilio.com%2F2010-04-01%2FAccounts%2FAC93857f5d3c9313d91a32c1359c684f6e%2FMessages%2FMM4357bb89d143b4e79a71e98705a58b30%2FMedia%2FMEf2de932b5583a65738a0a3d62e501790",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/whatsapp?x-api-key={{apiKey}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"whatsapp"
+							],
+							"query": [
+								{
+									"key": "x-api-key",
+									"value": "{{apiKey}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02 Answer with name",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"type": "text",
+								"value": "H@ckCr1s!s",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "MediaContentType0",
+									"value": "image/jpeg",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "SmsMessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsStatus",
+									"value": "received",
+									"type": "text"
+								},
+								{
+									"key": "To",
+									"value": "whatsapp%3A%2B14155238886",
+									"type": "text"
+								},
+								{
+									"key": "MessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "AccountSid",
+									"value": "AC93857f5d3c9313d91a32c1359c684f6e",
+									"type": "text"
+								},
+								{
+									"key": "From",
+									"value": "whatsapp%3A%2B32474849993",
+									"type": "text"
+								},
+								{
+									"key": "ApiVersion",
+									"value": "2010-04-01",
+									"type": "text"
+								},
+								{
+									"key": "NumMedia",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "Body",
+									"value": "Name",
+									"type": "text"
+								},
+								{
+									"key": "MediaUrl0",
+									"value": "https%3A%2F%2Fapi.twilio.com%2F2010-04-01%2FAccounts%2FAC93857f5d3c9313d91a32c1359c684f6e%2FMessages%2FMM4357bb89d143b4e79a71e98705a58b30%2FMedia%2FMEf2de932b5583a65738a0a3d62e501790",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/whatsapp?x-api-key={{apiKey}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"whatsapp"
+							],
+							"query": [
+								{
+									"key": "x-api-key",
+									"value": "{{apiKey}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03 Activation code of box",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"type": "text",
+								"value": "H@ckCr1s!s",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "MediaContentType0",
+									"value": "image/jpeg",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "SmsMessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsStatus",
+									"value": "received",
+									"type": "text"
+								},
+								{
+									"key": "To",
+									"value": "whatsapp%3A%2B14155238886",
+									"type": "text"
+								},
+								{
+									"key": "MessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "AccountSid",
+									"value": "AC93857f5d3c9313d91a32c1359c684f6e",
+									"type": "text"
+								},
+								{
+									"key": "From",
+									"value": "whatsapp%3A%2B32474849993",
+									"type": "text"
+								},
+								{
+									"key": "ApiVersion",
+									"value": "2010-04-01",
+									"type": "text"
+								},
+								{
+									"key": "NumMedia",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "Body",
+									"value": "{{boxActivationCode}}",
+									"type": "text"
+								},
+								{
+									"key": "MediaUrl0",
+									"value": "https%3A%2F%2Fapi.twilio.com%2F2010-04-01%2FAccounts%2FAC93857f5d3c9313d91a32c1359c684f6e%2FMessages%2FMM4357bb89d143b4e79a71e98705a58b30%2FMedia%2FMEf2de932b5583a65738a0a3d62e501790",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/whatsapp?x-api-key={{apiKey}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"whatsapp"
+							],
+							"query": [
+								{
+									"key": "x-api-key",
+									"value": "{{apiKey}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Box communication",
+			"item": [
+				{
+					"name": "Whatsapp image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "H@ckCr1s!s",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "MediaContentType0",
+									"value": "image/jpeg",
+									"type": "text"
+								},
+								{
+									"key": "SmsMessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsStatus",
+									"value": "received",
+									"type": "text"
+								},
+								{
+									"key": "To",
+									"value": "whatsapp%3A%2B14155238886",
+									"type": "text"
+								},
+								{
+									"key": "MessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "AccountSid",
+									"value": "AC93857f5d3c9313d91a32c1359c684f6e",
+									"type": "text"
+								},
+								{
+									"key": "From",
+									"value": "whatsapp%3A%2B{{phoneNumber}}",
+									"type": "text"
+								},
+								{
+									"key": "ApiVersion",
+									"value": "2010-04-01",
+									"type": "text"
+								},
+								{
+									"key": "NumMedia",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "Body",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "MediaUrl0",
+									"value": "https%3A%2F%2Fapi.twilio.com%2F2010-04-01%2FAccounts%2FAC93857f5d3c9313d91a32c1359c684f6e%2FMessages%2FMM4357bb89d143b4e79a71e98705a58b30%2FMedia%2FMEf2de932b5583a65738a0a3d62e501790",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:80/api/v1/whatsapp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"api",
+								"v1",
+								"whatsapp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Whatsapp text",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "H@ckCr1s!s",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "MediaContentType0",
+									"value": "image/jpeg",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "SmsMessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsStatus",
+									"value": "received",
+									"type": "text"
+								},
+								{
+									"key": "To",
+									"value": "whatsapp%3A%2B14155238886",
+									"type": "text"
+								},
+								{
+									"key": "MessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "AccountSid",
+									"value": "AC93857f5d3c9313d91a32c1359c684f6e",
+									"type": "text"
+								},
+								{
+									"key": "From",
+									"value": "whatsapp%3A%2B{{phoneNumber}}",
+									"type": "text"
+								},
+								{
+									"key": "ApiVersion",
+									"value": "2010-04-01",
+									"type": "text"
+								},
+								{
+									"key": "NumMedia",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "Body",
+									"value": "activation code",
+									"type": "text"
+								},
+								{
+									"key": "MediaUrl0",
+									"value": "https%3A%2F%2Fapi.twilio.com%2F2010-04-01%2FAccounts%2FAC93857f5d3c9313d91a32c1359c684f6e%2FMessages%2FMM4357bb89d143b4e79a71e98705a58b30%2FMedia%2FMEf2de932b5583a65738a0a3d62e501790",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/whatsapp?x-api-key={{apiKey}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"whatsapp"
+							],
+							"query": [
+								{
+									"key": "x-api-key",
+									"value": "{{apiKey}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

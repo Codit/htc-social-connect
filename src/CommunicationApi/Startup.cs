@@ -49,14 +49,6 @@ namespace CommunicationApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var cfgBuilder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile($"appsettings.json", true, true)
-                .AddJsonFile($"appsettings.dev.json", true, true)
-                .AddJsonFile($"local.settings.json", true, true)
-                .AddEnvironmentVariables();
-            var configuration = cfgBuilder.Build();
-            
             services.AddScoped<ICachedSecretProvider>(serviceProvider =>
                 new CachedSecretProvider(new SharedSecretProvider()));
             services.AddControllers(options => 
@@ -79,7 +71,7 @@ namespace CommunicationApi
             services.AddHealthChecks();
             
             services.AddOptions();
-            services.Configure<StorageSettings>(options => configuration.GetSection("storage").Bind(options));
+            services.Configure<StorageSettings>(options => Configuration.GetSection("storage").Bind(options));
             
             services.AddHealthChecks();
             services.AddCorrelation();
@@ -148,11 +140,10 @@ namespace CommunicationApi
 
         private LoggerConfiguration CreateLoggerConfiguration(IServiceProvider serviceProvider)
         {
-            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            var instrumentationKey = configuration.GetValue<string>(ApplicationInsightsInstrumentationKeyName);
+            var instrumentationKey = Configuration.GetValue<string>(ApplicationInsightsInstrumentationKeyName);
             
             return new LoggerConfiguration()
-                .MinimumLevel.Debug()
+                .MinimumLevel.Debug()    
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
                 .Enrich.WithVersion()
