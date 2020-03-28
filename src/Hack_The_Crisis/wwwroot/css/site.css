@@ -24,3 +24,25 @@ for details on configuring this project to bundle and minify static web assets. 
     border: 1px solid #ccc;
     box-shadow: 5px 5px 5px #999;
 }
+*.ticker {
+    margin: 0 auto;
+    padding: 10px;
+    width: 600px;
+    height:20vh;
+    text-align: left; 
+    position: relative;
+   
+    background-color: #ffffff;
+   
+}
+
+*.ticker ul {
+    width: 100%;
+    position: relative;
+}
+
+*.ticker ul li {
+    width: 100%;
+    display: none;
+}
+
