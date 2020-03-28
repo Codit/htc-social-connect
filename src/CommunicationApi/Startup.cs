@@ -64,6 +64,7 @@ namespace CommunicationApi
 
             services.AddSingleton<IWhatsappHandlerService, WhatsappHandlerService>();
             services.AddSingleton<IUserStore, HardcodedUserStore>();
+            services.AddSingleton<IBoxStore, HardcodedBoxStore>();
             services.AddSingleton<IUserMatcher, TwilioUserMatcher>();
             services.AddSingleton<IMediaServiceProvider, TableTextMessageServiceProvider>();
             services.AddSingleton<IMediaServiceProvider, BlobImageMediaServiceProvider>();
@@ -131,10 +132,10 @@ namespace CommunicationApi
             });
             app.UseEndpoints(endpoints => endpoints.MapControllers());
 
-            Log.Logger = CreateLoggerConfiguration(app.ApplicationServices).CreateLogger();
+            Log.Logger = CreateLoggerConfiguration().CreateLogger();
         }
 
-        private LoggerConfiguration CreateLoggerConfiguration(IServiceProvider serviceProvider)
+        private LoggerConfiguration CreateLoggerConfiguration()
         {
             var instrumentationKey = Configuration.GetValue<string>(ApplicationInsightsInstrumentationKeyName);
             return new LoggerConfiguration()
@@ -144,7 +145,8 @@ namespace CommunicationApi
                 .Enrich.WithVersion()
                 .Enrich.WithComponentName("API")
                 .Enrich.WithCorrelationInfo()
-                .WriteTo.Console();
+                .WriteTo.Console()
+                .WriteTo.AzureApplicationInsights(instrumentationKey);
         }
     }
 }

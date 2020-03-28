@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using CommunicationApi.Extensions;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
 using GuardNet;
 using Microsoft.Extensions.Logging;
-using Twilio.Types;
 
 namespace CommunicationApi.Services
 {

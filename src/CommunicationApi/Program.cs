@@ -46,10 +46,10 @@ namespace CommunicationApi
             IConfigurationRoot configuration =
                 new ConfigurationBuilder()
                     .AddCommandLine(args)
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .AddJsonFile($"appsettings.dev.json", true, true)
-                    .AddJsonFile($"local.settings.json", true, true)
                     .AddEnvironmentVariables()
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile("appsettings.dev.json", true, true)
+                    .AddJsonFile("local.settings.json", true, true)
                     .Build();
 
             return configuration;
