@@ -90,6 +90,7 @@ namespace CommunicationApi.Services
                 case ConversationState.AwaitingName:
                     userInfo.Name = messageBody;
                     userInfo.ConversationState = ConversationState.AwaitingActivation;
+                    pars = new object[] {userInfo.Name};
                     await _userStore.UpdateUser(userInfo);
                     responseMessage =
                         "Welkom, {0}, als je een client wil connecteren, gelieve dan de activatiecode te sturen";
@@ -105,7 +106,6 @@ namespace CommunicationApi.Services
                     {
                         _logger.LogInformation("User {phoneNumber} successfully activate a box with activation code {activationCode} and box id {boxId}", userInfo.PhoneNumber, messageBody, boxId);
 
-                        userInfo.Name = messageBody;
                         userInfo.ConversationState = ConversationState.Completed;
                         if(userInfo.BoxInfo==null)
                         {

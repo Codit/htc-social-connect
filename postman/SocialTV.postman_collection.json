@@ -70,13 +70,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/box/status",
+							"raw": "{{baseUrl}}/box/status?boxid={{boxId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"box",
 								"status"
+							],
+							"query": [
+								{
+									"key": "boxid",
+									"value": "{{boxId}}"
+								}
 							]
 						}
 					},
@@ -350,7 +356,7 @@
 								},
 								{
 									"key": "Body",
-									"value": "{{boxActivationCode}}",
+									"value": "{{activationCode}}",
 									"type": "text"
 								},
 								{
@@ -462,14 +468,18 @@
 							]
 						},
 						"url": {
-							"raw": "{{baseUrl}}/api/v1/whatsapp",
+							"raw": "{{baseUrl}}/whatsapp?x-api-key={{apiKey}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"whatsapp"
+							],
+							"query": [
+								{
+									"key": "x-api-key",
+									"value": "{{apiKey}}"
+								}
 							]
 						}
 					},

@@ -76,7 +76,8 @@ namespace CommunicationApi.Services.Blobstorage
 
             // TODO : check extension based on media type
             string extension = "jpg";
-            await container.UploadBlobAsync(Guid.NewGuid().ToString("N") + "." + extension, mediaStream);
+            var blob = await container.UploadBlobAsync(Guid.NewGuid().ToString("N") + "." + extension, mediaStream);
+            
         }
 
         public Task PersistTextMessage(UserInfo userInfo, TextMessage message)
