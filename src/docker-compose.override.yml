@@ -5,6 +5,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ARCUS_HTTP_PORT=88
+      - Telemetry__ApplicationInsights__InstrumentationKey=ABC
     ports:
       - "999:88"
 
