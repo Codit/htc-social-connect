@@ -24,13 +24,13 @@ namespace CommunicationApi.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentController"/> class.
         /// </summary>
-        public ContentController(ILogger<ContentController> logger, IEnumerable< IMediaServiceProvider> serviceProvider)
+        public ContentController(ILogger<ContentController> logger, IEnumerable< IMediaServiceProvider> serviceProviders)
         {
             Guard.NotNull(logger, nameof(logger));
-            Guard.NotNull(serviceProvider, nameof(serviceProvider));
+            Guard.NotNull(serviceProviders, nameof(serviceProviders));
             _logger = logger;
-            _imageMediaServiceProvider = serviceProvider.FirstOrDefault(msp => msp.SupportedType == MediaType.Image);
-            _textMediaServiceProvider = serviceProvider.FirstOrDefault(msp => msp.SupportedType == MediaType.Text);
+            _imageMediaServiceProvider = serviceProviders.FirstOrDefault(msp => msp.SupportedType == MediaType.Image);
+            _textMediaServiceProvider = serviceProviders.FirstOrDefault(msp => msp.SupportedType == MediaType.Text);
         }
 
         /// <summary>
@@ -43,7 +43,11 @@ namespace CommunicationApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMessages([FromQuery] string boxId)
         {
+            _logger.LogEvent($"Getting message for box {boxId}");
+
             var messages = await _textMediaServiceProvider.GetItems(boxId);
+            _logger.LogMetric("Messages returned", messages.Count());
+
             return Ok(messages);
         }
 
@@ -57,8 +61,10 @@ namespace CommunicationApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetImages([FromQuery] string boxId)
         {
-            var messages = await _imageMediaServiceProvider.GetItems(boxId);
-            return Ok(messages);
+            _logger.LogEvent($"Getting images for box {boxId}");
+            var images = await _imageMediaServiceProvider.GetItems(boxId);
+            _logger.LogMetric("Images returned", images.Count());
+            return Ok(images);
         }
     }
 }
