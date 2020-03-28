@@ -104,53 +104,23 @@ namespace Hack_The_Crisis.Pages
             tableContainer = tableClient.GetTableReference(tableContainerName);
         }
 
-        public async Task<List<string>> getBlobUris()
+        public async Task<List<string>> GetBlobUris()
         {
-            List<IListBlobItem> list = new List<IListBlobItem>();
+
+            var response = await httpClient.GetAsync("https://codit-htc.azurewebsites.net/api/v1/content/images?boxId=" + BoxId);
+            var responseArray = JArray.Parse(await response.Content.ReadAsStringAsync());
+
             List<string> blobUris = new List<string>();
-
-            BlobResultSegment segment = await blobContainer.ListBlobsSegmentedAsync(null);
-            list.AddRange(segment.Results);
-            while (segment.ContinuationToken != null)
+            foreach (JObject item in responseArray)
             {
-                segment = await blobContainer.ListBlobsSegmentedAsync(segment.ContinuationToken);
-                list.AddRange(segment.Results);
+                blobUris.Add(item.GetValue("mediaUrl").ToString() + sasContainerToken);
             }
 
-            if (sasContainerToken == null)
-            {
-                SharedAccessBlobPolicy adHocPolicy = new SharedAccessBlobPolicy()
-                {
-                    // When the start time for the SAS is omitted, the start time is assumed to be the time when the storage service receives the request.
-                    // Omitting the start time for a SAS that is effective immediately helps to avoid clock skew.
-                    SharedAccessExpiryTime = DateTime.UtcNow.AddHours(24),
-                    Permissions = SharedAccessBlobPermissions.Read | SharedAccessBlobPermissions.List
-                };
-                sasContainerToken = blobContainer.GetSharedAccessSignature(adHocPolicy, null);
-            }
-
-            foreach (IListBlobItem item in list)
-            {
-                if (item.GetType() == typeof(CloudBlockBlob))
-                {
-                    CloudBlockBlob blob = (CloudBlockBlob)item;
-                    blobUris.Add(blob.Uri + sasContainerToken);
-                }
-                else if (item.GetType() == typeof(CloudPageBlob))
-                {
-                    CloudPageBlob blob = (CloudPageBlob)item;
-                    blobUris.Add(blob.Uri + sasContainerToken);
-                }
-                else if (item.GetType() == typeof(CloudBlobDirectory))
-                {
-                    CloudBlobDirectory dir = (CloudBlobDirectory)item;
-                    blobUris.Add(dir.Uri + sasContainerToken);
-                }
-            }
+          
             return blobUris;
         }
 
-        public async Task<List<string>> getTexts()
+        public async Task<List<string>> GetTexts()
         {
             List<DynamicTableEntity> list = new List<DynamicTableEntity>();
             TableContinuationToken token = null;
@@ -166,7 +136,8 @@ namespace Hack_The_Crisis.Pages
 
             foreach (DynamicTableEntity item in list)
             {
-                texts.Add("[" + item.Timestamp.DateTime + "]: " + item.Properties["From"].StringValue + " - " + item.Properties["Message"].StringValue);
+                
+              //  texts.Add("[" + item.Timestamp.DateTime + "]: " + item.Properties["From"].StringValue + " - " + item.Properties["Message"].StringValue);
             }
 
             return texts;
@@ -174,7 +145,7 @@ namespace Hack_The_Crisis.Pages
 
         public async Task<string> getRandomBlubUri()
         {
-            List<string> blobUris = await getBlobUris();
+            List<string> blobUris = await GetBlobUris();
             string returnString = "";
             if (blobUris.Count > 0)
             {
