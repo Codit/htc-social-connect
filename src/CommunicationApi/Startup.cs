@@ -20,6 +20,7 @@ using CommunicationApi.Security;
 using CommunicationApi.Services;
 using CommunicationApi.Services.Blobstorage;
 using CommunicationApi.Services.Tablestorage;
+using Serilog.Configuration;
 using IUserMatcher = CommunicationApi.Interfaces.IUserMatcher;
 using IWhatsappHandlerService = CommunicationApi.Interfaces.IWhatsappHandlerService;
 using StorageSettings = CommunicationApi.Models.StorageSettings;
@@ -131,10 +132,10 @@ namespace CommunicationApi
             });
             app.UseEndpoints(endpoints => endpoints.MapControllers());
 
-            Log.Logger = CreateLoggerConfiguration(app.ApplicationServices).CreateLogger();
+            Log.Logger = CreateLoggerConfiguration().CreateLogger();
         }
 
-        private LoggerConfiguration CreateLoggerConfiguration(IServiceProvider serviceProvider)
+        private LoggerConfiguration CreateLoggerConfiguration()
         {
             var instrumentationKey = Configuration.GetValue<string>(ApplicationInsightsInstrumentationKeyName);
             return new LoggerConfiguration()
