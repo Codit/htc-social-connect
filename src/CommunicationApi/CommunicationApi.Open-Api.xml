@@ -4,6 +4,28 @@
         <name>CommunicationApi</name>
     </assembly>
     <members>
+        <member name="T:CommunicationApi.Controllers.BoxController">
+            <summary>
+            API endpoint to get content that was sent.
+            </summary>
+        </member>
+        <member name="M:CommunicationApi.Controllers.BoxController.#ctor(Microsoft.Extensions.Logging.ILogger{CommunicationApi.Controllers.BoxController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:CommunicationApi.Controllers.BoxController"/> class.
+            </summary>
+        </member>
+        <member name="M:CommunicationApi.Controllers.BoxController.New">
+            <summary>
+                Register Box
+            </summary>
+            <remarks>Register a new box.</remarks>
+        </member>
+        <member name="M:CommunicationApi.Controllers.BoxController.GetStatus(System.String)">
+            <summary>
+                Get Box Status
+            </summary>
+            <remarks>Get status for a registered box.</remarks>
+        </member>
         <member name="T:CommunicationApi.Controllers.ContentController">
             <summary>
             API endpoint to get content that was sent.
