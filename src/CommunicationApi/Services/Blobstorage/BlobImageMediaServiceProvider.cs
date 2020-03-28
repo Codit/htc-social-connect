@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
@@ -11,16 +12,18 @@ using Microsoft.Extensions.Options;
 
 namespace CommunicationApi.Services.Blobstorage
 {
-    public class BlobMediaPersister : IMediaPersister
+    public class BlobImageMediaServiceProvider : IMediaServiceProvider
     {
         private BlobServiceClient _blobServiceClient;
         private StorageSettings _storageSettings;
 
-        public BlobMediaPersister(IOptions<StorageSettings> storageSettings)
+        public BlobImageMediaServiceProvider(IOptions<StorageSettings> storageSettings)
         {
             Guard.NotNull(storageSettings.Value, nameof(storageSettings));
             _storageSettings = storageSettings.Value;
         }
+
+        public MediaType SupportedType => MediaType.Image;
 
         private BlobServiceClient StorageClient
         {
@@ -37,6 +40,13 @@ namespace CommunicationApi.Services.Blobstorage
             }
         }
 
+
+        public Task<IEnumerable<MediaItem>> GetItems(string tenantId)
+        {
+            // TODO : joachim : retrieve sas tokens here
+            throw new NotImplementedException();
+        }
+
         public async Task PersistMediaFile(UserInfo userInfo, string mediaUrl)
         {
             // download image to stream
@@ -48,6 +58,11 @@ namespace CommunicationApi.Services.Blobstorage
             // TODO : check extension based on media type
             string extension = "jpg";
             await container.UploadBlobAsync(Guid.NewGuid().ToString("N") + "." + extension, mediaStream);
+        }
+
+        public Task PersistTextMessage(UserInfo userInfo, TextMessage message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

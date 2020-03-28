@@ -1,4 +1,8 @@
-﻿using GuardNet;
+﻿using System.Collections.Generic;
+using System.Linq;
+using CommunicationApi.Interfaces;
+using CommunicationApi.Models;
+using GuardNet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,15 +16,19 @@ namespace CommunicationApi.Controllers
     public class ContentController : ControllerBase
     {
         private ILogger<ContentController> _logger;
+        private IMediaServiceProvider _imageMediaServiceProvider;
+        private IMediaServiceProvider _textMediaServiceProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentController"/> class.
         /// </summary>
-        public ContentController(ILogger<ContentController> logger)
+        public ContentController(ILogger<ContentController> logger, IEnumerable< IMediaServiceProvider> serviceProvider)
         {
             Guard.NotNull(logger, nameof(logger));
-
+            Guard.NotNull(serviceProvider, nameof(serviceProvider));
             _logger = logger;
+            _imageMediaServiceProvider = serviceProvider.FirstOrDefault(msp => msp.SupportedType == MediaType.Image);
+            _textMediaServiceProvider = serviceProvider.FirstOrDefault(msp => msp.SupportedType == MediaType.Text);
         }
 
         /// <summary>
@@ -30,6 +38,8 @@ namespace CommunicationApi.Controllers
         [HttpGet("messages", Name = "Content_GetMessages")]
         public IActionResult GetMessages()
         {
+            //TODO joachim : use the _mediaServiceProvider to get messages
+            
             return Ok();
         }
 
@@ -40,6 +50,7 @@ namespace CommunicationApi.Controllers
         [HttpGet("images", Name = "Content_GetImages")]
         public IActionResult GetImages()
         {
+            //TODO joachim : use the _mediaServiceProvider to get images
             return Ok();
         }
     }
