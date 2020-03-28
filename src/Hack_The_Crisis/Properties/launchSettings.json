@@ -15,7 +15,9 @@
         "ASPNETCORE_HOSTINGSTARTUP__KEYVAULT__CONFIGURATIONENABLED": "true",
         "KEYVAULT_ENDPOINT": "https://hackthecrisis-kv.vault.azure.net/",
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HOSTINGSTARTUP__KEYVAULT__CONFIGURATIONVAULT": "https://HackTheCrisis-kv.vault.azure.net"
+        "ASPNETCORE_HOSTINGSTARTUP__KEYVAULT__CONFIGURATIONVAULT": "https://HackTheCrisis-kv.vault.azure.net",
+        "KEYVAULT_AUTH_ID": "24ae35b0-5c01-429f-b62c-d6da61d3d0eb",
+        "KEYVAULT_AUTH_SECRET": "eRICg6=R2zHtSnJ7su-FS3bzPT]ZFTT_"
       }
     },
     "Hack_The_Crisis": {
