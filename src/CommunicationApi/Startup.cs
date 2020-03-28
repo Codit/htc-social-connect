@@ -65,8 +65,8 @@ namespace CommunicationApi
             services.AddSingleton<IWhatsappHandlerService, WhatsappHandlerService>();
             services.AddSingleton<IUserStore, HardcodedUserStore>();
             services.AddSingleton<IUserMatcher, TwilioUserMatcher>();
-            services.AddSingleton<IMessagePersister, TableMessagePersister>();
-            services.AddSingleton<IMediaPersister, BlobMediaPersister>();
+            services.AddSingleton<IMediaServiceProvider, TableTextMessageServiceProvider>();
+            services.AddSingleton<IMediaServiceProvider, BlobImageMediaServiceProvider>();
             services.AddSingleton<IMessageTranslater, DefaultMessageTranslater>();
             services.AddHealthChecks();
             
