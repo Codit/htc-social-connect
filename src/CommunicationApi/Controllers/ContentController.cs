@@ -24,7 +24,7 @@ namespace CommunicationApi.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentController"/> class.
         /// </summary>
-        public ContentController(ILogger<ContentController> logger, IEnumerable< IMediaServiceProvider> serviceProviders)
+        public ContentController(ILogger<ContentController> logger, IEnumerable<IMediaServiceProvider> serviceProviders)
         {
             Guard.NotNull(logger, nameof(logger));
             Guard.NotNull(serviceProviders, nameof(serviceProviders));
@@ -38,7 +38,7 @@ namespace CommunicationApi.Controllers
         /// </summary>
         /// <remarks>Get messages that were sent to the user.</remarks>
         [HttpGet("messages", Name = "Content_GetMessages")]
-        [ProducesResponseType(typeof(IEnumerable<MediaItem>),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<MediaItem>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMessages([FromQuery] string boxId)
@@ -46,7 +46,8 @@ namespace CommunicationApi.Controllers
             _logger.LogInformation("Getting message for box {BoxId}", boxId);
 
             var messages = await _textMediaServiceProvider.GetItems(boxId);
-            _logger.LogMetric("Messages returned", messages.Count());
+
+            LogMetric("Messages returned", messages.Count(), boxId);
 
             return Ok(messages);
         }
@@ -56,15 +57,28 @@ namespace CommunicationApi.Controllers
         /// </summary>
         /// <remarks>Get images that were sent to the user.</remarks>
         [HttpGet("images", Name = "Content_GetImages")]
-        [ProducesResponseType(typeof(IEnumerable<MediaItem>),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<MediaItem>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetImages([FromQuery] string boxId)
         {
             _logger.LogInformation("Getting images for box {BoxId}", boxId);
+
             var images = await _imageMediaServiceProvider.GetItems(boxId);
-            _logger.LogMetric("Images returned", images.Count());
+
+            LogMetric("Images returned", images.Count(), boxId);
+
             return Ok(images);
+        }
+
+        private void LogMetric(string metricName, int value, string boxId)
+        {
+            var metricContext = new Dictionary<string, object>
+            {
+                {"BoxId", boxId}
+            };
+
+            _logger.LogMetric(metricName, value, metricContext);
         }
     }
 }
