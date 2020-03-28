@@ -55,14 +55,16 @@ namespace CommunicationApi.Services.Blobstorage
 
         public async Task<IEnumerable<MediaItem>> GetItems(string tenantId)
         {
-            var blobContainer = StorageClient.GetBlobContainerClient(tenantId);
-
-            var blobs = blobContainer.GetBlobs(BlobTraits.Metadata);
-
             var response = new List<MediaItem>();
-            foreach (var blobItem in blobs)
+            var blobContainer = StorageClient.GetBlobContainerClient(tenantId);
+            if (await blobContainer.ExistsAsync())
             {
-                response.Add(await GetMediaItem(tenantId, blobItem));
+                var blobs = blobContainer.GetBlobs(BlobTraits.Metadata);
+
+                foreach (var blobItem in blobs)
+                {
+                    response.Add(await GetMediaItem(tenantId, blobItem));
+                }
             }
 
             return response;
