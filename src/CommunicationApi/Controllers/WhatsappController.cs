@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using GuardNet;
@@ -33,11 +34,6 @@ namespace CommunicationApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "Whatsapp_Ping")]
-        public async Task<IActionResult> Get()
-        {
-            return Ok();
-        }
 
         /// <summary>
         ///     Handle Request
@@ -47,12 +43,25 @@ namespace CommunicationApi.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> Post([FromForm] IFormCollection collection)
         {
-            _logger.LogTrace($"Request received in the Whatsapp Controller");
-            var pars = collection.Keys
-                .Select(key => new {Key = key, Value = collection[key]})
-                .ToDictionary(p => p.Key, p => p.Value.ToString());
+            WhatsappResponse response;
+            try
+            {
+                _logger.LogTrace($"Request received in the Whatsapp Controller");
+                var pars = collection.Keys
+                    .Select(key => new {Key = key, Value = collection[key]})
+                    .ToDictionary(p => p.Key, p => p.Value.ToString());
 
-            var response = await _whatsappHandlerService.ProcessRequest(pars);
+                response = await _whatsappHandlerService.ProcessRequest(pars);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error occurred when processing the whatsapp message {e.Message}");
+                response = new WhatsappResponse
+                {
+                    Accepted = false,
+                    ResponseMessage = $"Error: {e.ToString()}"
+                };
+            }
 
             var twiml = GenerateTwilioResponse(response);
             return new ContentResult

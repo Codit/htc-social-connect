@@ -9,7 +9,7 @@
             API endpoint to get content that was sent.
             </summary>
         </member>
-        <member name="M:CommunicationApi.Controllers.BoxController.#ctor(Microsoft.Extensions.Logging.ILogger{CommunicationApi.Controllers.BoxController})">
+        <member name="M:CommunicationApi.Controllers.BoxController.#ctor(CommunicationApi.Interfaces.IBoxStore,Microsoft.Extensions.Logging.ILogger{CommunicationApi.Controllers.BoxController})">
             <summary>
             Initializes a new instance of the <see cref="T:CommunicationApi.Controllers.BoxController"/> class.
             </summary>
@@ -31,7 +31,7 @@
             API endpoint to get content that was sent.
             </summary>
         </member>
-        <member name="M:CommunicationApi.Controllers.ContentController.#ctor(Microsoft.Extensions.Logging.ILogger{CommunicationApi.Controllers.ContentController})">
+        <member name="M:CommunicationApi.Controllers.ContentController.#ctor(Microsoft.Extensions.Logging.ILogger{CommunicationApi.Controllers.ContentController},System.Collections.Generic.IEnumerable{CommunicationApi.Interfaces.IMediaServiceProvider})">
             <summary>
             Initializes a new instance of the <see cref="T:CommunicationApi.Controllers.ContentController"/> class.
             </summary>

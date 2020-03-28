@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
-using CommunicationApi.Extensions;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
 using GuardNet;
