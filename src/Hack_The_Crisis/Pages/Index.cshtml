@@ -26,7 +26,7 @@
         else
         {
             <div id="slideshow">
-                @foreach (var item in await Model.getBlobUris())
+                @foreach (var item in await Model.GetBlobUris())
                 {
                     <div><img src="@item" class="image-frame" style="max-height:100%;max-width:100%;" /></div>
                 }
@@ -34,7 +34,7 @@
             </div>
             <div id="ticker-slide" class="ticker" style="height:30vh;">
                 <ul>
-                    @foreach (var item in await Model.getTexts())
+                    @foreach (var item in await Model.GetTexts())
                     {
                         <li>@item</li>
                     }
