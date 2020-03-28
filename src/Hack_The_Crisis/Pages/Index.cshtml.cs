@@ -106,40 +106,30 @@ namespace Hack_The_Crisis.Pages
 
         public async Task<List<string>> GetBlobUris()
         {
-
+            List<string> blobUris = new List<string>();
             var response = await httpClient.GetAsync("https://codit-htc.azurewebsites.net/api/v1/content/images?boxId=" + BoxId);
             var responseArray = JArray.Parse(await response.Content.ReadAsStringAsync());
-
-            List<string> blobUris = new List<string>();
+                       
             foreach (JObject item in responseArray)
             {
                 blobUris.Add(item.GetValue("mediaUrl").ToString() + sasContainerToken);
             }
 
-          
             return blobUris;
         }
 
         public async Task<List<string>> GetTexts()
         {
-            List<DynamicTableEntity> list = new List<DynamicTableEntity>();
-            TableContinuationToken token = null;
             List<string> texts = new List<string>();
-
-            do
+            var response = await httpClient.GetAsync("https://codit-htc.azurewebsites.net/api/v1/content/messages?boxId=" + BoxId);
+            var responseArray = JArray.Parse(await response.Content.ReadAsStringAsync());
+           
+            foreach (JObject item in responseArray)
             {
-                TableQuerySegment queryResult = await tableContainer.ExecuteQuerySegmentedAsync(new TableQuery(), token);
-                list.AddRange(queryResult.Results);
-                token = queryResult.ContinuationToken;
-            } while (token != null);
-
-
-            foreach (DynamicTableEntity item in list)
-            {
-                
-              //  texts.Add("[" + item.Timestamp.DateTime + "]: " + item.Properties["From"].StringValue + " - " + item.Properties["Message"].StringValue);
+                texts.Add(item.GetValue("text").ToString() + sasContainerToken);
             }
 
+           
             return texts;
         }
 
