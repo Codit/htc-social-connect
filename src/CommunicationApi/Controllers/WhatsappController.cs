@@ -12,7 +12,7 @@ using WhatsappResponse = CommunicationApi.Models.WhatsappResponse;
 namespace CommunicationApi.Controllers
 {
     /// <summary>
-    /// API endpoint to check the health of the application.
+    /// API endpoint to interact with WhatsApp.
     /// </summary>
     [ApiController]
     [Route("api/v1/whatsapp")]
