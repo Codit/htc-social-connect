@@ -25,7 +25,8 @@ namespace Hack_The_Crisis.Pages
         private static string sasContainerToken;
 
 
-        private const string blobContainerName = "test";
+        private const string blobContainerName = "images";
+        private string defaultLanguage = "nl";
         private const string tableContainerName = "textmessages";
         public string Message { get; set; }
 
@@ -41,14 +42,16 @@ namespace Hack_The_Crisis.Pages
             blobClient = cloudStorageAccount.CreateCloudBlobClient();
             tableClient = cloudStorageAccount.CreateCloudTableClient();
 
-            blobContainer = blobClient.GetContainerReference(blobContainerName);
+            string language = this.Request.Query["lang"]; 
+            if (!string.IsNullOrEmpty(language)) defaultLanguage = language;
+            blobContainer = blobClient.GetContainerReference(blobContainerName+ defaultLanguage);
             tableContainer = tableClient.GetTableReference(tableContainerName);
         }
 
-        public async Task<List<string>> getBlobUris()
+        public async Task<List<imageForLetter>> getBlobUris()
         {
             List<IListBlobItem> list = new List<IListBlobItem>();
-            List<string> blobUris = new List<string>();
+            List<imageForLetter> lstImageForLetter = new List<imageForLetter>();
 
             BlobResultSegment segment = await blobContainer.ListBlobsSegmentedAsync(null);
             list.AddRange(segment.Results);
@@ -75,20 +78,29 @@ namespace Hack_The_Crisis.Pages
                 if (item.GetType() == typeof(CloudBlockBlob))
                 {
                     CloudBlockBlob blob = (CloudBlockBlob)item;
-                    blobUris.Add(blob.Uri + sasContainerToken);
+                    //blobUris.Add(blob.Uri + sasContainerToken);
+
+                    imageForLetter il = new imageForLetter();
+                    il.letter = item.Uri.LocalPath.Replace("/" + blobContainerName + defaultLanguage + "/", "").Replace(".png", "").ToUpper();
+                    il.url = blob.Uri + sasContainerToken;
+                    lstImageForLetter.Add(il);
+
                 }
                 else if (item.GetType() == typeof(CloudPageBlob))
                 {
                     CloudPageBlob blob = (CloudPageBlob)item;
-                    blobUris.Add(blob.Uri + sasContainerToken);
+                    //blobUris.Add(blob.Uri + sasContainerToken);
                 }
                 else if (item.GetType() == typeof(CloudBlobDirectory))
                 {
                     CloudBlobDirectory dir = (CloudBlobDirectory)item;
-                    blobUris.Add(dir.Uri + sasContainerToken);
+                    //blobUris.Add(dir.Uri + sasContainerToken);
                 }
             }
-            return blobUris;
+
+            //TODO: call API and filter lstImageForLetter
+
+            return lstImageForLetter;
         }
 
         public async Task<List<string>> getTexts()
@@ -113,22 +125,22 @@ namespace Hack_The_Crisis.Pages
             return texts;
         }
 
-        public async Task<string> getRandomBlubUri()
-        {
-            List<string> blobUris = await getBlobUris();
-            string returnString = "";
-            if (blobUris.Count > 0)
-            {
-                Random rnd = new Random();
-                int rnd_blobID = rnd.Next(0, blobUris.Count);
-                returnString = blobUris[rnd_blobID];
-            }
-            else
-            {
-                returnString = "NO BLOBS";
-            }
-            return returnString;
-        }
+        //public async Task<string> getRandomBlubUri()
+        //{
+        //    List<string> blobUris = await getBlobUris();
+        //    string returnString = "";
+        //    if (blobUris.Count > 0)
+        //    {
+        //        Random rnd = new Random();
+        //        int rnd_blobID = rnd.Next(0, blobUris.Count);
+        //        returnString = blobUris[rnd_blobID];
+        //    }
+        //    else
+        //    {
+        //        returnString = "NO BLOBS";
+        //    }
+        //    return returnString;
+        //}
 
         public static class JavaScriptConvert
         {
@@ -151,5 +163,11 @@ namespace Hack_The_Crisis.Pages
                 }
             }
         }
+    }
+
+    public class imageForLetter
+    {
+        public string url;
+        public string letter;
     }
 }

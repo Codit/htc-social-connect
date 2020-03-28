@@ -9,15 +9,16 @@
    
     <h1>Welcome</h1>
 
-   
-
-     
-        <div id="slideshow">
+        <div>
             @foreach (var item in await Model.getBlobUris())
             {
-                <div><img src="@item" class="image-frame" style="max-height:100%;max-width:100%;"/></div>
-            }
-
+                <div>
+                    <img src="@item.url" width="120"/>
+                    <p Font-Size="26px">
+                        <h1>@item.letter</h1>
+                    </p>
+                </div>
+             }
         </div>
         <div id="msgs"></div>
       
@@ -29,7 +30,7 @@
                 document.getElementById('msgs').innerText = txts[j];
             }, 5000);
 
-            /*Add fading of images created in the above div*/
+            /*Add fading of images created in the above div
             window.addEventListener("DOMContentLoaded", function(e) {
                     $("#slideshow > div:gt(0)").hide();
 
@@ -43,6 +44,7 @@
                     },  30000);
 
             }, false);
+            */
         </script>
 </div>
 
