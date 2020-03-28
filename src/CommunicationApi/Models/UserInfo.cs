@@ -2,14 +2,14 @@ namespace CommunicationApi.Models
 {
     public class UserInfo
     {
-        public TenantInfo TenantInfo { get; set; }
+        public BoxInfo BoxInfo { get; set; }
         public string Name { get; set; } 
         public string PhoneNumber { get; set; }
         public ConversationState ConversationState { get; set; }
 
         public string GetLanguage()
         {
-            return TenantInfo != null ? TenantInfo.Language : "nl-BE";
+            return BoxInfo != null ? BoxInfo.Language : "nl-BE";
         }
     }
 

@@ -52,7 +52,7 @@ namespace CommunicationApi.Services.Blobstorage
             var mediaStream = await mediaUrl.GetStreamAsync();
 
             // Create the container and return a container client object	
-            var container = StorageClient.GetBlobContainerClient(userInfo.TenantInfo.Name.ToLower());
+            var container = StorageClient.GetBlobContainerClient(userInfo.BoxInfo.BoxId.ToLower());
             await container.CreateIfNotExistsAsync();
             // TODO : check extension based on media type	
             string extension = "jpg";

@@ -1,8 +1,8 @@
 namespace CommunicationApi.Models
 {
-    public class TenantInfo
+    public class BoxInfo
     {
-        public string Name { get; set; }
+        public string BoxId { get; set; }
         public bool Paid { get; set; }
         public string Language { get; set; }
     }

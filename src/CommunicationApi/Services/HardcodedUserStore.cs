@@ -10,7 +10,7 @@ namespace CommunicationApi.Services
     public class HardcodedUserStore : IUserStore
     {
         private static IDictionary<string, UserInfo> _inMemoryUsers = new Dictionary<string, UserInfo>();
-        private static List<TenantInfo> _inMemoryTenants = new List<TenantInfo>();
+        private static List<BoxInfo> _inMemoryTenants = new List<BoxInfo>();
 
         public Task<UserInfo> GetUserInfo(string phoneNumber)
         {
@@ -19,7 +19,7 @@ namespace CommunicationApi.Services
             return Task.FromResult(new UserInfo
             {
                 ConversationState = ConversationState.New,
-                Name = null, PhoneNumber = phoneNumber, TenantInfo = null
+                Name = null, PhoneNumber = phoneNumber, BoxInfo = null
             });
         }
 
@@ -30,7 +30,7 @@ namespace CommunicationApi.Services
                 ConversationState = conversationState,
                 Name = name ?? "",
                 PhoneNumber = phoneNumber,
-                TenantInfo = null
+                BoxInfo = null
             };
             _inMemoryUsers.Add(phoneNumber, userInfo);
             return Task.FromResult(userInfo);
@@ -40,11 +40,11 @@ namespace CommunicationApi.Services
         {
             var tenant =
                 _inMemoryTenants.FirstOrDefault(t =>
-                    t.Name.Equals(tenantId, StringComparison.InvariantCultureIgnoreCase));
+                    t.BoxId.Equals(tenantId, StringComparison.InvariantCultureIgnoreCase));
             if (tenant != null)
             {
                 var user = await GetUserInfo(phoneNumber);
-                user.TenantInfo = tenant;
+                user.BoxInfo = tenant;
                 return user;
             }
 
