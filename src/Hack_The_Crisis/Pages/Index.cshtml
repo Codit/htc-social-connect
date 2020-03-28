@@ -2,37 +2,50 @@
 @model IndexModel
 @{
     ViewData["Title"] = "FamilyView";
-}f
+}
 
 
 <div class="text-center">
-    @*<meta http-equiv="refresh" content="10">*@
-    <h1 class="display-4">Welcome</h1>
+   
+    <h1>Welcome</h1>
 
-    <p style="border: none; width: 100%;">
-        <img id="blobImg" src="" style="max-height: 80vh;max-width: 80vh;" />
+   
+
+     
+        <div id="slideshow">
+            @foreach (var item in await Model.getBlobUris())
+            {
+                <div><img src="@item" class="image-frame" style="max-height:100%;max-width:100%;"/></div>
+            }
+
+        </div>
         <div id="msgs"></div>
-    </p>
-  
-
-
-
-    <script>
-        var imgs = @IndexModel.JavaScriptConvert.SerializeObject(await Model.getBlobUris());
-        var txts = @IndexModel.JavaScriptConvert.SerializeObject(await Model.getTexts());
-
+      
+        <script>
+            /*Get the messages from blob and show random*/
+            var txts = @IndexModel.JavaScriptConvert.SerializeObject(await Model.getTexts());
             setInterval(function () {
-                var i = Math.floor(Math.random() * imgs.length);
                 var j = Math.floor(Math.random() * txts.length);
-                document.getElementById('blobImg').src = imgs[i];
                 document.getElementById('msgs').innerText = txts[j];
-        }, 5000);
+            }, 5000);
 
+            /*Add fading of images created in the above div*/
+            window.addEventListener("DOMContentLoaded", function(e) {
+                    $("#slideshow > div:gt(0)").hide();
 
-    </script>
+                    setInterval(function() {
+                        $('#slideshow > div:first')
+                        .fadeOut(1000)
+                        .next()
+                        .fadeIn(1000)
+                        .end()
+                        .appendTo('#slideshow');
+                    },  30000);
 
-
-
-
+            }, false);
+        </script>
 </div>
+
+
+
 
