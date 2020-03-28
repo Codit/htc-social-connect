@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using Bogus;
 using CommunicationApi.Contracts.v1;
@@ -43,7 +44,13 @@ namespace CommunicationApi.Controllers
         [ProducesResponseType(typeof(Contracts.v1.ActivatedDevice), StatusCodes.Status201Created)]
         public async Task<IActionResult> New()
         {
-            var activationCode = _boxCodeGenerator.Replace("????");
+            var activationCode = "";
+            Random random = new Random();
+            for (int i = 0; i < 5; i++)
+            {
+                activationCode += GetRandomCharacter(random);
+            }
+
             var boxId = _boxCodeGenerator.Guid().ToString();
 
             var activatedDevice = new Contracts.v1.ActivatedDevice
@@ -56,7 +63,14 @@ namespace CommunicationApi.Controllers
             var boxToPersist = _mapper.Map<Models.ActivatedDevice>(activatedDevice);
             await _boxStore.Add(boxId, boxToPersist);
 
-            return Created(Url.Action(nameof(GetStatus), new { boxId }), activatedDevice);
+            return Created(Url.Action(nameof(GetStatus), new {boxId}), activatedDevice);
+        }
+
+        private static char GetRandomCharacter(Random random)
+        {
+            const string chars = "ABDEFGHIJKMNOPRSTVWZ";
+            var generatedChar = chars[random.Next(chars.Length)];
+            return generatedChar; // was upper case in the chars list
         }
 
         /// <summary>
