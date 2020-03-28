@@ -107,7 +107,7 @@ namespace Hack_The_Crisis.Pages
             {
                 texts.Add("[" + item.Timestamp.DateTime + "]: " + item.Properties["From"].StringValue + " - " + item.Properties["Message"].StringValue);
             }
-
+            
             return texts;
         }
 
