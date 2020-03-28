@@ -676,6 +676,109 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "System commands",
+			"item": [
+				{
+					"name": "Disconnect from box",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "H@ckCr1s!s",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "MediaContentType0",
+									"value": "image/jpeg",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "SmsMessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "SmsStatus",
+									"value": "received",
+									"type": "text"
+								},
+								{
+									"key": "To",
+									"value": "whatsapp%3A%2B14155238886",
+									"type": "text"
+								},
+								{
+									"key": "MessageSid",
+									"value": "MM4357bb89d143b4e79a71e98705a58b30",
+									"type": "text"
+								},
+								{
+									"key": "AccountSid",
+									"value": "AC93857f5d3c9313d91a32c1359c684f6e",
+									"type": "text"
+								},
+								{
+									"key": "From",
+									"value": "whatsapp%3A%2B{{phoneNumber}}",
+									"type": "text"
+								},
+								{
+									"key": "ApiVersion",
+									"value": "2010-04-01",
+									"type": "text"
+								},
+								{
+									"key": "NumMedia",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "Body",
+									"value": "exit",
+									"type": "text"
+								},
+								{
+									"key": "MediaUrl0",
+									"value": "https%3A%2F%2Fapi.twilio.com%2F2010-04-01%2FAccounts%2FAC93857f5d3c9313d91a32c1359c684f6e%2FMessages%2FMM4357bb89d143b4e79a71e98705a58b30%2FMedia%2FMEf2de932b5583a65738a0a3d62e501790",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/whatsapp?x-api-key={{apiKey}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"whatsapp"
+							],
+							"query": [
+								{
+									"key": "x-api-key",
+									"value": "{{apiKey}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Health check",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true

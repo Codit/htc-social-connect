@@ -46,6 +46,7 @@
           <e p="StorageSettings.cs" t="Include" />
           <e p="TextMessage.cs" t="Include" />
           <e p="UserInfo.cs" t="Include" />
+          <e p="WhatsappMediaItem.cs" t="Include" />
           <e p="WhatsappMessage.cs" t="Include" />
           <e p="WhatsappResponse.cs" t="Include" />
         </e>
