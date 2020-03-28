@@ -26,9 +26,8 @@
           <e p="DirectoryExtensions.cs" t="Include" />
         </e>
         <e p="Interfaces" t="Include">
-          <e p="IMediaPersister.cs" t="Include" />
+          <e p="IBoxStore.cs" t="Include" />
           <e p="IMediaServiceProvider.cs" t="Include" />
-          <e p="IMessagePersister.cs" t="Include" />
           <e p="IMessageTranslater.cs" t="Include" />
           <e p="IUserMatcher.cs" t="Include" />
           <e p="IUserStore.cs" t="Include" />
@@ -65,6 +64,7 @@
             <e p="BlobImageMediaServiceProvider.cs" t="Include" />
           </e>
           <e p="DefaultMessageTranslater.cs" t="Include" />
+          <e p="HardcodedBoxStore.cs" t="Include" />
           <e p="HardcodedUserStore.cs" t="Include" />
           <e p="Tablestorage" t="Include">
             <e p="TableTextMessageServiceProvider.cs" t="Include" />
