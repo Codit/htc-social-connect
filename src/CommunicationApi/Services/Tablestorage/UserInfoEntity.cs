@@ -18,7 +18,7 @@ namespace CommunicationApi.Services.Tablestorage
             Name = userInfo.Name;
             PhoneNumber = userInfo.PhoneNumber;
             ConversationState = userInfo.ConversationState;
-            TenantId = userInfo.TenantInfo?.Name;
+            TenantId = userInfo.BoxInfo?.BoxId;
         }
 
 
@@ -29,9 +29,9 @@ namespace CommunicationApi.Services.Tablestorage
                 Name = Name,
                 PhoneNumber = PhoneNumber,
                 ConversationState = ConversationState,
-                TenantInfo = new TenantInfo
+                BoxInfo = new BoxInfo
                 {
-                    Name = TenantId,
+                    BoxId = TenantId,
                     Language = "nl-BE"
                 }
             };

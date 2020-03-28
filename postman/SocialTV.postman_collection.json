@@ -141,7 +141,7 @@
 								},
 								{
 									"key": "From",
-									"value": "whatsapp%3A%2B32474849993",
+									"value": "whatsapp%3A%2B{{phoneNumber}}",
 									"type": "text"
 								},
 								{
@@ -238,7 +238,7 @@
 								},
 								{
 									"key": "From",
-									"value": "whatsapp%3A%2B32474849993",
+									"value": "whatsapp%3A%2B{{phoneNumber}}",
 									"type": "text"
 								},
 								{
@@ -335,7 +335,7 @@
 								},
 								{
 									"key": "From",
-									"value": "whatsapp%3A%2B32474849993",
+									"value": "whatsapp%3A%2B{{phoneNumber}}",
 									"type": "text"
 								},
 								{
@@ -462,12 +462,10 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:80/api/v1/whatsapp",
-							"protocol": "http",
+							"raw": "{{baseUrl}}/api/v1/whatsapp",
 							"host": [
-								"localhost"
+								"{{baseUrl}}"
 							],
-							"port": "80",
 							"path": [
 								"api",
 								"v1",
@@ -576,6 +574,187 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Media content",
+			"item": [
+				{
+					"name": "Get images for box",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"type": "text",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/content/images?boxId={{boxId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"content",
+								"images"
+							],
+							"query": [
+								{
+									"key": "boxId",
+									"value": "{{boxId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get messages for box",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"type": "text",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/content/messages?boxId={{boxId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"content",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "boxId",
+									"value": "{{boxId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Health check",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"type": "text",
+						"value": "H@ckCr1s!s"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "MediaContentType0",
+							"value": "image/jpeg",
+							"type": "text"
+						},
+						{
+							"key": "SmsMessageSid",
+							"value": "MM4357bb89d143b4e79a71e98705a58b30",
+							"type": "text"
+						},
+						{
+							"key": "SmsSid",
+							"value": "MM4357bb89d143b4e79a71e98705a58b30",
+							"type": "text"
+						},
+						{
+							"key": "SmsStatus",
+							"value": "received",
+							"type": "text"
+						},
+						{
+							"key": "To",
+							"value": "whatsapp%3A%2B14155238886",
+							"type": "text"
+						},
+						{
+							"key": "MessageSid",
+							"value": "MM4357bb89d143b4e79a71e98705a58b30",
+							"type": "text"
+						},
+						{
+							"key": "AccountSid",
+							"value": "AC93857f5d3c9313d91a32c1359c684f6e",
+							"type": "text"
+						},
+						{
+							"key": "From",
+							"value": "whatsapp%3A%2B{{phoneNumber}}",
+							"type": "text"
+						},
+						{
+							"key": "ApiVersion",
+							"value": "2010-04-01",
+							"type": "text"
+						},
+						{
+							"key": "NumMedia",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "Body",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "MediaUrl0",
+							"value": "https%3A%2F%2Fapi.twilio.com%2F2010-04-01%2FAccounts%2FAC93857f5d3c9313d91a32c1359c684f6e%2FMessages%2FMM4357bb89d143b4e79a71e98705a58b30%2FMedia%2FMEf2de932b5583a65738a0a3d62e501790",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}
