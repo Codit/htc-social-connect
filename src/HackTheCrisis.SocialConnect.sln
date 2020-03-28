@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationApi", "Communi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hack_The_Crisis", "Hack_The_Crisis\Hack_The_Crisis.csproj", "{39726644-4F2C-4B39-9D48-0F02E100DCB5}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "HackTheCrisis.Docker", "HackTheCrisis.Docker.dcproj", "{A1F2F2FC-332C-409D-A6D1-4ED6E5800152}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{39726644-4F2C-4B39-9D48-0F02E100DCB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39726644-4F2C-4B39-9D48-0F02E100DCB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39726644-4F2C-4B39-9D48-0F02E100DCB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1F2F2FC-332C-409D-A6D1-4ED6E5800152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1F2F2FC-332C-409D-A6D1-4ED6E5800152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1F2F2FC-332C-409D-A6D1-4ED6E5800152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1F2F2FC-332C-409D-A6D1-4ED6E5800152}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
