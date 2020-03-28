@@ -4,5 +4,6 @@ namespace CommunicationApi.Models
     {
         public string Name { get; set; }
         public bool Paid { get; set; }
+        public string Language { get; set; }
     }
 }

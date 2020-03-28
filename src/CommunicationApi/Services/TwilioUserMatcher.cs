@@ -4,25 +4,34 @@ using System.Threading.Tasks;
 using CommunicationApi.Extensions;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
+using GuardNet;
+using Microsoft.Extensions.Logging;
 
 namespace CommunicationApi.Services
 {
     public class TwilioUserMatcher : IUserMatcher
     {
-        public async Task<UserInfo> Match(IDictionary<string, string> parameters)
+        private ILogger<TwilioUserMatcher> _logger;
+        private IUserStore _userStore;
+
+        public TwilioUserMatcher(ILogger<TwilioUserMatcher> logger, IUserStore userStore)
         {
-            var phoneNumber = WebUtility.UrlDecode(parameters.GetParameter("From", "")).Replace("whatsapp:", "");
-            
-            return new UserInfo
+            Guard.NotNull(logger, nameof(logger));
+            Guard.NotNull(userStore, nameof(userStore));
+            _userStore = userStore;
+            _logger = logger;
+        }
+
+        public async Task<UserInfo> Match(string phoneNumber)
+        {
+            var userInfo = await _userStore.GetUserInfo(phoneNumber);
+            if (userInfo == null)
             {
-                Name = "Sam",
-                PhoneNumber = phoneNumber,
-                TenantInfo = new TenantInfo
-                {
-                    Name = "Test",
-                    Paid = false
-                }
-            };
+                _logger.LogWarning($"A new user sent a message from phone number {phoneNumber}");
+                return null;
+            }
+
+            return userInfo;
         }
     }
 }

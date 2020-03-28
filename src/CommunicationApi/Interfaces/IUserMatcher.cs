@@ -6,6 +6,6 @@ namespace CommunicationApi.Interfaces
 {
     public interface IUserMatcher
     {
-        Task<UserInfo> Match(IDictionary<string, string> parameters);
+        Task<UserInfo> Match(string phoneNumber);
     }
 }
