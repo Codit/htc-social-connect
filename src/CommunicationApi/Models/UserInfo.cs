@@ -6,6 +6,11 @@ namespace CommunicationApi.Models
         public string Name { get; set; } 
         public string PhoneNumber { get; set; }
         public ConversationState ConversationState { get; set; }
+
+        public string GetLanguage()
+        {
+            return TenantInfo != null ? TenantInfo.Language : "nl-BE";
+        }
     }
 
     public enum ConversationState
