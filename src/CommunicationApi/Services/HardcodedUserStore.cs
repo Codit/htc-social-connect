@@ -9,28 +9,30 @@ namespace CommunicationApi.Services
 {
     public class HardcodedUserStore : IUserStore
     {
-        private static List<UserInfo> _inMemoryUsers = new List<UserInfo>();
+        private static IDictionary<string, UserInfo> _inMemoryUsers = new Dictionary<string, UserInfo>();
         private static List<TenantInfo> _inMemoryTenants = new List<TenantInfo>();
+
         public Task<UserInfo> GetUserInfo(string phoneNumber)
         {
-            var user = _inMemoryUsers.FirstOrDefault(u => u.PhoneNumber.Equals(phoneNumber));
-            return Task.FromResult(user ?? new UserInfo
+            if (_inMemoryUsers.ContainsKey(phoneNumber))
+                return Task.FromResult(_inMemoryUsers[phoneNumber]);
+            return Task.FromResult(new UserInfo
             {
                 ConversationState = ConversationState.New,
                 Name = null, PhoneNumber = phoneNumber, TenantInfo = null
             });
         }
 
-        public Task<UserInfo> CreateUser(string phoneNumber, string name)
+        public Task<UserInfo> CreateUser(string phoneNumber, string name, ConversationState conversationState = ConversationState.New)
         {
             var userInfo = new UserInfo
             {
-                ConversationState = ConversationState.AwaitingName,
-                Name = name,
+                ConversationState = conversationState,
+                Name = name ?? "",
                 PhoneNumber = phoneNumber,
                 TenantInfo = null
             };
-            _inMemoryUsers.Add(userInfo);
+            _inMemoryUsers.Add(phoneNumber, userInfo);
             return Task.FromResult(userInfo);
         }
 
@@ -53,5 +55,12 @@ namespace CommunicationApi.Services
         {
             throw new System.NotImplementedException();
         }
+
+        public Task UpdateUser(UserInfo userInfo)
+        {
+            _inMemoryUsers[userInfo.PhoneNumber] = userInfo;
+            return Task.CompletedTask;
+        }
+
     }
 }

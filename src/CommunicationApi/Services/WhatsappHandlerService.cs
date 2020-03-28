@@ -7,6 +7,7 @@ using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
 using GuardNet;
 using Microsoft.Extensions.Logging;
+using Twilio.Types;
 
 namespace CommunicationApi.Services
 {
@@ -17,19 +18,23 @@ namespace CommunicationApi.Services
         private IMessagePersister _messagePersister;
         private ILogger<WhatsappHandlerService> _logger;
         private IMessageTranslater _messageTranslater;
+        private IUserStore _userStore;
 
         public WhatsappHandlerService(IMessagePersister messagePersister, IMediaPersister mediaPersister,
-            IUserMatcher userMatcher, ILogger<WhatsappHandlerService> logger, IMessageTranslater messageTranslater)
+            IUserMatcher userMatcher, ILogger<WhatsappHandlerService> logger, IMessageTranslater messageTranslater,
+            IUserStore userStore)
         {
             Guard.NotNull(userMatcher, nameof(userMatcher));
             Guard.NotNull(messageTranslater, nameof(messageTranslater));
             Guard.NotNull(messagePersister, nameof(messagePersister));
             Guard.NotNull(mediaPersister, nameof(mediaPersister));
             Guard.NotNull(logger, nameof(logger));
+            Guard.NotNull(userStore, nameof(userStore));
             _userMatcher = userMatcher;
             _mediaPersister = mediaPersister;
             _messagePersister = messagePersister;
             _logger = logger;
+            _userStore = userStore;
             _messageTranslater = messageTranslater;
         }
 
@@ -81,15 +86,23 @@ namespace CommunicationApi.Services
             {
                 case ConversationState.New:
                     //TODO : add user to store (phone number)
+                    await _userStore.CreateUser(userInfo.PhoneNumber, null, ConversationState.AwaitingName);
                     responseMessage = "Welkom bij deze app, wat is uw naam, aub?";
                     break;
                 case ConversationState.AwaitingName:
                     //TODO : update user to store (phone number + name)
+                    userInfo.Name = command;
+                    userInfo.ConversationState = ConversationState.AwaitingActivation;
+                    await _userStore.UpdateUser(userInfo);
                     responseMessage =
                         "Welkom, {0}, als je een client wil connecteren, gelieve dan de activatiecode te sturen";
                     break;
                 case ConversationState.AwaitingActivation:
                     //TODO : link user with existing tenant, if box is found
+                    
+                    userInfo.Name = command;
+                    userInfo.ConversationState = ConversationState.Completed;
+                    await _userStore.UpdateUser(userInfo);
                     responseMessage = "Het spijt ons, maar de activatie code is niet correct.  Kan u opnieuw proberen?";
                     responseMessage = "Dank je wel, de TV wordt opgezet om foto's en berichten te ontvangen";
                     break;
