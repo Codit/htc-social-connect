@@ -3,48 +3,64 @@
 @{
     ViewData["Title"] = "FamilyView";
 }
-
-
-<div class="text-center">
-   
-    <h1>Welcome</h1>
-
    
 
-     
+    <div class="text-center">
+
+        <h1>Welcome</h1>
+
         <div id="slideshow">
             @foreach (var item in await Model.getBlobUris())
             {
-                <div><img src="@item" class="image-frame" style="max-height:100%;max-width:100%;"/></div>
+                <div><img src="@item" class="image-frame" style="max-height:100%;max-width:100%;" /></div>
             }
 
         </div>
-        <div id="msgs"></div>
-      
+        <div id="ticker-slide" class="ticker" style="height:30vh;">
+            <ul>
+                @foreach (var item in await Model.getTexts())
+                {
+                    <li>@item</li>
+                }
+            
+            </ul>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
         <script>
             /*Get the messages from blob and show random*/
-            var txts = @IndexModel.JavaScriptConvert.SerializeObject(await Model.getTexts());
+            @*var txts = @IndexModel.JavaScriptConvert.SerializeObject(await Model.getTexts());
+            var j = txts.length;
             setInterval(function () {
-                var j = Math.floor(Math.random() * txts.length);
+                j--;
                 document.getElementById('msgs').innerText = txts[j];
-            }, 5000);
+                if (j == 0)
+                    j = txts.length;
+            }, 5000);*@
 
-            /*Add fading of images created in the above div*/
-            window.addEventListener("DOMContentLoaded", function(e) {
-                    $("#slideshow > div:gt(0)").hide();
 
-                    setInterval(function() {
-                        $('#slideshow > div:first')
-                        .fadeOut(1000)
-                        .next()
-                        .fadeIn(1000)
-                        .end()
-                        .appendTo('#slideshow');
-                    },  30000);
+            $(document).ready(function () {
+                     $(function () {
 
-            }, false);
+                         $.simpleTicker($("#ticker-slide"), { 'effectType': 'slide' });
+
+                         $("#slideshow > div:gt(0)").hide();
+                         setInterval(function () {
+                             $('#slideshow > div:first')
+                                 .fadeOut(1000)
+                                 .next()
+                                 .fadeIn(1000)
+                                 .end()
+                                 .appendTo('#slideshow');
+                         }, 30000);
+                     });
+            });
+            
+
+
+          
         </script>
-</div>
+
+    </div>
 
 
 
