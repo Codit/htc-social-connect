@@ -27,8 +27,7 @@ namespace CommunicationApi.Controllers
         ///     Get Messages
         /// </summary>
         /// <remarks>Get messages that were sent to the user.</remarks>
-        [HttpGet(Name = "Content_GetMessages")]
-        [Route("messages")]
+        [HttpGet("messages", Name = "Content_GetMessages")]
         public IActionResult GetMessages()
         {
             return Ok();
@@ -38,8 +37,7 @@ namespace CommunicationApi.Controllers
         ///     Get Images
         /// </summary>
         /// <remarks>Get images that were sent to the user.</remarks>
-        [HttpGet(Name = "Content_GetImages")]
-        [Route("messages")]
+        [HttpGet("images", Name = "Content_GetImages")]
         public IActionResult GetImages()
         {
             return Ok();
