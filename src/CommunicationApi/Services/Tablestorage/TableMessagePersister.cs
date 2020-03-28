@@ -12,11 +12,10 @@ namespace CommunicationApi.Services.Tablestorage
             base(settings.Value, "textmessages")
         {
         }
+
         public async Task PersistMessage(TextMessage message, UserInfo userInfo)
         {
             await base.Insert(message, userInfo.TenantInfo.Name, Guid.NewGuid().ToString("N"));
         }
-
-
     }
 }

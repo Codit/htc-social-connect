@@ -20,7 +20,6 @@ using CommunicationApi.Security;
 using CommunicationApi.Services;
 using CommunicationApi.Services.Blobstorage;
 using CommunicationApi.Services.Tablestorage;
-using Serilog.Configuration;
 using IUserMatcher = CommunicationApi.Interfaces.IUserMatcher;
 using IWhatsappHandlerService = CommunicationApi.Interfaces.IWhatsappHandlerService;
 using StorageSettings = CommunicationApi.Models.StorageSettings;
@@ -64,6 +63,7 @@ namespace CommunicationApi
 
             services.AddSingleton<IWhatsappHandlerService, WhatsappHandlerService>();
             services.AddSingleton<IUserStore, HardcodedUserStore>();
+            services.AddSingleton<IBoxStore, HardcodedBoxStore>();
             services.AddSingleton<IUserMatcher, TwilioUserMatcher>();
             services.AddSingleton<IMessagePersister, TableMessagePersister>();
             services.AddSingleton<IMediaPersister, BlobMediaPersister>();
