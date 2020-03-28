@@ -5,17 +5,17 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.IO;
+using Arcus.Security.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Html;
 using Microsoft.WindowsAzure.Storage.Table;
-using Microsoft.Extensions.Configuration;
 
 namespace Hack_The_Crisis.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly IConfiguration _configuration = null;
+        private readonly ISecretProvider _secretProvider;
 
         private static CloudStorageAccount cloudStorageAccount;
         private static CloudBlobClient blobClient;
@@ -29,14 +29,15 @@ namespace Hack_The_Crisis.Pages
         private const string tableContainerName = "textmessages";
         public string Message { get; set; }
 
-        public IndexModel(IConfiguration configuration)
+        public IndexModel(ISecretProvider secretProvider)
         {
-            _configuration = configuration;
+            _secretProvider = secretProvider;
         }
 
-        public void OnGet()
+        public async Task OnGet()
         {
-            cloudStorageAccount = CloudStorageAccount.Parse(_configuration["HTC-Storage-Connectionstring"]);
+            var connectionStringSecret = await _secretProvider.GetSecretAsync("HTC-Storage-Connectionstring");
+            cloudStorageAccount = CloudStorageAccount.Parse(connectionStringSecret.Value);
             blobClient = cloudStorageAccount.CreateCloudBlobClient();
             tableClient = cloudStorageAccount.CreateCloudTableClient();
 
