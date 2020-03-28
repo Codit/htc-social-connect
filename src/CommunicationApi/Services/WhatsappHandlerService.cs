@@ -16,11 +16,13 @@ namespace CommunicationApi.Services
         private IMediaPersister _mediaPersister;
         private IMessagePersister _messagePersister;
         private ILogger<WhatsappHandlerService> _logger;
+        private IMessageTranslater _messageTranslater;
 
         public WhatsappHandlerService(IMessagePersister messagePersister, IMediaPersister mediaPersister,
-            IUserMatcher userMatcher, ILogger<WhatsappHandlerService> logger)
+            IUserMatcher userMatcher, ILogger<WhatsappHandlerService> logger, IMessageTranslater messageTranslater)
         {
             Guard.NotNull(userMatcher, nameof(userMatcher));
+            Guard.NotNull(messageTranslater, nameof(messageTranslater));
             Guard.NotNull(messagePersister, nameof(messagePersister));
             Guard.NotNull(mediaPersister, nameof(mediaPersister));
             Guard.NotNull(logger, nameof(logger));
@@ -28,24 +30,24 @@ namespace CommunicationApi.Services
             _mediaPersister = mediaPersister;
             _messagePersister = messagePersister;
             _logger = logger;
+            _messageTranslater = messageTranslater;
         }
 
         public async Task<WhatsappResponse> ProcessRequest(Dictionary<string, string> pars)
         {
             try
             {
-                var userInfo = await _userMatcher.Match(pars);
-                _logger.LogTrace(
-                    $"Processing message from user {userInfo.Name} and phone nr {userInfo.PhoneNumber} in tenant {userInfo.TenantInfo.Name}");
-                var mediaCount = int.Parse((string) pars.GetParameter("NumMedia", "0"));
-                if (mediaCount > 0)
+                var whatsappMessage = new WhatsappMessage(pars);
+                // Check in cache (or table) if phone Number is linked
+                var userInfo = await _userMatcher.Match(whatsappMessage.Sender);
+
+                if (!string.IsNullOrEmpty(userInfo?.TenantInfo?.Name))
                 {
-                    return await ProcessImage(userInfo, pars, mediaCount);
+                    return await ProcessAuthenticatedMessage(userInfo, whatsappMessage);
                 }
-                else
-                {
-                    return await ProcessText(userInfo, pars);
-                }
+
+                // This is for users that are not yet linked to a tenant
+                return await ProcessUnauthenticatedMessage(userInfo, whatsappMessage);
             }
             catch (Exception e)
             {
@@ -55,50 +57,101 @@ namespace CommunicationApi.Services
             }
         }
 
-        private async Task<WhatsappResponse> ProcessText(UserInfo userInfo, Dictionary<string, string> pars)
+        private async Task<WhatsappResponse> ProcessAuthenticatedMessage(UserInfo userInfo, WhatsappMessage message)
         {
-            string message = pars.GetParameter("Body");
+            // This is handling a user that is already linked to a tenant
+            _logger.LogTrace(
+                $"Processing message from user {userInfo.Name} and phone nr {userInfo.PhoneNumber} in tenant {userInfo.TenantInfo.Name}");
+            if (message.MediaItems.Count > 0)
+            {
+                return await ProcessImages(userInfo, message);
+            }
+
+            return await ProcessText(userInfo, message);
+        }
+
+        private async Task<WhatsappResponse> ProcessUnauthenticatedMessage(UserInfo userInfo, WhatsappMessage message)
+        {
+            string responseMessage;
+            object[] pars = {userInfo.Name};
+
+            string command = message.MessageContent;
+            
+            switch (userInfo.ConversationState)
+            {
+                case ConversationState.New:
+                    //TODO : add user to store (phone number)
+                    responseMessage = "Welkom bij deze app, wat is uw naam, aub?";
+                    break;
+                case ConversationState.AwaitingName:
+                    //TODO : update user to store (phone number + name)
+                    responseMessage =
+                        "Welkom, {0}, als je een client wil connecteren, gelieve dan de activatiecode te sturen";
+                    break;
+                case ConversationState.AwaitingActivation:
+                    //TODO : link user with existing tenant, if box is found
+                    responseMessage = "Het spijt ons, maar de activatie code is niet correct.  Kan u opnieuw proberen?";
+                    responseMessage = "Dank je wel, de TV wordt opgezet om foto's en berichten te ontvangen";
+                    break;
+                case ConversationState.Completed:
+                    //TODO : We should not be here : so add logging/warning
+                    responseMessage =
+                        "Normaal mag je nu gewoon foto's en berichten beginnen sturen en mag je dit niet meer krijgen";
+                    break;
+                default:
+                    //TODO : We should not be here : so add logging/warning
+                    responseMessage= "We konden uw bericht niet correct interpreteren.  Gelieve opnieuw te proberen";
+                    break;
+            }
+
+            return new WhatsappResponse
+            {
+                ResponseMessage = (await _messageTranslater.Translate(userInfo.GetLanguage(), responseMessage, pars)),
+                Accepted = true
+            };
+        }
+
+        private async Task<WhatsappResponse> ProcessText(UserInfo userInfo, WhatsappMessage message)
+        {
             string userMessage = $"Bericht van {userInfo.Name}({userInfo.PhoneNumber}): {message}";
             await _messagePersister.PersistMessage(new TextMessage
             {
                 From = userInfo.Name,
                 PhoneNumber = userInfo.PhoneNumber,
-                Message = message,
+                Message = message.MessageContent,
                 ExpirationTime = DateTimeOffset.UtcNow.AddDays(1)
             }, userInfo);
 
             _logger.LogEvent("New Message Received");
-            _logger.LogMetric("Image Received", 1);
+            _logger.LogMetric("Text Received", 1);
 
-            return new WhatsappResponse {ResponseMessage = $"We ontvingen je bericht, {userInfo.Name}"};
+            return new WhatsappResponse
+            {
+                ResponseMessage = await _messageTranslater.Translate(userInfo.GetLanguage(),
+                    "We ontvingen je bericht, {0}", userInfo.Name),
+                Accepted = true
+            };
         }
 
-        private async Task<WhatsappResponse> ProcessImage(UserInfo userInfo, Dictionary<string, string> pars,
-            int mediaCount)
+        private async Task<WhatsappResponse> ProcessImages(UserInfo userInfo, WhatsappMessage message)
         {
-            bool mediaFound = true;
-            int currentMediaId = 0;
-            while (mediaFound)
+            foreach (var mediaItem in message.MediaItems)
             {
-                var mediaUrl = pars.GetParameter($"MediaUrl{currentMediaId}");
-                mediaFound = !string.IsNullOrEmpty(mediaUrl);
-                if (mediaFound)
-                {
-                    await _mediaPersister.PersistMediaFile(userInfo, WebUtility.UrlDecode(mediaUrl));
-                    _logger.LogEvent("New Image Received");
-                    _logger.LogMetric("Image Received", 1);
-                }
-
-                currentMediaId++;
+                await _mediaPersister.PersistMediaFile(userInfo, WebUtility.UrlDecode(mediaItem.Url));
+                _logger.LogEvent("New Image Received");
+                _logger.LogMetric("Image Received", 1);
             }
 
-            string message = $"We stuurden je foto door, {userInfo.Name}";
-            if (mediaCount > 1)
+            string responseMessage = message.MediaItems.Count == 1
+                ? await _messageTranslater.Translate(userInfo.GetLanguage(), "We stuurden je foto door, {0}",
+                    userInfo.Name)
+                : await _messageTranslater.Translate(userInfo.GetLanguage(), "We stuurden je {0} foto's door, {0}",
+                    message.MediaItems.Count, userInfo.Name);
+            return new WhatsappResponse
             {
-                message = $"We stuurden je {mediaCount} foto's door, {userInfo.Name}";
-            }
-            
-            return new WhatsappResponse {ResponseMessage = message};
+                ResponseMessage = responseMessage,
+                Accepted = true
+            };
         }
     }
 }

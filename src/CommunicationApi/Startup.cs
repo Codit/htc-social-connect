@@ -71,9 +71,11 @@ namespace CommunicationApi
             });
 
             services.AddSingleton<IWhatsappHandlerService, WhatsappHandlerService>();
+            services.AddSingleton<IUserStore, HardcodedUserStore>();
             services.AddSingleton<IUserMatcher, TwilioUserMatcher>();
             services.AddSingleton<IMessagePersister, TableMessagePersister>();
             services.AddSingleton<IMediaPersister, BlobMediaPersister>();
+            services.AddSingleton<IMessageTranslater, DefaultMessageTranslater>();
             services.AddHealthChecks();
             
             services.AddOptions();
@@ -82,7 +84,6 @@ namespace CommunicationApi
             services.AddHealthChecks();
             services.AddCorrelation();
 
-#if DEBUG
             var openApiInformation = new OpenApiInfo
             {
                 Title = "Hack The Crisis - Communication API",
@@ -94,7 +95,6 @@ namespace CommunicationApi
                 swaggerGenerationOptions.SwaggerDoc("v1", openApiInformation);
                 swaggerGenerationOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "CommunicationApi.Open-Api.xml"));
             });
-#endif
         }
 
         private static void RestrictToJsonContentType(MvcOptions options)
