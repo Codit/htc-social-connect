@@ -28,7 +28,7 @@
             API endpoint to check the health of the application.
             </summary>
         </member>
-        <member name="M:CommunicationApi.Controllers.WhatsAppController.#ctor(CommunicationApi.Interfaces.IWhatsappHandlerService)">
+        <member name="M:CommunicationApi.Controllers.WhatsAppController.#ctor(CommunicationApi.Interfaces.IWhatsappHandlerService,Microsoft.Extensions.Logging.ILogger{CommunicationApi.Controllers.WhatsAppController})">
             <summary>
             Initializes a new instance of the <see cref="T:CommunicationApi.Controllers.WhatsAppController"/> class.
             </summary>
