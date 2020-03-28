@@ -65,8 +65,8 @@ namespace CommunicationApi
             services.AddSingleton<IUserStore, HardcodedUserStore>();
             services.AddSingleton<IBoxStore, HardcodedBoxStore>();
             services.AddSingleton<IUserMatcher, TwilioUserMatcher>();
-            services.AddSingleton<IMessagePersister, TableMessagePersister>();
-            services.AddSingleton<IMediaPersister, BlobMediaPersister>();
+            services.AddSingleton<IMediaServiceProvider, TableTextMessageServiceProvider>();
+            services.AddSingleton<IMediaServiceProvider, BlobImageMediaServiceProvider>();
             services.AddSingleton<IMessageTranslater, DefaultMessageTranslater>();
             services.AddHealthChecks();
             
@@ -144,7 +144,8 @@ namespace CommunicationApi
                 .Enrich.WithVersion()
                 .Enrich.WithComponentName("API")
                 .Enrich.WithCorrelationInfo()
-                .WriteTo.Console();
+                .WriteTo.Console()
+                .WriteTo.AzureApplicationInsights(instrumentationKey);
         }
     }
 }

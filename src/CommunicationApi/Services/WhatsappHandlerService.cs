@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using CommunicationApi.Interfaces;
@@ -12,25 +13,24 @@ namespace CommunicationApi.Services
     public class WhatsappHandlerService : IWhatsappHandlerService
     {
         private IUserMatcher _userMatcher;
-        private IMediaPersister _mediaPersister;
-        private IMessagePersister _messagePersister;
+        private IMediaServiceProvider _imageServiceProvider;
+        private IMediaServiceProvider _messageServiceProvider;
         private ILogger<WhatsappHandlerService> _logger;
         private IMessageTranslater _messageTranslater;
         private IUserStore _userStore;
 
-        public WhatsappHandlerService(IMessagePersister messagePersister, IMediaPersister mediaPersister,
+        public WhatsappHandlerService(IEnumerable< IMediaServiceProvider> mediaServiceProviders,
             IUserMatcher userMatcher, ILogger<WhatsappHandlerService> logger, IMessageTranslater messageTranslater,
             IUserStore userStore)
         {
             Guard.NotNull(userMatcher, nameof(userMatcher));
             Guard.NotNull(messageTranslater, nameof(messageTranslater));
-            Guard.NotNull(messagePersister, nameof(messagePersister));
-            Guard.NotNull(mediaPersister, nameof(mediaPersister));
+            Guard.NotNull(mediaServiceProviders, nameof(mediaServiceProviders));
             Guard.NotNull(logger, nameof(logger));
             Guard.NotNull(userStore, nameof(userStore));
             _userMatcher = userMatcher;
-            _mediaPersister = mediaPersister;
-            _messagePersister = messagePersister;
+            _imageServiceProvider = mediaServiceProviders.FirstOrDefault(msp => msp.SupportedType==MediaType.Image);
+            _messageServiceProvider = mediaServiceProviders.FirstOrDefault(msp => msp.SupportedType==MediaType.Text);
             _logger = logger;
             _userStore = userStore;
             _messageTranslater = messageTranslater;
@@ -125,13 +125,13 @@ namespace CommunicationApi.Services
         private async Task<WhatsappResponse> ProcessText(UserInfo userInfo, WhatsappMessage message)
         {
             string userMessage = $"Bericht van {userInfo.Name}({userInfo.PhoneNumber}): {message}";
-            await _messagePersister.PersistMessage(new TextMessage
+            await _messageServiceProvider.PersistTextMessage(userInfo, new TextMessage
             {
                 From = userInfo.Name,
                 PhoneNumber = userInfo.PhoneNumber,
                 Message = message.MessageContent,
                 ExpirationTime = DateTimeOffset.UtcNow.AddDays(1)
-            }, userInfo);
+            });
 
             _logger.LogEvent("New Message Received");
             _logger.LogMetric("Text Received", 1);
@@ -148,7 +148,7 @@ namespace CommunicationApi.Services
         {
             foreach (var mediaItem in message.MediaItems)
             {
-                await _mediaPersister.PersistMediaFile(userInfo, WebUtility.UrlDecode(mediaItem.Url));
+                await _imageServiceProvider.PersistMediaFile(userInfo, WebUtility.UrlDecode(mediaItem.Url));
                 _logger.LogEvent("New Image Received");
                 _logger.LogMetric("Image Received", 1);
             }
