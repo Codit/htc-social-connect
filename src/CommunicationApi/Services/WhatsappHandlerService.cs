@@ -45,6 +45,11 @@ namespace CommunicationApi.Services
                 // Check in cache (or table) if phone Number is linked
                 var userInfo = await _userStore.GetUserInfo(whatsappMessage.Sender);
 
+                if (whatsappMessage.IsSystemMessage(out var userCommand))
+                {
+                    return await ProcessSystemMessage(userCommand, userInfo, whatsappMessage);
+                }
+                
                 if (!string.IsNullOrEmpty(userInfo?.BoxInfo?.BoxId))
                 {
                     return await ProcessAuthenticatedMessage(userInfo, whatsappMessage);
@@ -59,6 +64,35 @@ namespace CommunicationApi.Services
                     $"An error happened while processing the incoming WhatsApp message with parameters {pars}");
                 throw;
             }
+        }
+
+        private async Task<WhatsappResponse> ProcessSystemMessage(UserCommand userCommand, UserInfo userInfo, WhatsappMessage whatsappMessage)
+        {
+            string responseMessage;
+            object[] pars = {userInfo.Name};
+            bool accepted = false;
+            switch (userCommand)
+            {
+                case UserCommand.LeaveBox:
+                    userInfo.ConversationState = ConversationState.AwaitingActivation;
+                    userInfo.BoxInfo = null;
+                    pars = new object[] {userInfo.Name};
+                    await _userStore.UpdateUser(userInfo);
+                    _logger.LogWarning("The user {phoneNumber} got discoupled from the box {boxId}", userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
+                    responseMessage = "We hebben u ontkoppeld van de box, {0}";
+                    accepted = true;
+                    break;
+
+                default:
+                    responseMessage = $"Het spijt ons, maar we hebben nog geen ondersteuning voor het commando {whatsappMessage.MessageContent}";
+                    accepted = false;
+                    break;
+            }
+            return new WhatsappResponse
+            {
+                ResponseMessage = (await _messageTranslater.Translate(userInfo.GetLanguage(), responseMessage, pars)),
+                Accepted = accepted
+            };
         }
 
         private async Task<WhatsappResponse> ProcessAuthenticatedMessage(UserInfo userInfo, WhatsappMessage message)
@@ -90,6 +124,7 @@ namespace CommunicationApi.Services
                 case ConversationState.AwaitingName:
                     userInfo.Name = messageBody;
                     userInfo.ConversationState = ConversationState.AwaitingActivation;
+                    pars = new object[] {userInfo.Name};
                     await _userStore.UpdateUser(userInfo);
                     responseMessage =
                         "Welkom, {0}, als je een client wil connecteren, gelieve dan de activatiecode te sturen";
@@ -105,7 +140,6 @@ namespace CommunicationApi.Services
                     {
                         _logger.LogInformation("User {phoneNumber} successfully activate a box with activation code {activationCode} and box id {boxId}", userInfo.PhoneNumber, messageBody, boxId);
 
-                        userInfo.Name = messageBody;
                         userInfo.ConversationState = ConversationState.Completed;
                         if(userInfo.BoxInfo==null)
                         {
