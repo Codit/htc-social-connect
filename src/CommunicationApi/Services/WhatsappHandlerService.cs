@@ -148,7 +148,7 @@ namespace CommunicationApi.Services
                         }
                         userInfo.BoxInfo.BoxId = boxId;
                         await _userStore.UpdateUser(userInfo);
-                        responseMessage = "Dank je wel, de TV wordt opgezet om foto's en berichten te ontvangen";
+                        responseMessage = $"Dank je wel, de TV wordt opgezet om foto's en berichten te ontvangen, u kan [hier](https://coditfamilyview.azurewebsites.net/boxId={boxId}) kijken";
                     }
                     break;
                 case ConversationState.Completed:
