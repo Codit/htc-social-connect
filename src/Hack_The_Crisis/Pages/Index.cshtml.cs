@@ -64,9 +64,16 @@ namespace Hack_The_Crisis.Pages
 
             string cookieBoxId = Request.Cookies["boxId"];
             string cookieActivationCode = Request.Cookies["activationCode"];
-       
 
-            if (cookieBoxId == null)
+            if (Request.Query.ContainsKey("boxId"))
+            {
+                // The user is asking/forcing to connect to a different (existing!) box, so we override this
+                cookieBoxId = Request.Query["boxId"];
+            }
+            
+            
+
+            if (string.IsNullOrEmpty( cookieBoxId ))
             {
                 JObject responseString = await RegisterNewBox();
 
