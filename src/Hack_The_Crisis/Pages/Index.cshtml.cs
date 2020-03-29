@@ -95,7 +95,6 @@ namespace Hack_The_Crisis.Pages
                 BoxStatus = (await GetBoxStatus()).GetValue("status").ToString();
             }
 
-            
         }
 
         public async Task<List<string>> GetBlobUris()
