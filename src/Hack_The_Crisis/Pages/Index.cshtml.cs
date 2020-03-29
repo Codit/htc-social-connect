@@ -68,9 +68,16 @@ namespace Hack_The_Crisis.Pages
 
             string cookieBoxId = Request.Cookies["boxId"];
             string cookieActivationCode = Request.Cookies["activationCode"];
-       
 
-            if (cookieBoxId == null)
+            if (Request.Query.ContainsKey("boxId"))
+            {
+                // The user is asking/forcing to connect to a different (existing!) box, so we override this
+                cookieBoxId = Request.Query["boxId"];
+            }
+            
+            
+
+            if (string.IsNullOrEmpty( cookieBoxId ))
             {
                 JObject responseString = await RegisterNewBox();
 
@@ -91,17 +98,6 @@ namespace Hack_The_Crisis.Pages
                 ActivationCode = cookieActivationCode;
                 BoxStatus = (await GetBoxStatus()).GetValue("status").ToString();
             }
-
-            
-            
-
-            var connectionStringSecret = await _secretProvider.GetSecretAsync("HTC-Storage-Connectionstring");
-            cloudStorageAccount = CloudStorageAccount.Parse(connectionStringSecret.Value);
-            blobClient = cloudStorageAccount.CreateCloudBlobClient();
-            tableClient = cloudStorageAccount.CreateCloudTableClient();
-
-            blobContainer = blobClient.GetContainerReference(blobContainerName);
-            tableContainer = tableClient.GetTableReference(tableContainerName);
         }
 
         public async Task<List<string>> GetBlobUris()
