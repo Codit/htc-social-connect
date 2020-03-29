@@ -114,7 +114,7 @@ namespace CommunicationApi.Services
             object[] pars = {userInfo.Name};
 
             string messageBody = message.MessageContent;
-
+            string mediaUrl = null;
             switch (userInfo.ConversationState)
             {
                 case ConversationState.New:
@@ -127,7 +127,8 @@ namespace CommunicationApi.Services
                     pars = new object[] {userInfo.Name};
                     await _userStore.UpdateUser(userInfo);
                     responseMessage =
-                        "Welkom, {0}, als je een client wil connecteren, gelieve dan de activatiecode te sturen";
+                        "Welkom, {0}, als je een client wil connecteren, gelieve dan de activatiecode te sturen.  Die kan je bekomen door de eerste letters te nemen van de icoontjes op het scherm van de box.  In het voorbeeld is het bijvoorbeeld AKGO";
+                    mediaUrl = "https://codithtc.blob.core.windows.net/public/media/example.png";
                     break;
                 case ConversationState.AwaitingActivation:
                     var boxId = await _boxStore.Activate(messageBody);
@@ -164,6 +165,7 @@ namespace CommunicationApi.Services
             return new WhatsappResponse
             {
                 ResponseMessage = (await _messageTranslater.Translate(userInfo.GetLanguage(), responseMessage, pars)),
+                ImageUrl = mediaUrl,
                 Accepted = true
             };
         }
