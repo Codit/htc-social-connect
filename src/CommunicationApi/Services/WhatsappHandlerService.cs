@@ -49,7 +49,7 @@ namespace CommunicationApi.Services
                 {
                     return await ProcessSystemMessage(userCommand, userInfo, whatsappMessage);
                 }
-                
+
                 if (!string.IsNullOrEmpty(userInfo?.BoxInfo?.BoxId))
                 {
                     return await ProcessAuthenticatedMessage(userInfo, whatsappMessage);
@@ -66,7 +66,8 @@ namespace CommunicationApi.Services
             }
         }
 
-        private async Task<WhatsappResponse> ProcessSystemMessage(UserCommand userCommand, UserInfo userInfo, WhatsappMessage whatsappMessage)
+        private async Task<WhatsappResponse> ProcessSystemMessage(UserCommand userCommand, UserInfo userInfo,
+            WhatsappMessage whatsappMessage)
         {
             string responseMessage;
             object[] pars = {userInfo.Name};
@@ -78,16 +79,32 @@ namespace CommunicationApi.Services
                     userInfo.BoxInfo = null;
                     pars = new object[] {userInfo.Name};
                     await _userStore.UpdateUser(userInfo);
-                    _logger.LogWarning("The user {phoneNumber} got discoupled from the box {boxId}", userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
+                    _logger.LogWarning("The user {phoneNumber} got discoupled from the box {boxId}",
+                        userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
                     responseMessage = "We hebben u ontkoppeld van de box, {0}";
                     accepted = true;
                     break;
-
+                case UserCommand.ViewBox:
+                    _logger.LogWarning("The user {phoneNumber} asked a view link for the box {boxId}",
+                        userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
+                    if (!string.IsNullOrEmpty(userInfo.BoxInfo?.BoxId))
+                    {
+                        pars = new object[] {$"https://coditfamilyview.azurewebsites.net?boxId={userInfo.BoxInfo.BoxId}"};
+                        responseMessage = "U kan hier de box zien: {0}";
+                        accepted = true;
+                    }
+                    else
+                    {
+                        pars = new object[] {userInfo.Name};
+                        responseMessage = "U bent nog niet gekoppeld aan een box, {0}";
+                    }
+                    break;
                 default:
-                    responseMessage = $"Het spijt ons, maar we hebben nog geen ondersteuning voor het commando {whatsappMessage.MessageContent}";
-                    accepted = false;
+                    responseMessage =
+                        $"Het spijt ons, maar we hebben nog geen ondersteuning voor het commando {whatsappMessage.MessageContent}";
                     break;
             }
+
             return new WhatsappResponse
             {
                 ResponseMessage = (await _messageTranslater.Translate(userInfo.GetLanguage(), responseMessage, pars)),
@@ -131,33 +148,19 @@ namespace CommunicationApi.Services
                     mediaUrl = "https://codithtc.blob.core.windows.net/public/media/example.png";
                     break;
                 case ConversationState.AwaitingActivation:
-                    var boxId = await _boxStore.Activate(messageBody);
-                    if (boxId == null)
-                    {
-                        _logger.LogWarning("User {phoneNumber} incorrectly wanted to activate a box with activation code {activationCode}", userInfo.PhoneNumber, messageBody);
-                        responseMessage = "Het spijt ons, maar de activatie code is niet correct.  Kan u opnieuw proberen?";
-                    }
-                    else
-                    {
-                        _logger.LogInformation("User {phoneNumber} successfully activate a box with activation code {activationCode} and box id {boxId}", userInfo.PhoneNumber, messageBody, boxId);
-
-                        userInfo.ConversationState = ConversationState.Completed;
-                        if(userInfo.BoxInfo==null)
-                        {
-                            userInfo.BoxInfo = new BoxInfo();
-                        }
-                        userInfo.BoxInfo.BoxId = boxId;
-                        await _userStore.UpdateUser(userInfo);
-                        responseMessage = $"Dank je wel, de TV wordt opgezet om foto's en berichten te ontvangen, u kan [hier](https://coditfamilyview.azurewebsites.net/boxId={boxId}) kijken";
-                    }
+                    responseMessage = await HandleBoxActivation(userInfo, messageBody);
                     break;
                 case ConversationState.Completed:
-                    //TODO : We should not be here : so add logging/warning
+                    _logger.LogWarning(
+                        "User {phoneNumber} ended up in the unauthenticated conversation part, although the conversation state was completed",
+                        userInfo.PhoneNumber);
                     responseMessage =
                         "Normaal mag je nu gewoon foto's en berichten beginnen sturen en mag je dit niet meer krijgen";
                     break;
                 default:
-                    //TODO : We should not be here : so add logging/warning
+                    _logger.LogWarning(
+                        "User {phoneNumber} ended up in the unauthenticated conversation part, although the conversation state was completed",
+                        userInfo.PhoneNumber);
                     responseMessage = "We konden uw bericht niet correct interpreteren.  Gelieve opnieuw te proberen";
                     break;
             }
@@ -168,6 +171,39 @@ namespace CommunicationApi.Services
                 ImageUrl = mediaUrl,
                 Accepted = true
             };
+        }
+
+        private async Task<string> HandleBoxActivation(UserInfo userInfo, string messageBody)
+        {
+            string responseMessage;
+            var boxId = await _boxStore.Activate(messageBody);
+            if (boxId == null)
+            {
+                _logger.LogWarning(
+                    "User {phoneNumber} incorrectly wanted to activate a box with activation code {activationCode}",
+                    userInfo.PhoneNumber, messageBody);
+                responseMessage =
+                    "Het spijt ons, maar de activatie code is niet correct.  Kan u opnieuw proberen?";
+            }
+            else
+            {
+                _logger.LogInformation(
+                    "User {phoneNumber} successfully activate a box with activation code {activationCode} and box id {boxId}",
+                    userInfo.PhoneNumber, messageBody, boxId);
+
+                userInfo.ConversationState = ConversationState.Completed;
+                if (userInfo.BoxInfo == null)
+                {
+                    userInfo.BoxInfo = new BoxInfo();
+                }
+
+                userInfo.BoxInfo.BoxId = boxId;
+                await _userStore.UpdateUser(userInfo);
+                responseMessage =
+                    $"Dank je wel, de TV wordt opgezet om foto's en berichten te ontvangen.  Veel plezier met het sturen van foto's!";
+            }
+
+            return responseMessage;
         }
 
         private async Task<WhatsappResponse> ProcessText(UserInfo userInfo, WhatsappMessage message)
