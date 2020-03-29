@@ -144,7 +144,7 @@ namespace CommunicationApi.Services
                     pars = new object[] {userInfo.Name};
                     await _userStore.UpdateUser(userInfo);
                     responseMessage =
-                        "Welkom, {0}, als je een client wil connecteren, gelieve dan de activatiecode te sturen.  Die kan je bekomen door de eerste letters te nemen van de icoontjes op het scherm van de box.  In het voorbeeld is het bijvoorbeeld AKGO";
+                        "Welkom, {0}, als je een client wil connecteren, gelieve dan de activatiecode te sturen.  Die kan je bekomen door de eerste letters te nemen van de icoontjes op het scherm van de box.  In het voorbeeld is het bijvoorbeeld HOME";
                     mediaUrl = "https://codithtc.blob.core.windows.net/public/media/example.png";
                     break;
                 case ConversationState.AwaitingActivation:
