@@ -77,6 +77,10 @@ namespace CommunicationApi.Controllers
             var twiml = new MessagingResponse();
             var twimlMessage = new Message();
             twimlMessage.Body(response.ResponseMessage);
+            if(!string.IsNullOrEmpty(response.ImageUrl))
+            {
+                twimlMessage.Media(new Uri(response.ImageUrl));
+            }
             twiml.Append(twimlMessage);
             return twiml;
         }

@@ -113,11 +113,13 @@ namespace Hack_The_Crisis.Pages
            
             foreach (JObject item in responseArray)
             {
+
                 DateTime timeStamp = DateTime.Parse(item.GetValue("timestamp").ToString() );
                 var dateTimeStr = timeStamp.ToString("dd/MM/yyyy HH:mm");
                 var userName = item.GetValue("userName").ToString();
                 var msgTxt = item.GetValue("text").ToString() ;
                 texts.Add("["+dateTimeStr+"] - "+userName +" - "+msgTxt );
+
             }
 
            
