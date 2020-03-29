@@ -37,6 +37,8 @@ namespace CommunicationApi.Services.Tablestorage
             if (device != null)
             {
                 device.Status = BoxStatus.Activated;
+                device.AdminUserName = userName;
+                device.AdminUserPhone = userPhone;
                 await Upsert(device, PartitionKey, device.BoxId);
                 return device.BoxId;
             }
