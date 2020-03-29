@@ -70,9 +70,9 @@ namespace CommunicationApi.Services.Blobstorage
             if (response.Count == 0)
             {
                 _logger.LogTrace("List of images in blob is empty, return default images");
-                response.Add(new MediaItem{MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image01.png", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV"});
-                response.Add(new MediaItem{MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image02.png", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV"});
-                response.Add(new MediaItem{MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image03.png", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV"});
+                response.Add(new MediaItem{MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image01.jpg", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV"});
+                response.Add(new MediaItem{MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image02.jpg", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV"});
+                response.Add(new MediaItem{MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image03.jpg", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV"});
             }
             return response;
         }
