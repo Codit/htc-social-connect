@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{handler?}"
 @model IndexModel
 @{
     ViewData["Title"] = "Home";
@@ -8,7 +8,7 @@
     <div class="text-center">
 
         <h1>Welkom bij SocialTV</h1>
-
+     
 
         @if (Model.BoxStatus != "Activated")
         {
@@ -53,7 +53,28 @@
         }
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
         <script>
+            var initBlobCount = -1;
+            var initTxtCount = -1;
 
+            function getData() {
+                $.ajax({
+                       url: '/?handler=GetData'
+                       
+                    })
+                    .done(function(result) {
+
+                        var test = result.split(";");
+                        if (initBlobCount == -1 || initTxtCount == -1) {
+                            initBlobCount = test[0];
+                            initTxtCount = test[1];
+                        }
+                        else if (test[0] > initBlobCount || test[1] > initTxtCount) {
+                          
+                                window.location.reload(true);
+                               
+                        }
+                                        });
+                                };
 
             $(document).ready(function () {
                 $(function () {
@@ -68,6 +89,7 @@
                             .fadeIn(1000)
                             .end()
                             .appendTo('#slideshow');
+                        getData();
                     }, 30000);
                 });
             });
