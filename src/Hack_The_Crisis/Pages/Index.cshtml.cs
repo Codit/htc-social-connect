@@ -20,16 +20,10 @@ namespace Hack_The_Crisis.Pages
     {
         private readonly ISecretProvider _secretProvider;
 
-        private static CloudStorageAccount cloudStorageAccount;
-        private static CloudBlobClient blobClient;
-        private static CloudTableClient tableClient;
-        private static CloudBlobContainer blobContainer;
-        private static CloudTable tableContainer;
-        private static string sasContainerToken;
+
+      
         private static readonly HttpClient httpClient = new HttpClient();
 
-        private const string blobContainerName = "test";
-        private const string tableContainerName = "textmessages";
 
         private string boxId;
         private string activationCode;
@@ -54,7 +48,7 @@ namespace Hack_The_Crisis.Pages
 
         private async Task<JObject> GetBoxStatus()
         {
-            
+           
             var response = await httpClient.GetAsync("https://codit-htc.azurewebsites.net/api/v1/box/status?boxid="+BoxId);
             var responseString = JObject.Parse(await response.Content.ReadAsStringAsync());
             return responseString;
@@ -63,14 +57,23 @@ namespace Hack_The_Crisis.Pages
         public async Task OnGet()
         {
             var apiKey = await _secretProvider.GetSecretAsync("HTC-API-Key");
+            httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey.Value);
+            
             //read cookie from Request object  
 
             string cookieBoxId = Request.Cookies["boxId"];
             string cookieActivationCode = Request.Cookies["activationCode"];
-       
 
-            if (cookieBoxId == null)
+            if (Request.Query.ContainsKey("boxId"))
+            {
+                // The user is asking/forcing to connect to a different (existing!) box, so we override this
+                cookieBoxId = Request.Query["boxId"];
+            }
+            
+            
+
+            if (string.IsNullOrEmpty( cookieBoxId ))
             {
                 JObject responseString = await RegisterNewBox();
 
@@ -92,16 +95,6 @@ namespace Hack_The_Crisis.Pages
                 BoxStatus = (await GetBoxStatus()).GetValue("status").ToString();
             }
 
-            
-            
-
-            var connectionStringSecret = await _secretProvider.GetSecretAsync("HTC-Storage-Connectionstring");
-            cloudStorageAccount = CloudStorageAccount.Parse(connectionStringSecret.Value);
-            blobClient = cloudStorageAccount.CreateCloudBlobClient();
-            tableClient = cloudStorageAccount.CreateCloudTableClient();
-
-            blobContainer = blobClient.GetContainerReference(blobContainerName);
-            tableContainer = tableClient.GetTableReference(tableContainerName);
         }
 
         public async Task<List<string>> GetBlobUris()
@@ -112,7 +105,7 @@ namespace Hack_The_Crisis.Pages
                        
             foreach (JObject item in responseArray)
             {
-                blobUris.Add(item.GetValue("mediaUrl").ToString() + sasContainerToken);
+                blobUris.Add(item.GetValue("mediaUrl").ToString() );
             }
 
             return blobUris;
@@ -126,29 +119,20 @@ namespace Hack_The_Crisis.Pages
            
             foreach (JObject item in responseArray)
             {
-                texts.Add(item.GetValue("text").ToString() + sasContainerToken);
+
+                DateTime timeStamp = DateTime.Parse(item.GetValue("timestamp").ToString() );
+                var dateTimeStr = timeStamp.ToString("HH:mm");
+                var userName = item.GetValue("userName").ToString();
+                var msgTxt = item.GetValue("text").ToString() ;
+                texts.Add("[ "+dateTimeStr+" ] - "+userName +" - "+msgTxt );
+
             }
 
            
             return texts;
         }
 
-        public async Task<string> getRandomBlubUri()
-        {
-            List<string> blobUris = await GetBlobUris();
-            string returnString = "";
-            if (blobUris.Count > 0)
-            {
-                Random rnd = new Random();
-                int rnd_blobID = rnd.Next(0, blobUris.Count);
-                returnString = blobUris[rnd_blobID];
-            }
-            else
-            {
-                returnString = "NO BLOBS";
-            }
-            return returnString;
-        }
+     
 
         public static class JavaScriptConvert
         {
