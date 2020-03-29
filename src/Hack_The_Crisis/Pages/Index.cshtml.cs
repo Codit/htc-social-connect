@@ -21,7 +21,7 @@ namespace Hack_The_Crisis.Pages
         private readonly ISecretProvider _secretProvider;
 
 
-        private static string sasContainerToken;
+      
         private static readonly HttpClient httpClient = new HttpClient();
 
 
@@ -105,7 +105,7 @@ namespace Hack_The_Crisis.Pages
                        
             foreach (JObject item in responseArray)
             {
-                blobUris.Add(item.GetValue("mediaUrl").ToString() + sasContainerToken);
+                blobUris.Add(item.GetValue("mediaUrl").ToString() );
             }
 
             return blobUris;
@@ -121,10 +121,10 @@ namespace Hack_The_Crisis.Pages
             {
 
                 DateTime timeStamp = DateTime.Parse(item.GetValue("timestamp").ToString() );
-                var dateTimeStr = timeStamp.ToString("dd/MM/yyyy HH:mm");
+                var dateTimeStr = timeStamp.ToString("HH:mm");
                 var userName = item.GetValue("userName").ToString();
                 var msgTxt = item.GetValue("text").ToString() ;
-                texts.Add("["+dateTimeStr+"] - "+userName +" - "+msgTxt );
+                texts.Add("[ "+dateTimeStr+" ] - "+userName +" - "+msgTxt );
 
             }
 
