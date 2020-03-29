@@ -74,6 +74,7 @@ namespace CommunicationApi
             services.AddSingleton<IMediaServiceProvider, TableTextMessageServiceProvider>();
             services.AddSingleton<IMediaServiceProvider, BlobImageMediaServiceProvider>();
             services.AddSingleton<IMessageTranslater, DefaultMessageTranslater>();
+            services.AddSingleton<IMessageAuditStore, TableMessageAuditStore>();
             services.AddHealthChecks();
             
             
