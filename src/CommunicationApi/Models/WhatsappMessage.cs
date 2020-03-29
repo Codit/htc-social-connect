@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Net;
 using CommunicationApi.Extensions;
+using CommunicationApi.Interfaces;
 
 namespace CommunicationApi.Models
 {
@@ -51,11 +52,13 @@ namespace CommunicationApi.Models
         public bool IsSystemMessage(out UserCommand command)
         {
             command = UserCommand.Conversation;
-
-            if (UserCommands.ContainsKey(MessageContent.ToLower()))
+            if (MessageContent.StartsWith("*"))
             {
-                command = UserCommands[MessageContent.ToLower()];
-                return true;
+                if (UserCommands.ContainsKey(MessageContent.ToLower()))
+                {
+                    command = UserCommands[MessageContent.ToLower()];
+                    return true;
+                }
             }
 
             return false;
@@ -63,15 +66,17 @@ namespace CommunicationApi.Models
 
         private IDictionary<string, UserCommand> UserCommands => new Dictionary<string, UserCommand>
         {
-            {"exit", UserCommand.LeaveBox},
-            {"stats", UserCommand.Statistics},
-            {"status", UserCommand.BoxStatus},
-            {"clear", UserCommand.ClearMedia},
+            {"*exit", UserCommand.LeaveBox},
+            {"*stats", UserCommand.Statistics},
+            {"*status", UserCommand.BoxStatus},
+            {"*clear", UserCommand.ClearMedia},
+            {"*show", UserCommand.ViewBox}
         };
     }
 
     public enum UserCommand
     {
+        ViewBox,
         Conversation,
         LeaveBox,
         BoxStatus,
