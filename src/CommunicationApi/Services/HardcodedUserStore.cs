@@ -10,7 +10,7 @@ namespace CommunicationApi.Services
     public class HardcodedUserStore : IUserStore
     {
         private static IDictionary<string, UserInfo> _inMemoryUsers = new Dictionary<string, UserInfo>();
-        private static List<BoxInfo> _inMemoryTenants = new List<BoxInfo>();
+        private static List<ActivatedDevice> _inMemoryTenants = new List<ActivatedDevice>();
 
         public Task<UserInfo> GetUserInfo(string phoneNumber)
         {
