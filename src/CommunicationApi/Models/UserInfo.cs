@@ -2,7 +2,7 @@ namespace CommunicationApi.Models
 {
     public class UserInfo
     {
-        public BoxInfo BoxInfo { get; set; }
+        public ActivatedDevice BoxInfo { get; set; }
         public string Name { get; set; } 
         public string PhoneNumber { get; set; }
         public ConversationState ConversationState { get; set; }

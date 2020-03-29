@@ -176,7 +176,7 @@ namespace CommunicationApi.Services
         private async Task<string> HandleBoxActivation(UserInfo userInfo, string messageBody)
         {
             string responseMessage;
-            var boxId = await _boxStore.Activate(messageBody);
+            var boxId = await _boxStore.Activate(messageBody, userInfo.Name, userInfo.PhoneNumber);
             if (boxId == null)
             {
                 _logger.LogWarning(
@@ -194,7 +194,7 @@ namespace CommunicationApi.Services
                 userInfo.ConversationState = ConversationState.Completed;
                 if (userInfo.BoxInfo == null)
                 {
-                    userInfo.BoxInfo = new BoxInfo();
+                    userInfo.BoxInfo = new ActivatedDevice();
                 }
 
                 userInfo.BoxInfo.BoxId = boxId;

@@ -39,7 +39,6 @@
         <e p="MappingProfile.cs" t="Include" />
         <e p="Models" t="Include">
           <e p="ActivatedDevice.cs" t="Include" />
-          <e p="BoxInfo.cs" t="Include" />
           <e p="BoxStatus.cs" t="Include" />
           <e p="MediaItem.cs" t="Include" />
           <e p="MediaType.cs" t="Include" />
@@ -123,6 +122,10 @@
             <e p="site.css" t="Include" />
           </e>
           <e p="favicon.ico" t="Include" />
+          <e p="img" t="Include">
+            <e p="socialtv-logo-blue.png" t="Include" />
+            <e p="socialtv-logo-white.png" t="Include" />
+          </e>
           <e p="js" t="Include">
             <e p="jquery.simpleTicker.js" t="Include" />
             <e p="site.js" t="Include" />
