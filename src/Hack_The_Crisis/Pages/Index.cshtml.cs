@@ -13,6 +13,8 @@ using Microsoft.WindowsAzure.Storage.Table;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace Hack_The_Crisis.Pages
 {
@@ -33,11 +35,17 @@ namespace Hack_The_Crisis.Pages
         public string ActivationCode { get => activationCode; set => activationCode = value; }
         public string BoxStatus { get => boxStatus; set => boxStatus = value; }
 
+        private static int initBlobCount;
+        private static int initTxtCount;
+
         public IndexModel(ISecretProvider secretProvider)
         {
             _secretProvider = secretProvider;
 
         }
+
+       
+       
 
         private async Task<JObject> RegisterNewBox()
         {
@@ -53,13 +61,22 @@ namespace Hack_The_Crisis.Pages
             var responseString = JObject.Parse(await response.Content.ReadAsStringAsync());
             return responseString;
         }
-
+        public  JsonResult OnGetGetData()
+        {
+           
+            return new JsonResult(initBlobCount+";"+ initTxtCount);
+        }
         public async Task OnGet()
         {
+            initBlobCount = -1;
+            initTxtCount = -1;
             var apiKey = await _secretProvider.GetSecretAsync("HTC-API-Key");
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey.Value);
             
+            var autoEvent = new AutoResetEvent(false);
+            Timer _tm = new Timer(refreshData, autoEvent, 20000, 20000);
+
             //read cookie from Request object  
 
             string cookieBoxId = Request.Cookies["boxId"];
@@ -97,6 +114,12 @@ namespace Hack_The_Crisis.Pages
 
         }
 
+        private async void refreshData(object state)
+        {
+            await this.GetBlobUris();
+            await this.GetTexts();
+        }
+
         public async Task<List<string>> GetBlobUris()
         {
             List<string> blobUris = new List<string>();
@@ -107,7 +130,9 @@ namespace Hack_The_Crisis.Pages
             {
                 blobUris.Add(item.GetValue("mediaUrl").ToString() );
             }
-
+           
+                initBlobCount = blobUris.Count;
+            
             return blobUris;
         }
 
@@ -129,6 +154,8 @@ namespace Hack_The_Crisis.Pages
             }
 
            
+                initTxtCount = texts.Count;
+            
             return texts;
         }
 
