@@ -75,7 +75,7 @@ namespace Hack_The_Crisis.Pages
             httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey.Value);
             
             var autoEvent = new AutoResetEvent(false);
-            Timer _tm = new Timer(refreshData, autoEvent, 5000, 5000);
+            Timer _tm = new Timer(refreshData, autoEvent, 20000, 20000);
 
             //read cookie from Request object  
 
