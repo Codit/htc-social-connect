@@ -29,7 +29,7 @@ namespace CommunicationApi.Services.Tablestorage
             await Insert(activatedDevice, PartitionKey, boxId);
         }
 
-        public async Task<string> Activate(string activationCode)
+        public async Task<string> Activate(string activationCode, string userName, string userPhone)
         {
             var devices = await GetItems(PartitionKey);
             var device = devices.FirstOrDefault(d =>
@@ -37,6 +37,8 @@ namespace CommunicationApi.Services.Tablestorage
             if (device != null)
             {
                 device.Status = BoxStatus.Activated;
+                device.AdminUserName = userName;
+                device.AdminUserPhone = userPhone;
                 await Upsert(device, PartitionKey, device.BoxId);
                 return device.BoxId;
             }

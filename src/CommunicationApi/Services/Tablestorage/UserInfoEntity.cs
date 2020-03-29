@@ -29,7 +29,7 @@ namespace CommunicationApi.Services.Tablestorage
                 Name = Name,
                 PhoneNumber = PhoneNumber,
                 ConversationState = ConversationState,
-                BoxInfo = new BoxInfo
+                BoxInfo = new ActivatedDevice()
                 {
                     BoxId = TenantId,
                     Language = "nl-BE"

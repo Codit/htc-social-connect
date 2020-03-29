@@ -81,16 +81,20 @@
 
                     $.simpleTicker($("#ticker-slide"), { delay : 10000,'effectType': 'slide' });
 
+                    
                     $("#slideshow > div:gt(0)").hide();
+                    
                     setInterval(function () {
-                        $('#slideshow > div:first')
-                            .fadeOut(1000)
-                            .next()
-                            .fadeIn(1000)
-                            .end()
-                            .appendTo('#slideshow');
-                        getData();
-                    }, 30000);
+                            if ($("#slideshow > div:gt(0)").length >= 1) {
+                            $('#slideshow > div:first')
+                                .fadeOut(1000)
+                                .next()
+                                .fadeIn(1000)
+                                .end()
+                                .appendTo('#slideshow');}
+                            getData();
+                        }, 30000);
+                        
                 });
             });
 
