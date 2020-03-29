@@ -19,20 +19,23 @@ namespace CommunicationApi.Services
         private IMessageTranslater _messageTranslater;
         private IUserStore _userStore;
         private IBoxStore _boxStore;
+        private IMessageAuditStore _auditStore;
 
         public WhatsappHandlerService(IEnumerable<IMediaServiceProvider> mediaServiceProviders,
             ILogger<WhatsappHandlerService> logger, IMessageTranslater messageTranslater, IBoxStore boxStore,
-            IUserStore userStore)
+            IUserStore userStore , IMessageAuditStore auditStore )
         {
             Guard.NotNull(messageTranslater, nameof(messageTranslater));
             Guard.NotNull(mediaServiceProviders, nameof(mediaServiceProviders));
             Guard.NotNull(logger, nameof(logger));
             Guard.NotNull(userStore, nameof(userStore));
             Guard.NotNull(boxStore, nameof(boxStore));
+            Guard.NotNull(auditStore, nameof(auditStore));
             _imageServiceProvider = mediaServiceProviders.FirstOrDefault(msp => msp.SupportedType == MediaType.Image);
             _messageServiceProvider = mediaServiceProviders.FirstOrDefault(msp => msp.SupportedType == MediaType.Text);
             _logger = logger;
             _boxStore = boxStore;
+            _auditStore = auditStore;
             _userStore = userStore;
             _messageTranslater = messageTranslater;
         }
@@ -42,6 +45,8 @@ namespace CommunicationApi.Services
             try
             {
                 var whatsappMessage = new WhatsappMessage(pars);
+                await _auditStore.AuditMessage(whatsappMessage);
+                
                 // Check in cache (or table) if phone Number is linked
                 var userInfo = await _userStore.GetUserInfo(whatsappMessage.Sender);
 
@@ -176,7 +181,7 @@ namespace CommunicationApi.Services
         private async Task<string> HandleBoxActivation(UserInfo userInfo, string messageBody)
         {
             string responseMessage;
-            var boxId = await _boxStore.Activate(messageBody);
+            var boxId = await _boxStore.Activate(messageBody, userInfo.Name, userInfo.PhoneNumber);
             if (boxId == null)
             {
                 _logger.LogWarning(
@@ -194,7 +199,7 @@ namespace CommunicationApi.Services
                 userInfo.ConversationState = ConversationState.Completed;
                 if (userInfo.BoxInfo == null)
                 {
-                    userInfo.BoxInfo = new BoxInfo();
+                    userInfo.BoxInfo = new ActivatedDevice();
                 }
 
                 userInfo.BoxInfo.BoxId = boxId;
