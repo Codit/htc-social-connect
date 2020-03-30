@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Azure;
+using Arcus.Security.Core;
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -16,47 +13,42 @@ using CommunicationApi.Models;
 using Flurl.Http;
 using GuardNet;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace CommunicationApi.Services.Blobstorage
 {
     public class BlobImageMediaServiceProvider : IMediaServiceProvider
     {
+        private readonly ISecretProvider _secretProvider;
         private BlobServiceClient _blobServiceClient;
         private StorageSettings _storageSettings;
-        private UserDelegationKey _delegationKey;
         private ILogger<BlobImageMediaServiceProvider> _logger;
 
-        public BlobImageMediaServiceProvider(IOptions<StorageSettings> storageSettings,
-            ILogger<BlobImageMediaServiceProvider> logger)
+        public BlobImageMediaServiceProvider(ISecretProvider secretProvider, ILogger<BlobImageMediaServiceProvider> logger)
         {
-            Guard.NotNull(storageSettings.Value, nameof(storageSettings));
-            _storageSettings = storageSettings.Value;
+            Guard.NotNull(secretProvider, nameof(secretProvider));
+
             _logger = logger;
+            _secretProvider = secretProvider;
         }
 
         public MediaType SupportedType => MediaType.Image;
 
-        private BlobServiceClient StorageClient
+        private async Task<BlobServiceClient> GetStorageClient()
         {
-            get
+            if (_blobServiceClient == null)
             {
-                if (_blobServiceClient == null)
-                {
-                    string cnxstring =
-                        $"DefaultEndpointsProtocol=https;AccountName={_storageSettings.AccountName};AccountKey={_storageSettings.AccountKey};EndpointSuffix=core.windows.net";
-                    _blobServiceClient = new BlobServiceClient(cnxstring);
-                }
-
-                return _blobServiceClient;
+                var storageConnectionString = await _secretProvider.GetRawSecretAsync("HTC-Storage-Connectionstring");
+                _blobServiceClient = new BlobServiceClient(storageConnectionString);
             }
+
+            return _blobServiceClient;
         }
 
         public async Task<IEnumerable<MediaItem>> GetItems(string tenantId)
         {
             var response = new List<MediaItem>();
-            var blobContainer = StorageClient.GetBlobContainerClient(tenantId);
+            var storageClient = await GetStorageClient();
+            var blobContainer = storageClient.GetBlobContainerClient(tenantId);
             if (await blobContainer.ExistsAsync())
             {
                 var blobs = blobContainer.GetBlobs(BlobTraits.Metadata);
@@ -70,9 +62,9 @@ namespace CommunicationApi.Services.Blobstorage
             if (response.Count == 0)
             {
                 _logger.LogTrace("List of images in blob is empty, return default images");
-                response.Add(new MediaItem{MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image01.jpg", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV"});
-                response.Add(new MediaItem{MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image02.jpg", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV"});
-                response.Add(new MediaItem{MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image03.jpg", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV"});
+                response.Add(new MediaItem { MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image01.jpg", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV" });
+                response.Add(new MediaItem { MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image02.jpg", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV" });
+                response.Add(new MediaItem { MediaType = MediaType.Image, MediaUrl = "https://codithtc.blob.core.windows.net/public/media/default_image03.jpg", Timestamp = DateTimeOffset.UtcNow, UserName = "SocialTV" });
             }
             return response;
         }
@@ -83,7 +75,8 @@ namespace CommunicationApi.Services.Blobstorage
             var mediaStream = await mediaUrl.GetStreamAsync(completionOption: HttpCompletionOption.ResponseContentRead);
 
             // Create the container and return a container client object
-            var container = StorageClient.GetBlobContainerClient(userInfo.BoxInfo.BoxId.ToLower());
+            var storageClient = await GetStorageClient();
+            var container = storageClient.GetBlobContainerClient(userInfo.BoxInfo.BoxId.ToLower());
             await container.CreateIfNotExistsAsync();
 
             // TODO : check extension based on media type

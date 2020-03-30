@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Arcus.Security.Core;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace CommunicationApi.Services.Tablestorage
 {
     public class TableTextMessageServiceProvider : TableTransmitter<TextMessage>, IMediaServiceProvider
     {
-        public TableTextMessageServiceProvider(IOptionsMonitor<StorageSettings> settings, ILogger<TableTextMessageServiceProvider> logger) :
-            base("textmessages", settings, logger)
+        public TableTextMessageServiceProvider(ISecretProvider secretProvider, ILogger<TableTextMessageServiceProvider> logger) :
+            base("textmessages", secretProvider, logger)
         {
         }
 
