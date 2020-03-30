@@ -34,7 +34,6 @@ namespace CommunicationApi.Services.Tablestorage
             if (_storageAccount == null)
             {
                 var storageConnectionString = await _secretProvider.GetRawSecretAsync("HTC-Storage-Connectionstring");
-                _logger.LogEvent("Troubleshooting", new Dictionary<string, object> { { "storage", storageConnectionString } });
                 _storageAccount = CloudStorageAccount.Parse(storageConnectionString);
             }
 
