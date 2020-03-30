@@ -6,38 +6,21 @@ using System.Threading.Tasks;
 using Arcus.Security.Core;
 using CommunicationApi.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using TableStorage.Abstractions.TableEntityConverters;
 
 namespace CommunicationApi.Services.Tablestorage
 {
-    public abstract class TableTransmitter<T> where T : new()
+    public abstract class TableTransmitter<T> : AzureStorageProvider where T : new()
     {
         private readonly IDictionary<string, CloudTable> _loadedTables = new Dictionary<string, CloudTable>();
-        private readonly ISecretProvider _secretProvider;
-        private CloudStorageAccount _storageAccount;
-        private readonly ILogger _logger;
 
         protected string TableName { get; set; }
 
         protected TableTransmitter(string tableName, ISecretProvider secretProvider, ILogger logger)
+            : base(secretProvider, logger)
         {
             TableName = tableName;
-
-            _secretProvider = secretProvider;
-            _logger = logger;
-        }
-
-        private async Task<CloudStorageAccount> GetAccount()
-        {
-            if (_storageAccount == null)
-            {
-                var storageConnectionString = await _secretProvider.GetRawSecretAsync("HTC-Storage-Connectionstring");
-                _storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-            }
-
-            return _storageAccount;
         }
 
         protected async Task<CloudTable> GetTable()
@@ -46,7 +29,7 @@ namespace CommunicationApi.Services.Tablestorage
             {
                 try
                 {
-                    var storageAccount = await GetAccount();
+                    var storageAccount = await GetStorageAccount();
                     var table = storageAccount.CreateCloudTableClient().GetTableReference(TableName);
                     await table.CreateIfNotExistsAsync();
 
@@ -55,13 +38,12 @@ namespace CommunicationApi.Services.Tablestorage
                 catch (Exception exception)
                 {
                     // ignored
-                    _logger.LogCritical(exception, "Unable to upsert in table {TableName}", TableName);
+                    Logger.LogCritical(exception, "Unable to upsert in table {TableName}", TableName);
                 }
             }
 
             return _loadedTables[TableName];
         }
-
 
         protected async Task<T> GetItem(string partitionKey, string rowKey)
         {
@@ -177,8 +159,6 @@ namespace CommunicationApi.Services.Tablestorage
             //Execute  
             await table.ExecuteAsync(operation);
         }
-
-
 
         public string PrintEntity(T entity)
         {
