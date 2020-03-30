@@ -25,7 +25,6 @@ using CommunicationApi.Services.Tablestorage;
 using Serilog.Configuration;
 using IUserMatcher = CommunicationApi.Interfaces.IUserMatcher;
 using IWhatsappHandlerService = CommunicationApi.Interfaces.IWhatsappHandlerService;
-using StorageSettings = CommunicationApi.Models.StorageSettings;
 using TwilioUserMatcher = CommunicationApi.Services.TwilioUserMatcher;
 
 namespace CommunicationApi
@@ -65,7 +64,6 @@ namespace CommunicationApi
             });
 
             services.AddOptions();
-            services.Configure<StorageSettings>(options => Configuration.GetSection("storage").Bind(options));
 
             services.AddAutoMapper(typeof(Startup));
             services.AddSingleton<IBoxStore, TableStorageBoxStore>();
