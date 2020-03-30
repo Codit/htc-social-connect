@@ -14,6 +14,7 @@ services:
     environment:
       - "ASPNETCORE_ENVIRONMENT=Development"
       - "ASPNETCORE_URLS=https://+:443;http://+:80"
+      - "API_URL=http://localhost:88"
       - "KEYVAULT_ENDPOINT=https://<vault-name>.vault.azure.net/"
       - "KEYVAULT_AUTH_ID=<vault-client-id>"
       - "KEYVAULT_AUTH_SECRET=<vault-client-secret>"
