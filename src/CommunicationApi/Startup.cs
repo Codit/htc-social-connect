@@ -2,6 +2,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Arcus.Security.Core;
+using Arcus.Security.Core.Caching;
+using Arcus.Security.Providers.AzureKeyVault.Authentication;
+using Arcus.Security.Providers.AzureKeyVault.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +15,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 using Microsoft.OpenApi.Models;
-using Arcus.Security.Secrets.Core.Caching;
-using Arcus.Security.Secrets.Core.Interfaces;
 using Arcus.WebApi.Security.Authentication.SharedAccessKey;
 using Arcus.WebApi.Correlation;
 using AutoMapper;
 using CommunicationApi.Interfaces;
-using CommunicationApi.Security;
 using CommunicationApi.Services;
 using CommunicationApi.Services.Blobstorage;
 using CommunicationApi.Services.Tablestorage;
@@ -50,8 +51,8 @@ namespace CommunicationApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<ICachedSecretProvider>(serviceProvider =>
-                new CachedSecretProvider(new SharedSecretProvider()));
+            var secretProvider = CreateSecretProvider().WithCaching(TimeSpan.FromMinutes(1));
+            services.AddSingleton<ISecretProvider>(secretProvider);
             services.AddControllers(options => 
             {
                 options.ReturnHttpNotAcceptable = true;
@@ -60,7 +61,7 @@ namespace CommunicationApi
                 RestrictToJsonContentType(options);
                 AddEnumAsStringRepresentation(options);
 
-                options.Filters.Add(new SharedAccessKeyAuthenticationFilter("x-api-key", "x-api-key", "whatsapp-key"));
+                options.Filters.Add(new SharedAccessKeyAuthenticationFilter("x-api-key", "x-api-key", "HTC-API-Key"));
             });
 
             services.AddOptions();
@@ -77,9 +78,7 @@ namespace CommunicationApi
             services.AddSingleton<IMessageAuditStore, TableMessageAuditStore>();
             services.AddHealthChecks();
             
-            
-            services.AddHealthChecks();
-            services.AddCorrelation();
+            services.AddHttpCorrelation();
 
             var openApiInformation = new OpenApiInfo
             {
@@ -151,6 +150,22 @@ namespace CommunicationApi
                 .Enrich.WithCorrelationInfo()
                 .WriteTo.Console()
                 .WriteTo.AzureApplicationInsights(instrumentationKey);
+        }
+
+        private ISecretProvider CreateSecretProvider()
+        {
+            var keyVaultEndpoint = Configuration["KeyVaultUri"];
+
+#if RELEASE
+            var vaultAuthentication = new ManagedServiceIdentityAuthentication();
+#elif DEBUG
+            var clientId = Configuration["KEYVAULT_AUTH_ID"];
+            var clientSecret = Configuration["KEYVAULT_AUTH_SECRET"];
+            var vaultAuthentication = new ServicePrincipalAuthentication(clientId, clientSecret);
+#endif
+            var vaultConfiguration = new KeyVaultConfiguration(keyVaultEndpoint);
+            var keyVaultSecretProvider = new Arcus.Security.Providers.AzureKeyVault.KeyVaultSecretProvider(vaultAuthentication, vaultConfiguration);
+            return keyVaultSecretProvider;
         }
     }
 }

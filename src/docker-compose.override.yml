@@ -5,8 +5,7 @@ services:
     environment:
       - "ASPNETCORE_ENVIRONMENT=Development"
       - "ARCUS_HTTP_PORT=88"
-      - "storage__accountname=<account-name>"
-      - "storage__accountkey=<account-key>"
+      - "KeyVaultUri=https://<vault-name>.vault.azure.net/"
       - "Telemetry__ApplicationInsights__InstrumentationKey=ABC"
     ports:
       - "999:88"

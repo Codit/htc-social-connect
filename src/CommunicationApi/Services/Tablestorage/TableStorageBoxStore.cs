@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Arcus.Security.Core;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace CommunicationApi.Services.Tablestorage
 {
@@ -13,8 +13,8 @@ namespace CommunicationApi.Services.Tablestorage
         private const string TableName = "boxes";
         private const string PartitionKey = "devices";
 
-        public TableStorageBoxStore(IOptionsMonitor<StorageSettings> settings, ILogger<TableStorageBoxStore> logger)
-            : base(TableName, settings, logger)
+        public TableStorageBoxStore(ISecretProvider secretProvider, ILogger<TableStorageBoxStore> logger)
+            : base(TableName, secretProvider, logger)
         {
         }
 

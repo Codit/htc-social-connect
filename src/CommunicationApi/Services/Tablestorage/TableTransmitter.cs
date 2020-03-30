@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Arcus.Security.Core;
 using CommunicationApi.Extensions;
-using CommunicationApi.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Table;
 using TableStorage.Abstractions.TableEntityConverters;
 
@@ -16,33 +14,31 @@ namespace CommunicationApi.Services.Tablestorage
 {
     public abstract class TableTransmitter<T> where T : new()
     {
-        private readonly IOptionsMonitor<StorageSettings> _settings;
-        private CloudStorageAccount _storageAccount;
         private readonly IDictionary<string, CloudTable> _loadedTables = new Dictionary<string, CloudTable>();
+        private readonly ISecretProvider _secretProvider;
+        private CloudStorageAccount _storageAccount;
         private readonly ILogger _logger;
 
         protected string TableName { get; set; }
 
-        protected TableTransmitter(string tableName, IOptionsMonitor<StorageSettings> settings, ILogger logger)
+        protected TableTransmitter(string tableName, ISecretProvider secretProvider, ILogger logger)
         {
             TableName = tableName;
 
-            _settings = settings;
+            _secretProvider = secretProvider;
             _logger = logger;
         }
 
-        private CloudStorageAccount Account
+        private async Task<CloudStorageAccount> GetAccount()
         {
-            get
+            if (_storageAccount == null)
             {
-                if (_storageAccount == null)
-                {
-                    var storageSettings = _settings.CurrentValue;
-                    _storageAccount = new CloudStorageAccount(new StorageCredentials(storageSettings.AccountName, storageSettings.AccountKey), true);
-                }
-
-                return _storageAccount;
+                var storageConnectionString = await _secretProvider.GetRawSecretAsync("HTC-Storage-Connectionstring");
+                _logger.LogEvent("Troubleshooting", new Dictionary<string, object> { { "storage", storageConnectionString } });
+                _storageAccount = CloudStorageAccount.Parse(storageConnectionString);
             }
+
+            return _storageAccount;
         }
 
         protected async Task<CloudTable> GetTable()
@@ -51,7 +47,8 @@ namespace CommunicationApi.Services.Tablestorage
             {
                 try
                 {
-                    var table = Account.CreateCloudTableClient().GetTableReference(TableName);
+                    var storageAccount = await GetAccount();
+                    var table = storageAccount.CreateCloudTableClient().GetTableReference(TableName);
                     await table.CreateIfNotExistsAsync();
 
                     _loadedTables.Upsert(TableName, table);
@@ -181,8 +178,8 @@ namespace CommunicationApi.Services.Tablestorage
             //Execute  
             await table.ExecuteAsync(operation);
         }
-        
-        
+
+
 
         public string PrintEntity(T entity)
         {

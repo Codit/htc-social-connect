@@ -1,18 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.IO;
 using Arcus.Security.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Html;
-using Microsoft.WindowsAzure.Storage.Table;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 

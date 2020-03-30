@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using CommunicationApi.Contracts.v1;
 
 namespace CommunicationApi.Interfaces
 {
