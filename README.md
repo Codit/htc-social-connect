@@ -2,6 +2,8 @@
 
 ### We want to offer a seamless experience for isolated people to stay somewhat connected with friends and family
 
+[![Build Status](https://dev.azure.com/codit/Hack%20the%20crisis/_apis/build/status/CI?branchName=master)](https://dev.azure.com/codit/Hack%20the%20crisis/_build/latest?definitionId=824&branchName=master)
+
 ## Description
 This is a cloud based application that we build for Hack The Crisis, an attempt to leverage cloud technology to help elderly people in isolation
 In these times of crisis (but quite often also in the everyday live), elderly people can become somewhat isolated from their friends and family.  People in an elderly home, people in their own home.  Quite a lot of them have the television as their main 'hobby'.  
