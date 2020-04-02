@@ -17,7 +17,7 @@
       "type": "Microsoft.Portal/dashboards",
       "apiVersion": "2019-01-01-preview",
       "name": "[variables('dashboardsName')]",
-      "location": "westeurope",
+      "location": "[resourceGroup().location]",
       "dependsOn": [],
       "tags": {
         "hidden-title": "CoditFamilyView Dashboard"

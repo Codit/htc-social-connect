@@ -21,7 +21,7 @@
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2019-06-01",
       "name": "[variables('storageAccountName')]",
-      "location": "westeurope",
+      "location": "[resourceGroup().location]",
       "sku": {
         "name": "Standard_RAGRS",
         "tier": "Standard"
