@@ -15,8 +15,8 @@
     }
   },
   "variables": {
-    "actionGroupName": "",
-    "actionGroupShortName": "",
+    "actionGroupName": "HackTheCrisisActionGroup",
+    "actionGroupShortName": "HTCag",
     "emailReceivers": {
       "dev": [
         {
@@ -90,9 +90,7 @@
       "apiVersion": "2019-06-01",
       "name": "failure anomalies - coditfamilyview",
       "location": "global",
-      "dependsOn": [
-        "[resourceId('microsoft.insights/components', variables('appInsightsName'))]"
-      ],
+      "dependsOn": [],
       "properties": {
         "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
         "state": "Enabled",
