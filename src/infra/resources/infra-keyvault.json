@@ -11,7 +11,8 @@
   },
   "variables": {
     "keyVaultName": "HackTheCrisis-kv",
-    "keyVaultName_ideally": "[concat(parameters('infra').environment, '-HackTheCrisis-kv-', parameters('infra').region)]"
+    "keyVaultName_ideally": "[concat(parameters('infra').environment, '-HackTheCrisis-kv-', parameters('infra').region)]",
+    "storageAccountName": "codithtc"
   },
   "resources": [
     {
@@ -196,6 +197,7 @@
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
       ],
       "properties": {
+        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]",
         "attributes": {
           "enabled": true
         }
@@ -210,6 +212,7 @@
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
       ],
       "properties": {
+        "value": "[listKeys(resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]",
         "attributes": {
           "enabled": true
         }
