@@ -63,7 +63,7 @@
                       "name": "ComponentId",
                       "value": {
                         "Name": "CoditFamilyView",
-                        "SubscriptionId": "c1537527-c126-428d-8f72-1ac9f2c63c1f",
+                        "SubscriptionId": "[subscription().id]",
                         "ResourceGroup": "hack-the-crisis"
                       }
                     },
@@ -90,7 +90,7 @@
                       "name": "ComponentId",
                       "value": {
                         "Name": "CoditFamilyView",
-                        "SubscriptionId": "c1537527-c126-428d-8f72-1ac9f2c63c1f",
+                        "SubscriptionId": "[subscription().id]",
                         "ResourceGroup": "hack-the-crisis"
                       }
                     },
@@ -116,7 +116,7 @@
                       "name": "ComponentId",
                       "value": {
                         "Name": "CoditFamilyView",
-                        "SubscriptionId": "c1537527-c126-428d-8f72-1ac9f2c63c1f",
+                        "SubscriptionId": "[subscription().id]",
                         "ResourceGroup": "hack-the-crisis"
                       }
                     },
@@ -153,7 +153,7 @@
                       "name": "ComponentId",
                       "value": {
                         "Name": "CoditFamilyView",
-                        "SubscriptionId": "c1537527-c126-428d-8f72-1ac9f2c63c1f",
+                        "SubscriptionId": "[subscription().id]",
                         "ResourceGroup": "hack-the-crisis"
                       }
                     },
@@ -203,7 +203,7 @@
                       "name": "ComponentId",
                       "value": {
                         "Name": "CoditFamilyView",
-                        "SubscriptionId": "c1537527-c126-428d-8f72-1ac9f2c63c1f",
+                        "SubscriptionId": "[subscription().id]",
                         "ResourceGroup": "hack-the-crisis"
                       }
                     },
@@ -353,7 +353,7 @@
                       "name": "ComponentId",
                       "value": {
                         "Name": "CoditFamilyView",
-                        "SubscriptionId": "c1537527-c126-428d-8f72-1ac9f2c63c1f",
+                        "SubscriptionId": "[subscription().id]",
                         "ResourceGroup": "hack-the-crisis"
                       }
                     },
@@ -391,7 +391,7 @@
                       "name": "id",
                       "value": {
                         "Name": "CoditFamilyView",
-                        "SubscriptionId": "c1537527-c126-428d-8f72-1ac9f2c63c1f",
+                        "SubscriptionId": "[subscription().id]",
                         "ResourceGroup": "hack-the-crisis"
                       }
                     },

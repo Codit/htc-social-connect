@@ -31,7 +31,7 @@
       "location": "West Europe",
       "dependsOn": [],
       "tags": {
-        "hidden-related:/subscriptions/c1537527-c126-428d-8f72-1ac9f2c63c1f/resourceGroups/hack-the-crisis/providers/Microsoft.Web/serverfarms/hackthecrisis-asp": "empty"
+        "[concat('hidden-related:', subscription().id, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]": "empty"
       },
       "kind": "app",
       "identity": {
@@ -196,7 +196,7 @@
         "[resourceId('Microsoft.Web/sites', variables('sites_CoditFamilyView_name'))]"
       ],
       "tags": {
-        "hidden-related:/subscriptions/c1537527-c126-428d-8f72-1ac9f2c63c1f/resourceGroups/hack-the-crisis/providers/Microsoft.Web/serverfarms/hackthecrisis-asp": "empty"
+        "[concat('hidden-related:', subscription().id, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]": "empty"
       },
       "properties": {
         "numberOfWorkers": 1,
