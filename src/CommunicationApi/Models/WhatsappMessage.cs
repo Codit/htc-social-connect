@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Net;
 using CommunicationApi.Extensions;
-using CommunicationApi.Interfaces;
 
 namespace CommunicationApi.Models
 {

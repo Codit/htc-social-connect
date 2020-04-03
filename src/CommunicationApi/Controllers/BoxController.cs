@@ -2,9 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Bogus;
-using CommunicationApi.Contracts.v1;
 using CommunicationApi.Interfaces;
-using CommunicationApi.Models;
 using GuardNet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

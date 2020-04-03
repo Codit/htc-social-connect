@@ -1,15 +1,15 @@
 using System.Threading.Tasks;
+using Arcus.Security.Core;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace CommunicationApi.Services.Tablestorage
 {
     public class TableMessageAuditStore : TableTransmitter<WhatsappMessage>, IMessageAuditStore
     {
-        public TableMessageAuditStore(IOptionsMonitor<StorageSettings> settings, ILogger<TableMessageAuditStore> logger) : 
-            base("messageauditlog", settings, logger)
+        public TableMessageAuditStore(ISecretProvider secretProvider, ILogger<TableMessageAuditStore> logger) : 
+            base("messageauditlog", secretProvider, logger)
         {
         }
 

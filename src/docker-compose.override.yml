@@ -5,8 +5,7 @@ services:
     environment:
       - "ASPNETCORE_ENVIRONMENT=Development"
       - "ARCUS_HTTP_PORT=88"
-      - "storage__accountname=codithtc"
-      - "storage__accountkey=0OK8d5zH046RVRLi68B6Xq/Yj4pMMYlhd+lm+WlmcAraQYMGHmnKimJEy7JDbTpSYzttuzCyBJbLTrOBXlXdYw=="
+      - "KeyVaultUri=https://<vault-name>.vault.azure.net/"
       - "Telemetry__ApplicationInsights__InstrumentationKey=ABC"
     ports:
       - "999:88"
@@ -15,9 +14,10 @@ services:
     environment:
       - "ASPNETCORE_ENVIRONMENT=Development"
       - "ASPNETCORE_URLS=https://+:443;http://+:80"
-      - "KEYVAULT_ENDPOINT=https://hackthecrisis-kv.vault.azure.net/"
-      - "KEYVAULT_AUTH_ID=24ae35b0-5c01-429f-b62c-d6da61d3d0eb"
-      - "KEYVAULT_AUTH_SECRET=eRICg6=R2zHtSnJ7su-FS3bzPT]ZFTT_"
+      - "API_URL=http://localhost:88"
+      - "KEYVAULT_ENDPOINT=https://<vault-name>.vault.azure.net/"
+      - "KEYVAULT_AUTH_ID=<vault-client-id>"
+      - "KEYVAULT_AUTH_SECRET=<vault-client-secret>"
     ports:
       - "998:80"
       - "888:443"

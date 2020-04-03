@@ -3,46 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Arcus.Security.Core;
 using CommunicationApi.Extensions;
-using CommunicationApi.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Table;
 using TableStorage.Abstractions.TableEntityConverters;
 
 namespace CommunicationApi.Services.Tablestorage
 {
-    public abstract class TableTransmitter<T> where T : new()
+    public abstract class TableTransmitter<T> : AzureStorageProvider where T : new()
     {
-        private readonly IOptionsMonitor<StorageSettings> _settings;
-        private CloudStorageAccount _storageAccount;
         private readonly IDictionary<string, CloudTable> _loadedTables = new Dictionary<string, CloudTable>();
-        private readonly ILogger _logger;
 
         protected string TableName { get; set; }
 
-        protected TableTransmitter(string tableName, IOptionsMonitor<StorageSettings> settings, ILogger logger)
+        protected TableTransmitter(string tableName, ISecretProvider secretProvider, ILogger logger)
+            : base(secretProvider, logger)
         {
             TableName = tableName;
-
-            _settings = settings;
-            _logger = logger;
-        }
-
-        private CloudStorageAccount Account
-        {
-            get
-            {
-                if (_storageAccount == null)
-                {
-                    var storageSettings = _settings.CurrentValue;
-                    _storageAccount = new CloudStorageAccount(new StorageCredentials(storageSettings.AccountName, storageSettings.AccountKey), true);
-                }
-
-                return _storageAccount;
-            }
         }
 
         protected async Task<CloudTable> GetTable()
@@ -51,7 +29,8 @@ namespace CommunicationApi.Services.Tablestorage
             {
                 try
                 {
-                    var table = Account.CreateCloudTableClient().GetTableReference(TableName);
+                    var storageAccount = await GetStorageAccount();
+                    var table = storageAccount.CreateCloudTableClient().GetTableReference(TableName);
                     await table.CreateIfNotExistsAsync();
 
                     _loadedTables.Upsert(TableName, table);
@@ -59,13 +38,12 @@ namespace CommunicationApi.Services.Tablestorage
                 catch (Exception exception)
                 {
                     // ignored
-                    _logger.LogCritical(exception, "Unable to upsert in table {TableName}", TableName);
+                    Logger.LogCritical(exception, "Unable to upsert in table {TableName}", TableName);
                 }
             }
 
             return _loadedTables[TableName];
         }
-
 
         protected async Task<T> GetItem(string partitionKey, string rowKey)
         {
@@ -181,8 +159,6 @@ namespace CommunicationApi.Services.Tablestorage
             //Execute  
             await table.ExecuteAsync(operation);
         }
-        
-        
 
         public string PrintEntity(T entity)
         {
