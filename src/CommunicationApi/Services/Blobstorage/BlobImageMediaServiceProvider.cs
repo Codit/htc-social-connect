@@ -48,24 +48,51 @@ namespace CommunicationApi.Services.Blobstorage
             return response;
         }
 
-        public async Task PersistMediaFile(UserInfo userInfo, string mediaUrl)
+        public async Task PersistMediaFile(UserInfo userInfo, string mediaUrl,string contentType)
         {
-            // download image to stream
-            var mediaStream = await mediaUrl.GetStreamAsync(completionOption: HttpCompletionOption.ResponseContentRead);
+            // get content main and subtype
+            var contentMainType = contentType.Split('/')[0];
+            var contentSubType = contentType.Split('/')[1];
+            
+            if(contentMainType== "image") { 
+                // download image to stream
+                var mediaStream = await mediaUrl.GetStreamAsync(completionOption: HttpCompletionOption.ResponseContentRead);
 
-            // Create the container and return a container client object
-            var storageClient = await GetBlobStorageClient();
-            var container = storageClient.GetBlobContainerClient(userInfo.BoxInfo.BoxId.ToLower());
-            await container.CreateIfNotExistsAsync();
+                // Create the container and return a container client object
+                var storageClient = await GetBlobStorageClient();
+                var container = storageClient.GetBlobContainerClient(userInfo.BoxInfo.BoxId.ToLower());
+                await container.CreateIfNotExistsAsync();
 
-            // TODO : check extension based on media type
-            string extension = "jpg";
-            var blobClient = container.GetBlockBlobClient(Guid.NewGuid().ToString("N") + "." + extension);
-            await blobClient.UploadAsync(mediaStream, null,
-                new Dictionary<string, string>
+                // Twilio only supports JPG, JPEG, PNG
+                string extension = "jpg";
+                switch (contentSubType)
                 {
-                    {"user", userInfo.Name}
-                });
+                    case "jpeg":
+                        extension = "jpg";
+                        break;
+                    case "png":
+                        extension = "png";
+                        break;
+                    case "jpg":
+                        extension = "jpg";
+                        break;
+                    default:
+                        extension = "jpg";
+                        break;
+                }
+                
+                var blobClient = container.GetBlockBlobClient(Guid.NewGuid().ToString("N") + "." + extension);
+                await blobClient.UploadAsync(mediaStream, null,
+                    new Dictionary<string, string>
+                    {
+                        {"user", userInfo.Name}
+                    });
+            }
+           
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public Task PersistTextMessage(UserInfo userInfo, TextMessage message)

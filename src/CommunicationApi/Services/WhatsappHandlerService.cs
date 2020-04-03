@@ -236,7 +236,7 @@ namespace CommunicationApi.Services
         {
             foreach (var mediaItem in message.MediaItems)
             {
-                await _imageServiceProvider.PersistMediaFile(userInfo, WebUtility.UrlDecode(mediaItem.Url));
+                await _imageServiceProvider.PersistMediaFile(userInfo, WebUtility.UrlDecode(mediaItem.Url),mediaItem.ContentType);
                 _logger.LogEvent("New Image Received");
                 _logger.LogMetric("Image Received", 1);
             }

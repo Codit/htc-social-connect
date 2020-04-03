@@ -36,7 +36,7 @@ namespace CommunicationApi.Services.Tablestorage
             };
         }
 
-        public Task PersistMediaFile(UserInfo userInfo, string mediaUrl)
+        public Task PersistMediaFile(UserInfo userInfo, string mediaUrl,string contentType)
         {
             throw new NotImplementedException();
         }

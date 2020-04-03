@@ -8,7 +8,7 @@ namespace CommunicationApi.Interfaces
     {
         MediaType SupportedType { get; }
         Task<IEnumerable<MediaItem>> GetItems(string tenantId);
-        Task PersistMediaFile(UserInfo userInfo, string mediaUrl);
+        Task PersistMediaFile(UserInfo userInfo, string mediaUrl, string contentType);
         Task PersistTextMessage(UserInfo userInfo, TextMessage message);
     }
 }
