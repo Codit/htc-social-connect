@@ -36,14 +36,36 @@ namespace CommunicationApi.Services.Tablestorage
                 d.ActivationCode.Equals(activationCode, StringComparison.InvariantCultureIgnoreCase));
             if (device != null)
             {
-                device.Status = BoxStatus.Activated;
-                device.AdminUserName = userName;
-                device.AdminUserPhone = userPhone;
-                await Upsert(device, PartitionKey, device.BoxId);
+                // If status is already Activated, no need to update the device settings
+                if (device.Status != BoxStatus.Activated)
+                {
+                    device.Status = BoxStatus.Activated;
+                    device.AdminUserName = userName;
+                    device.AdminUserPhone = userPhone;
+                    await Upsert(device, PartitionKey, device.BoxId);
+                }
                 return device.BoxId;
             }
 
             return null;
         }
+
+        public async Task UpdateLastConnectedDateTime(string boxId)
+        {
+            var device = await Get(boxId);
+            device.LastConnectedDateTime = DateTime.Now;
+            await Upsert(device, PartitionKey, boxId);
+        }
+
+        public async Task<DateTime> GetLastConnectedDateTime(string boxId)
+        {
+            var device = await Get(boxId);
+            return (device.LastConnectedDateTime);
+        }
+
+        //public async Task<bool> IsAdmin(UserInfo userInfo)
+        //{
+
+        //}
     }
 }
