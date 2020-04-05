@@ -1,0 +1,222 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    }
+  },
+  "variables": {
+    "keyVaultName": "HackTheCrisis-kv",
+    "keyVaultName_ideally": "[concat(parameters('infra').environment, '-HackTheCrisis-kv-', parameters('infra').region)]",
+    "storageAccountName": "codithtc"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2016-10-01",
+      "name": "[variables('keyVaultName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+        "accessPolicies": [
+          {
+            "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+            "objectId": "218d0784-853d-4e55-b163-00bf5f621414",
+            "permissions": {
+              "keys": [],
+              "secrets": [
+                "Get",
+                "List"
+              ],
+              "certificates": []
+            }
+          },
+          {
+            "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+            "objectId": "66924a2b-886f-4b62-a14e-bca0d4f09e1e",
+            "permissions": {
+              "keys": [],
+              "secrets": [
+                "Get",
+                "List"
+              ],
+              "certificates": []
+            }
+          },
+          {
+            "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+            "objectId": "dfedc0bd-befe-4d44-ac46-20b8679f82a4",
+            "permissions": {
+              "keys": [],
+              "secrets": [
+                "Get",
+                "List"
+              ],
+              "certificates": []
+            }
+          },
+          {
+            "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+            "objectId": "93572dda-26be-4262-89fb-75ff9bec2bc2",
+            "permissions": {
+              "keys": [],
+              "secrets": [
+                "Get",
+                "List"
+              ],
+              "certificates": []
+            }
+          },
+          {
+            "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+            "objectId": "8b5d70bd-fa88-41ce-8cf8-49a06fd19e7c",
+            "permissions": {
+              "keys": [],
+              "secrets": [
+                "Get",
+                "List",
+                "Set"
+              ],
+              "certificates": []
+            }
+          },
+          {
+            "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+            "objectId": "fee54b15-a370-434e-bd51-fa5cf8354b98",
+            "permissions": {
+              "keys": [],
+              "secrets": [
+                "Get",
+                "List",
+                "Set"
+              ],
+              "certificates": []
+            }
+          },
+          {
+            "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+            "objectId": "d2cb58de-56d2-424c-89fd-c2e56067b1dd",
+            "permissions": {
+              "keys": [],
+              "secrets": [
+                "Get",
+                "List",
+                "Set"
+              ],
+              "certificates": []
+            }
+          },
+          {
+            "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+            "objectId": "595af0b8-ca33-409b-985f-5e7cd75fe04a",
+            "permissions": {
+              "keys": [
+                "Get",
+                "List",
+                "Create",
+                "Update",
+                "Import",
+                "Delete",
+                "Backup",
+                "Restore",
+                "Recover"
+              ],
+              "secrets": [
+                "Get",
+                "List",
+                "Set",
+                "Delete",
+                "Backup",
+                "Restore",
+                "Recover"
+              ],
+              "certificates": [
+                "Get",
+                "List",
+                "Delete",
+                "Create",
+                "Import",
+                "Update",
+                "ManageContacts",
+                "GetIssuers",
+                "ListIssuers",
+                "SetIssuers",
+                "DeleteIssuers",
+                "ManageIssuers",
+                "Recover"
+              ],
+              "storage": []
+            }
+          },
+          {
+            "tenantId": "7517bc42-bcf8-4916-a677-b5753051f846",
+            "objectId": "f035deed-cf67-48cb-b911-937e1682f4e4",
+            "permissions": {
+              "secrets": [
+                "Get",
+                "List"
+              ],
+              "keys": [],
+              "certificates": []
+            }
+          }
+        ],
+        "enabledForDeployment": false,
+        "enabledForDiskEncryption": false,
+        "enabledForTemplateDeployment": false
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2016-10-01",
+      "name": "[concat(variables('keyVaultName'), '/HTC-API-Key')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+      ],
+      "properties": {
+        "attributes": {
+          "enabled": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2016-10-01",
+      "name": "[concat(variables('keyVaultName'), '/HTC-Storage-Connectionstring')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+      ],
+      "properties": {
+        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]",
+        "attributes": {
+          "enabled": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2016-10-01",
+      "name": "[concat(variables('keyVaultName'), '/HTC-Storage-Key')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+      ],
+      "properties": {
+        "value": "[listKeys(resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]",
+        "attributes": {
+          "enabled": true
+        }
+      }
+    }
+  ]
+}
