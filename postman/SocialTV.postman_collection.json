@@ -746,7 +746,7 @@
 								},
 								{
 									"key": "Body",
-									"value": "exit",
+									"value": "*exit",
 									"type": "text"
 								},
 								{
@@ -843,7 +843,7 @@
 								},
 								{
 									"key": "Body",
-									"value": "exit",
+									"value": "*clear",
 									"type": "text"
 								},
 								{
