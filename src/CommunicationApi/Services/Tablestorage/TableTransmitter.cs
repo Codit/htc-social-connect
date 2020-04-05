@@ -69,7 +69,6 @@ namespace CommunicationApi.Services.Tablestorage
             return default;
         }
 
-
         public async Task<List<T>> GetItems(string partitionKey)
         {
             //Table  
@@ -158,6 +157,60 @@ namespace CommunicationApi.Services.Tablestorage
 
             //Execute  
             await table.ExecuteAsync(operation);
+        }
+
+        protected async Task Delete(string partitionKey)
+        {
+            int batchSize = 100;
+            //Table  
+            var table = await GetTable();
+            var query =
+                new TableQuery().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal,                    partitionKey))
+                    .Select(new string[] { "PartitionKey", "RowKey" });
+
+            TableContinuationToken continuationToken = null;
+
+            do
+            {
+                var tableQueryResult = table.ExecuteQuerySegmentedAsync(query, continuationToken);
+
+                continuationToken = tableQueryResult.Result.ContinuationToken;
+
+                // Split into chunks of 100 for batching
+                List<List<DynamicTableEntity>> rowsChunked = tableQueryResult.Result.Select((x, index) => new { Index = index, Value = x })
+                    .Where(x => x.Value != null)
+                    .GroupBy(x => x.Index / 100)
+                    .Select(x => x.Select(v => v.Value).ToList())
+                    .ToList();
+
+                // Delete each chunk of 100 in a batch
+                foreach (List<DynamicTableEntity> rows in rowsChunked)
+                {
+                    TableBatchOperation tableBatchOperation = new TableBatchOperation();
+                    rows.ForEach(x => tableBatchOperation.Add(TableOperation.Delete(x)));
+
+                    await table.ExecuteBatchAsync(tableBatchOperation);
+                }
+            }
+            while (continuationToken != null);
+
+            //List<T> entitiesToDelete = await GetItems(partitionKey);
+
+            //int remainder, batches = Math.DivRem(entitiesToDelete.Count(), batchSize, out remainder);
+            //for (int iteration = 0; iteration <= batches; iteration++)
+            //{
+            //    var batchOperation = new TableBatchOperation();
+            //    foreach (var entityToDelete in entitiesToDelete.Skip(iteration * batchSize).Take(batchSize))
+            //    {
+            //        batchOperation.Delete(entityToDelete as DynamicTableEntity);
+            //    }
+
+            //    if (batchOperation.Count > 0)
+            //    {
+            //        Console.WriteLine($"Deleting batch {iteration} from table");
+            //        await table.ExecuteBatchAsync(batchOperation);
+            //    }
+            //}
         }
 
         public string PrintEntity(T entity)

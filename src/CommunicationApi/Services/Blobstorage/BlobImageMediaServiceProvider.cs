@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Arcus.Security.Core;
 using Azure.Storage;
@@ -64,13 +65,20 @@ namespace CommunicationApi.Services.Blobstorage
             await blobClient.UploadAsync(mediaStream, null,
                 new Dictionary<string, string>
                 {
-                    {"user", userInfo.Name}
+                    {"user", Convert.ToBase64String(Encoding.UTF8.GetBytes(userInfo.Name))}
                 });
         }
 
         public Task PersistTextMessage(UserInfo userInfo, TextMessage message)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task DeleteContent(UserInfo userInfo)
+        {
+            var storageClient = await GetBlobStorageClient();
+            var container = storageClient.GetBlobContainerClient(userInfo.BoxInfo.BoxId.ToLower());
+            await container.DeleteIfExistsAsync();
         }
 
         private async Task<string> GenerateSasUri(BlobItem blob, string tenant)
