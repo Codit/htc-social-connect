@@ -1,0 +1,118 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "infra": {
+      "type": "object",
+      "metadata": {
+        "description": "Provide the object that contains all info about the common infrastructure."
+      }
+    },
+    "alertsEnabled": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": ["true","false"]
+    }
+  },
+  "variables": {
+    "actionGroupName": "HackTheCrisisActionGroup",
+    "actionGroupShortName": "HTCag",
+    "emailReceivers": {
+      "dev": [
+        {
+          "name": "EmailSupport_-EmailAction-",
+          "emailAddress": "DoNotUse@codit.eu",
+          "useCommonAlertSchema": false
+        },
+        {
+          "name": "SpamOrHam_-EmailAction-",
+          "emailAddress": "SpamOrHam@codit.eu",
+          "useCommonAlertSchema": false
+        }
+      ]
+    },
+    "appInsightsName": "CoditFamilyView",
+    "webApiName": "codit-htc",
+    "components_codit_htc_externalid": "[resourceId(resourceGroup().name, 'microsoft.insights/components', variables('webApiName'))]",
+    "actionGroupId": "[resourceId(resourceGroup().name, 'microsoft.insights/actiongroups', variables('actionGroupName'))]"
+  },
+  "resources": [
+    {
+      "type": "microsoft.insights/actionGroups",
+      "apiVersion": "2019-03-01",
+      "name": "[variables('actionGroupName')]",
+      "location": "Global",
+      "tags": {},
+      "properties": {
+        "groupShortName": "[variables('actionGroupShortName')]",
+        "enabled": "[bool(parameters('alertsEnabled'))]",
+        "emailReceivers": "[array(variables('emailReceivers')[parameters('infra').environment])]",
+        "smsReceivers": [],
+        "webhookReceivers": [],
+        "itsmReceivers": [],
+        "azureAppPushReceivers": [],
+        "automationRunbookReceivers": [],
+        "voiceReceivers": [],
+        "logicAppReceivers": [],
+        "azureFunctionReceivers": []
+      }
+    },
+    {
+      "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+      "apiVersion": "2019-06-01",
+      "name": "failure anomalies - codit-htc",
+      "location": "global",
+      "properties": {
+        "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+        "state": "Enabled",
+        "severity": "Sev3",
+        "frequency": "PT1M",
+        "detector": {
+          "id": "FailureAnomaliesDetector",
+          "name": "Failure Anomalies",
+          "description": "Detects if your application experiences an abnormal rise in the rate of HTTP requests or dependency calls that are reported as failed. The anomaly detection uses machine learning algorithms and occurs in near real time, therefore there's no need to define a frequency for this signal.<br/></br/>To help you triage and diagnose the problem, an analysis of the characteristics of the failures and related telemetry is provided with the detection. This feature works for any app, hosted in the cloud or on your own servers, that generates request or dependency telemetry - for example, if you have a worker role that calls <a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/application-insights/app-insights-api-custom-events-metrics#trackrequest\\\" target=\\\"_blank\\\">TrackRequest()</a> or <a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/application-insights/app-insights-api-custom-events-metrics#trackdependency\\\" target=\\\"_blank\\\">TrackDependency()</a>.<br/><br/><a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/azure-monitor/app/proactive-failure-diagnostics\\\" target=\\\"_blank\\\">Learn more about Failure Anomalies</a>",
+          "supportedResourceTypes": [
+            "ApplicationInsights"
+          ]
+        },
+        "scope": [
+          "[variables('components_codit_htc_externalid')]"
+        ],
+        "actionGroups": {
+          "groupIds": [
+            "[variables('actionGroupId')]"
+          ]
+        }
+      }
+    },
+    {
+      "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+      "apiVersion": "2019-06-01",
+      "name": "failure anomalies - coditfamilyview",
+      "location": "global",
+      "dependsOn": [],
+      "properties": {
+        "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+        "state": "Enabled",
+        "severity": "Sev3",
+        "frequency": "PT1M",
+        "detector": {
+          "id": "FailureAnomaliesDetector",
+          "name": "Failure Anomalies",
+          "description": "Detects if your application experiences an abnormal rise in the rate of HTTP requests or dependency calls that are reported as failed. The anomaly detection uses machine learning algorithms and occurs in near real time, therefore there's no need to define a frequency for this signal.<br/></br/>To help you triage and diagnose the problem, an analysis of the characteristics of the failures and related telemetry is provided with the detection. This feature works for any app, hosted in the cloud or on your own servers, that generates request or dependency telemetry - for example, if you have a worker role that calls <a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/application-insights/app-insights-api-custom-events-metrics#trackrequest\\\" target=\\\"_blank\\\">TrackRequest()</a> or <a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/application-insights/app-insights-api-custom-events-metrics#trackdependency\\\" target=\\\"_blank\\\">TrackDependency()</a>.<br/><br/><a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/azure-monitor/app/proactive-failure-diagnostics\\\" target=\\\"_blank\\\">Learn more about Failure Anomalies</a>",
+          "supportedResourceTypes": [
+            "ApplicationInsights"
+          ]
+        },
+        "scope": [
+          "[resourceId('microsoft.insights/components', variables('appInsightsName'))]"
+        ],
+        "actionGroups": {
+          "groupIds": [
+            "[variables('actionGroupId')]"
+          ]
+        }
+      }
+    }
+  ]
+}
