@@ -138,8 +138,20 @@ namespace CommunicationApi.Services.Blobstorage
             if (blobItem.Properties.LastModified != null)
                 mediaItem.Timestamp = blobItem.Properties.LastModified.Value;
             if (blobItem.Metadata != null)
-                mediaItem.UserName = blobItem.Metadata.ContainsKey("user") ? blobItem.Metadata["user"] : "Onbekend";
+                mediaItem.UserName = blobItem.Metadata.ContainsKey("user") ? GetMetadataValue(blobItem.Metadata["user"]) : "Onbekend";
             return mediaItem;
+        }
+
+        private string GetMetadataValue(string value)
+        {
+            try
+            {
+                return Encoding.UTF8.GetString(Convert.FromBase64String(value));
+            }
+            catch(Exception)
+            {
+                return value;
+            }
         }
     }
 }
