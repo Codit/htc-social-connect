@@ -49,10 +49,5 @@ namespace CommunicationApi.Services.Tablestorage
 
             return null;
         }
-
-        //public async Task<bool> IsAdmin(UserInfo userInfo)
-        //{
-
-        //}
     }
 }
