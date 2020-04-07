@@ -62,10 +62,5 @@ namespace CommunicationApi.Services.Tablestorage
             var device = await Get(boxId);
             return (device.LastConnectedDateTime);
         }
-
-        //public async Task<bool> IsAdmin(UserInfo userInfo)
-        //{
-
-        //}
     }
 }
