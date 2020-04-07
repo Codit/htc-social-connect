@@ -69,7 +69,6 @@ namespace CommunicationApi.Services.Tablestorage
             return default;
         }
 
-
         public async Task<List<T>> GetItems(string partitionKey)
         {
             //Table  
@@ -158,6 +157,40 @@ namespace CommunicationApi.Services.Tablestorage
 
             //Execute  
             await table.ExecuteAsync(operation);
+        }
+
+        protected async Task Delete(string partitionKey)
+        {
+            int batchSize = 100;
+            //Table  
+            var table = await GetTable();
+            var query =
+                new TableQuery().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal,                    partitionKey))
+                    .Select(new string[] { "PartitionKey", "RowKey" });
+
+            TableContinuationToken continuationToken = null;
+
+            do
+            {
+                var tableQueryResult = table.ExecuteQuerySegmentedAsync(query, continuationToken);
+
+                continuationToken = tableQueryResult.Result.ContinuationToken;
+
+                List<List<DynamicTableEntity>> batch = tableQueryResult.Result.Select((x, index) => new { Index = index, Value = x })
+                    .Where(x => x.Value != null)
+                    .GroupBy(x => x.Index / batchSize)
+                    .Select(x => x.Select(v => v.Value).ToList())
+                    .ToList();
+
+                foreach (List<DynamicTableEntity> rows in batch)
+                {
+                    TableBatchOperation tableBatchOperation = new TableBatchOperation();
+                    rows.ForEach(x => tableBatchOperation.Add(TableOperation.Delete(x)));
+
+                    await table.ExecuteBatchAsync(tableBatchOperation);
+                }
+            }
+            while (continuationToken != null);
         }
 
         public string PrintEntity(T entity)

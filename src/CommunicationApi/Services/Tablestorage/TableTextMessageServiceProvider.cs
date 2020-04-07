@@ -45,5 +45,10 @@ namespace CommunicationApi.Services.Tablestorage
         {
             await Insert(message, userInfo.BoxInfo.BoxId, Guid.NewGuid().ToString("N"));
         }
+
+        public async Task DeleteContent(UserInfo userInfo)
+        {
+            await Delete(userInfo.BoxInfo.BoxId);
+        }
     }
 }
