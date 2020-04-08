@@ -49,5 +49,18 @@ namespace CommunicationApi.Services.Tablestorage
 
             return null;
         }
+
+        public async Task UpdateLastConnectedDateTime(string boxId)
+        {
+            var device = await Get(boxId);
+            device.LastConnectedDateTime = DateTime.Now;
+            await Upsert(device, PartitionKey, boxId);
+        }
+
+        public async Task<DateTime> GetLastConnectedDateTime(string boxId)
+        {
+            var device = await Get(boxId);
+            return (device.LastConnectedDateTime);
+        }
     }
 }

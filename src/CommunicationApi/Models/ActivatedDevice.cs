@@ -1,4 +1,6 @@
-﻿namespace CommunicationApi.Models
+﻿using System;
+
+namespace CommunicationApi.Models
 {
     public class ActivatedDevice
     {
@@ -8,5 +10,6 @@
         public string AdminUserName { get; set; }
         public string AdminUserPhone { get; set; }
         public string Language { get; set; } = "nl-BE";
+        public DateTime LastConnectedDateTime { get; internal set; }
     }
 }

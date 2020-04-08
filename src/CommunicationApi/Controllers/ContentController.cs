@@ -20,15 +20,18 @@ namespace CommunicationApi.Controllers
         private ILogger<ContentController> _logger;
         private IMediaServiceProvider _imageMediaServiceProvider;
         private IMediaServiceProvider _textMediaServiceProvider;
+        private IBoxStore _boxStore;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentController"/> class.
         /// </summary>
-        public ContentController(ILogger<ContentController> logger, IEnumerable<IMediaServiceProvider> serviceProviders)
+        public ContentController(ILogger<ContentController> logger, IEnumerable<IMediaServiceProvider> serviceProviders, IBoxStore boxStore)
         {
             Guard.NotNull(logger, nameof(logger));
             Guard.NotNull(serviceProviders, nameof(serviceProviders));
+            Guard.NotNull(boxStore, nameof(boxStore));
             _logger = logger;
+            _boxStore = boxStore;
             _imageMediaServiceProvider = serviceProviders.FirstOrDefault(msp => msp.SupportedType == MediaType.Image);
             _textMediaServiceProvider = serviceProviders.FirstOrDefault(msp => msp.SupportedType == MediaType.Text);
         }
@@ -44,6 +47,7 @@ namespace CommunicationApi.Controllers
         public async Task<IActionResult> GetMessages([FromQuery] string boxId)
         {
             _logger.LogInformation("Getting message for box {BoxId}", boxId);
+            await _boxStore.UpdateLastConnectedDateTime(boxId);
 
             var messages = await _textMediaServiceProvider.GetItems(boxId);
 
@@ -63,6 +67,7 @@ namespace CommunicationApi.Controllers
         public async Task<IActionResult> GetImages([FromQuery] string boxId)
         {
             _logger.LogInformation("Getting images for box {BoxId}", boxId);
+            await _boxStore.UpdateLastConnectedDateTime(boxId);
 
             var images = await _imageMediaServiceProvider.GetItems(boxId);
 

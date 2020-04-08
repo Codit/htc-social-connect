@@ -22,7 +22,7 @@ namespace CommunicationApi.Services
 
         public WhatsappHandlerService(IEnumerable<IMediaServiceProvider> mediaServiceProviders,
             ILogger<WhatsappHandlerService> logger, IMessageTranslater messageTranslater, IBoxStore boxStore,
-            IUserStore userStore , IMessageAuditStore auditStore )
+            IUserStore userStore, IMessageAuditStore auditStore)
         {
             Guard.NotNull(messageTranslater, nameof(messageTranslater));
             Guard.NotNull(mediaServiceProviders, nameof(mediaServiceProviders));
@@ -45,7 +45,7 @@ namespace CommunicationApi.Services
             {
                 var whatsappMessage = new WhatsappMessage(pars);
                 await _auditStore.AuditMessage(whatsappMessage);
-                
+
                 // Check in cache (or table) if phone Number is linked
                 var userInfo = await _userStore.GetUserInfo(whatsappMessage.Sender);
 
@@ -74,10 +74,26 @@ namespace CommunicationApi.Services
             WhatsappMessage whatsappMessage)
         {
             string responseMessage;
-            object[] pars = {userInfo.Name};
+            object[] pars = { userInfo.Name };
             bool accepted = false;
             switch (userCommand)
             {
+                case UserCommand.BoxStatus:
+                    _logger.LogWarning("The user {phoneNumber} asked for status of box {boxId}",
+                        userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
+                    if (!String.IsNullOrEmpty(userInfo.BoxInfo?.BoxId))
+                    {
+                        var lastConnectedDateTime = await _boxStore.GetLastConnectedDateTime(userInfo.BoxInfo.BoxId);
+
+                        pars = new object[] { userInfo.Name, lastConnectedDateTime.ToString("d MMM yyyy HH:mm:ss") };
+                        responseMessage = "De box is voor het laatst geraadpleegd op {1}, {0}.";
+                    }
+                    else
+                    {
+                        pars = new object[] { userInfo.Name };
+                        responseMessage = "U bent nog niet gekoppeld aan een box, {0}";
+                    }
+                    break;
                 case UserCommand.ClearMedia:
                     _logger.LogWarning("The user {phoneNumber} asked for clearing all media of box {boxId}",
                         userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
@@ -108,7 +124,7 @@ namespace CommunicationApi.Services
                 case UserCommand.LeaveBox:
                     userInfo.ConversationState = ConversationState.AwaitingActivation;
                     userInfo.BoxInfo = null;
-                    pars = new object[] {userInfo.Name};
+                    pars = new object[] { userInfo.Name };
                     await _userStore.UpdateUser(userInfo);
                     _logger.LogWarning("The user {phoneNumber} got discoupled from the box {boxId}",
                         userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
@@ -120,13 +136,13 @@ namespace CommunicationApi.Services
                         userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
                     if (!string.IsNullOrEmpty(userInfo.BoxInfo?.BoxId))
                     {
-                        pars = new object[] {$"https://coditfamilyview.azurewebsites.net?boxId={userInfo.BoxInfo.BoxId}"};
+                        pars = new object[] { $"https://coditfamilyview.azurewebsites.net?boxId={userInfo.BoxInfo.BoxId}" };
                         responseMessage = "U kan hier de box zien: {0}";
                         accepted = true;
                     }
                     else
                     {
-                        pars = new object[] {userInfo.Name};
+                        pars = new object[] { userInfo.Name };
                         responseMessage = "U bent nog niet gekoppeld aan een box, {0}";
                     }
                     break;
@@ -159,7 +175,7 @@ namespace CommunicationApi.Services
         private async Task<WhatsappResponse> ProcessUnauthenticatedMessage(UserInfo userInfo, WhatsappMessage message)
         {
             string responseMessage;
-            object[] pars = {userInfo.Name};
+            object[] pars = { userInfo.Name };
 
             string messageBody = message.MessageContent;
             string mediaUrl = null;
@@ -172,7 +188,7 @@ namespace CommunicationApi.Services
                 case ConversationState.AwaitingName:
                     userInfo.Name = messageBody;
                     userInfo.ConversationState = ConversationState.AwaitingActivation;
-                    pars = new object[] {userInfo.Name};
+                    pars = new object[] { userInfo.Name };
                     await _userStore.UpdateUser(userInfo);
                     responseMessage =
                         "Welkom, {0}, als je een client wil connecteren, gelieve dan de activatiecode te sturen.  Die kan je bekomen door de eerste letters te nemen van de icoontjes op het scherm van de box.  In het voorbeeld is het bijvoorbeeld HOME";
