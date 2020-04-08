@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using CommunicationApi.Interfaces;
 using CommunicationApi.Models;
@@ -78,6 +79,48 @@ namespace CommunicationApi.Services
             bool accepted = false;
             switch (userCommand)
             {
+                case UserCommand.Statistics:
+                    _logger.LogWarning("The user {phoneNumber} asked for statitics of box {boxId}",
+                        userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
+                    if (!String.IsNullOrEmpty(userInfo.BoxInfo?.BoxId))
+                    {
+                        var box = await _boxStore.Get(userInfo.BoxInfo.BoxId);
+
+                        if (box.AdminUserPhone == userInfo.PhoneNumber)
+                        {
+                            var lastConnectedDateTime = await _boxStore.GetLastConnectedDateTime(userInfo.BoxInfo.BoxId);
+
+                            pars = new object[] {
+                                userInfo.Name,
+                                box.Status,
+                                lastConnectedDateTime.ToString("d MMM yyyy HH:mm:ss"),
+                                _userStore.GetUsersFromTenant(userInfo.BoxInfo.BoxId).Result.Count(),
+                                _messageServiceProvider.GetItems(userInfo.BoxInfo.BoxId).Result.Count(),
+                                _imageServiceProvider.GetItems(userInfo.BoxInfo.BoxId).Result.Count()
+                            };
+                            StringBuilder stringBuilder = new StringBuilder();
+                            stringBuilder.AppendLine("{0}, dit zijn de statistics van uw box:");
+                            stringBuilder.AppendLine("Box status: {1}");
+                            stringBuilder.AppendLine("Laatst geraadpleegde datum: {2}");
+                            stringBuilder.AppendLine("Aantal gekoppelde gebruikers: {3}");
+                            stringBuilder.AppendLine("Aantal berichten: {4}");
+                            stringBuilder.AppendLine("Aantal afbeeldingen: {5}");
+
+                            responseMessage = stringBuilder.ToString();
+                        }
+                        else
+                        {
+                            pars = new object[] { userInfo.Name };
+                            responseMessage = "Alleen de Admin van de box kan statistics opvragen {0}.";
+                        }
+                    }
+                    else
+                    {
+                        pars = new object[] { userInfo.Name };
+                        responseMessage = "U bent nog niet gekoppeld aan een box, {0}";
+                    }
+
+                    break;
                 case UserCommand.BoxStatus:
                     _logger.LogWarning("The user {phoneNumber} asked for status of box {boxId}",
                         userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
