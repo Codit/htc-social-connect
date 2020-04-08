@@ -10,5 +10,6 @@ namespace CommunicationApi.Interfaces
         Task<IEnumerable<MediaItem>> GetItems(string tenantId);
         Task PersistMediaFile(UserInfo userInfo, string mediaUrl);
         Task PersistTextMessage(UserInfo userInfo, TextMessage message);
+        Task DeleteContent(UserInfo userInfo);
     }
 }

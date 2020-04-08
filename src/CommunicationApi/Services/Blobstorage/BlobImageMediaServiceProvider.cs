@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Arcus.Security.Core;
 using Azure.Storage;
@@ -64,13 +65,20 @@ namespace CommunicationApi.Services.Blobstorage
             await blobClient.UploadAsync(mediaStream, null,
                 new Dictionary<string, string>
                 {
-                    {"user", userInfo.Name}
+                    {"user", Convert.ToBase64String(Encoding.UTF8.GetBytes(userInfo.Name))}
                 });
         }
 
         public Task PersistTextMessage(UserInfo userInfo, TextMessage message)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task DeleteContent(UserInfo userInfo)
+        {
+            var storageClient = await GetBlobStorageClient();
+            var container = storageClient.GetBlobContainerClient(userInfo.BoxInfo.BoxId.ToLower());
+            await container.DeleteIfExistsAsync();
         }
 
         private async Task<string> GenerateSasUri(BlobItem blob, string tenant)
@@ -130,8 +138,20 @@ namespace CommunicationApi.Services.Blobstorage
             if (blobItem.Properties.LastModified != null)
                 mediaItem.Timestamp = blobItem.Properties.LastModified.Value;
             if (blobItem.Metadata != null)
-                mediaItem.UserName = blobItem.Metadata.ContainsKey("user") ? blobItem.Metadata["user"] : "Onbekend";
+                mediaItem.UserName = blobItem.Metadata.ContainsKey("user") ? GetMetadataValue(blobItem.Metadata["user"]) : "Onbekend";
             return mediaItem;
+        }
+
+        private string GetMetadataValue(string value)
+        {
+            try
+            {
+                return Encoding.UTF8.GetString(Convert.FromBase64String(value));
+            }
+            catch(Exception)
+            {
+                return value;
+            }
         }
     }
 }

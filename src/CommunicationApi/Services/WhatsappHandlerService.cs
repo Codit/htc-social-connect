@@ -93,7 +93,33 @@ namespace CommunicationApi.Services
                         pars = new object[] { userInfo.Name };
                         responseMessage = "U bent nog niet gekoppeld aan een box, {0}";
                     }
+                    break;
+                case UserCommand.ClearMedia:
+                    _logger.LogWarning("The user {phoneNumber} asked for clearing all media of box {boxId}",
+                        userInfo.PhoneNumber, userInfo.BoxInfo?.BoxId);
+                    if (!String.IsNullOrEmpty(userInfo.BoxInfo?.BoxId))
+                    {
+                        var box = await _boxStore.Get(userInfo.BoxInfo.BoxId);
 
+                        if (box.AdminUserPhone == userInfo.PhoneNumber)
+                        {
+                            await _messageServiceProvider.DeleteContent(userInfo);
+                            await _imageServiceProvider.DeleteContent(userInfo);
+
+                            pars = new object[] { userInfo.Name };
+                            responseMessage = "Alle content van de box is verwijderd {0}.";
+                        }
+                        else
+                        {
+                            pars = new object[] { userInfo.Name };
+                            responseMessage = "Alleen de Admin van de box kan alle content verwijderen {0}.";
+                        }
+                    }
+                    else
+                    {
+                        pars = new object[] { userInfo.Name };
+                        responseMessage = "U bent nog niet gekoppeld aan een box, {0}";
+                    }
                     break;
                 case UserCommand.LeaveBox:
                     userInfo.ConversationState = ConversationState.AwaitingActivation;
