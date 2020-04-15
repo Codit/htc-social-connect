@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Arcus.Observability.Correlation" Version="0.1.0-preview-6" />
-    <PackageReference Include="Arcus.Observability.Telemetry.Serilog.Enrichers" Version="0.1.0-preview-6" />
-    <PackageReference Include="Arcus.Observability.Telemetry.Serilog.Sinks.ApplicationInsights" Version="0.1.0-preview-6" />
+    <PackageReference Include="Arcus.Observability.Correlation" Version="0.1.0-preview-7" />
+    <PackageReference Include="Arcus.Observability.Telemetry.Serilog.Enrichers" Version="0.1.0-preview-7" />
+    <PackageReference Include="Arcus.Observability.Telemetry.Serilog.Sinks.ApplicationInsights" Version="0.1.0-preview-7" />
     <PackageReference Include="Arcus.Security.Providers.AzureKeyVault" Version="1.1.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.4.1" />
