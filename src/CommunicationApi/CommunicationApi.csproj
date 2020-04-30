@@ -38,7 +38,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.4.0" />
     <PackageReference Include="TableStorage.Abstractions.TableEntityConverters" Version="1.1.6" />
-    <PackageReference Include="Twilio" Version="5.39.1" />
+    <PackageReference Include="Twilio" Version="5.40.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
