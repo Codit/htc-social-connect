@@ -21,7 +21,7 @@
     <PackageReference Include="Arcus.Observability.Telemetry.Serilog.Sinks.ApplicationInsights" Version="0.2.0" />
     <PackageReference Include="Arcus.Security.Providers.AzureKeyVault" Version="1.1.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.4.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.4.2" />
     <PackageReference Include="Bogus" Version="29.0.2" />
     <PackageReference Include="Flurl" Version="2.8.2" />
     <PackageReference Include="Flurl.Http" Version="2.4.2" />
